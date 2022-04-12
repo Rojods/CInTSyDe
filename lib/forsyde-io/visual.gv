@@ -1,0 +1,222 @@
+digraph {
+	graph [_draw_="c 9 -#fffffe00 C 7 -#ffffff P 4 0 0 0 500 574 500 574 0 ",
+		bb="0,0,574,500",
+		rankdir=LR,
+		xdotversion=1.7
+	];
+	node [label="\N"];
+	subgraph cluster_tile2 {
+		graph [_draw_="c 7 -#000000 p 4 380 8 380 180 566 180 566 8 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 473 164.8 0 23 5 -tile2 ",
+			bb="380,8,566,180",
+			label=tile2,
+			lheight=0.21,
+			lp="473,168.5",
+			lwidth=0.32,
+			rankdir=LR
+		];
+		subgraph cluster_order_2 {
+			graph [_draw_="c 7 -#000000 p 4 388 16 388 149 558 149 558 16 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 473 133.8 0 45 7 -order_2 ",
+				bb="388,16,558,149",
+				label=order_2,
+				lheight=0.21,
+				lp="473,137.5",
+				lwidth=0.62,
+				rankdir=LR
+			];
+			"sobel/Abs"	[_draw_="c 7 -#000000 p 4 396 25 396 117 550 117 550 25 c 7 -#000000 L 2 470 25 470 117 c 7 -#000000 L 2 470 94 550 94 c 7 -#000000 L 2 470 \
+71 550 71 c 7 -#000000 L 2 470 48 550 48 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 433 67.3 0 58 9 -sobel/Abs F 14 11 -Times-Roman c 7 -#000000 T 510 101.8 0 64 10 -combinator \
+F 14 11 -Times-Roman c 7 -#000000 T 510 78.8 0 24 4 -resy F 14 11 -Times-Roman c 7 -#000000 T 510 55.8 0 24 4 -resx F 14 11 -Times-Roman \
+c 7 -#000000 T 510 32.8 0 60 9 -imgOutput ",
+				height=1.2917,
+				label="{sobel/Abs|{<combinator>combinator|<resy>resy|<resx>resx|<imgOutput>imgOutput}}",
+				pos="473,71",
+				rects="396,25,470,117 470,94,550,117 470,71,550,94 470,48,550,71 470,25,550,48",
+				shape=record,
+				width=2.1389];
+		}
+	}
+	subgraph cluster_tile1 {
+		graph [_draw_="c 7 -#000000 p 4 8 230 8 402 202 402 202 230 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 105 386.8 0 23 5 -tile1 ",
+			bb="8,230,202,402",
+			label=tile1,
+			lheight=0.21,
+			lp="105,390.5",
+			lwidth=0.32,
+			rankdir=LR
+		];
+		subgraph cluster_order_1 {
+			graph [_draw_="c 7 -#000000 p 4 16 238 16 371 194 371 194 238 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 105 355.8 0 45 7 -order_1 ",
+				bb="16,238,194,371",
+				label=order_1,
+				lheight=0.21,
+				lp="105,359.5",
+				lwidth=0.62,
+				rankdir=LR
+			];
+			"sobel/getPx"	[_draw_="c 7 -#000000 p 4 24 247 24 339 186 339 186 247 c 7 -#000000 L 2 106 247 106 339 c 7 -#000000 L 2 106 316 186 316 c 7 -#000000 L \
+2 106 293 186 293 c 7 -#000000 L 2 106 270 186 270 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 65 289.3 0 66 11 -sobel/getPx F 14 11 -Times-Roman c 7 -#000000 T 146 323.8 0 14 2 -gx F 14 \
+11 -Times-Roman c 7 -#000000 T 146 300.8 0 64 10 -combinator F 14 11 -Times-Roman c 7 -#000000 T 146 277.8 0 14 2 -gy F 14 11 -Times-Roman \
+c 7 -#000000 T 146 254.8 0 50 8 -imgInput ",
+				height=1.2917,
+				label="{sobel/getPx|{<gx>gx|<combinator>combinator|<gy>gy|<imgInput>imgInput}}",
+				pos="105,293",
+				rects="24,247,106,339 106,316,186,339 106,293,186,316 106,270,186,293 106,247,186,270",
+				shape=record,
+				width=2.25];
+		}
+	}
+	subgraph cluster_tile3 {
+		graph [_draw_="c 7 -#000000 p 4 383 344 383 492 563 492 563 344 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 473 476.8 0 23 5 -tile3 ",
+			bb="383,344,563,492",
+			label=tile3,
+			lheight=0.21,
+			lp="473,480.5",
+			lwidth=0.32,
+			rankdir=LR
+		];
+		subgraph cluster_order_3 {
+			graph [_draw_="c 7 -#000000 p 4 391 352 391 461 555 461 555 352 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 473 445.8 0 45 7 -order_3 ",
+				bb="391,352,555,461",
+				label=order_3,
+				lheight=0.21,
+				lp="473,449.5",
+				lwidth=0.62,
+				rankdir=LR
+			];
+			"sobel/Gx"	[_draw_="c 7 -#000000 p 4 399 360.5 399 429.5 547 429.5 547 360.5 c 7 -#000000 L 2 467 360.5 467 429.5 c 7 -#000000 L 2 467 406.5 547 406.5 \
+c 7 -#000000 L 2 467 383.5 547 383.5 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 433 391.3 0 52 8 -sobel/Gx F 14 11 -Times-Roman c 7 -#000000 T 507 414.3 0 14 2 -gx F 14 11 \
+-Times-Roman c 7 -#000000 T 507 391.3 0 64 10 -combinator F 14 11 -Times-Roman c 7 -#000000 T 507 368.3 0 24 4 -resx ",
+				height=0.97222,
+				label="{sobel/Gx|{<gx>gx|<combinator>combinator|<resx>resx}}",
+				pos="473,395",
+				rects="399,360.5,467,429.5 467,406.5,547,429.5 467,383.5,547,406.5 467,360.5,547,383.5",
+				shape=record,
+				width=2.0556];
+		}
+	}
+	subgraph cluster_tdmabus1 {
+		graph [_draw_="c 7 -#000000 p 4 210 90 210 411 372 411 372 90 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 291 395.8 0 55 8 -tdmabus1 ",
+			bb="210,90,372,411",
+			label=tdmabus1,
+			lheight=0.21,
+			lp="291,399.5",
+			lwidth=0.76,
+			rankdir=LR
+		];
+		subgraph cluster_order_5 {
+			graph [_draw_="c 7 -#000000 p 4 218 98 218 380 364 380 364 98 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 291 364.8 0 45 7 -order_5 ",
+				bb="218,98,364,380",
+				label=order_5,
+				lheight=0.21,
+				lp="291,368.5",
+				lwidth=0.62,
+				rankdir=LR
+			];
+			gxsig	[_draw_="c 7 -#000000 p 4 232.5 302 232.5 348 349.5 348 349.5 302 c 7 -#000000 L 2 278.5 302 278.5 348 c 7 -#000000 L 2 278.5 325 349.5 325 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 255.5 321.3 0 30 5 -gxsig F 14 11 -Times-Roman c 7 -#000000 T 314 332.8 0 52 8 -producer F 14 \
+11 -Times-Roman c 7 -#000000 T 314 309.8 0 55 8 -consumer ",
+				height=0.65278,
+				label="{gxsig|{<producer>producer|<consumer>consumer}}",
+				pos="291,325",
+				rects="232.5,302,278.5,348 278.5,325,349.5,348 278.5,302,349.5,325",
+				shape=record,
+				width=1.625];
+			gysig	[_draw_="c 7 -#000000 p 4 232.5 237 232.5 283 349.5 283 349.5 237 c 7 -#000000 L 2 278.5 237 278.5 283 c 7 -#000000 L 2 278.5 260 349.5 260 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 255.5 256.3 0 30 5 -gysig F 14 11 -Times-Roman c 7 -#000000 T 314 267.8 0 52 8 -producer F 14 \
+11 -Times-Roman c 7 -#000000 T 314 244.8 0 55 8 -consumer ",
+				height=0.65278,
+				label="{gysig|{<producer>producer|<consumer>consumer}}",
+				pos="291,260",
+				rects="232.5,237,278.5,283 278.5,260,349.5,283 278.5,237,349.5,260",
+				shape=record,
+				width=1.625];
+			absxsig	[_draw_="c 7 -#000000 p 4 226 107 226 153 356 153 356 107 c 7 -#000000 L 2 285 107 285 153 c 7 -#000000 L 2 285 130 356 130 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 255.5 126.3 0 43 7 -absxsig F 14 11 -Times-Roman c 7 -#000000 T 320.5 137.8 0 52 8 -producer \
+F 14 11 -Times-Roman c 7 -#000000 T 320.5 114.8 0 55 8 -consumer ",
+				height=0.65278,
+				label="{absxsig|{<producer>producer|<consumer>consumer}}",
+				pos="291,130",
+				rects="226,107,285,153 285,130,356,153 285,107,356,130",
+				shape=record,
+				width=1.8056];
+			absysig	[_draw_="c 7 -#000000 p 4 226 172 226 218 356 218 356 172 c 7 -#000000 L 2 285 172 285 218 c 7 -#000000 L 2 285 195 356 195 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 255.5 191.3 0 43 7 -absysig F 14 11 -Times-Roman c 7 -#000000 T 320.5 202.8 0 52 8 -producer \
+F 14 11 -Times-Roman c 7 -#000000 T 320.5 179.8 0 55 8 -consumer ",
+				height=0.65278,
+				label="{absysig|{<producer>producer|<consumer>consumer}}",
+				pos="291,195",
+				rects="226,172,285,218 285,195,356,218 285,172,356,195",
+				shape=record,
+				width=1.8056];
+		}
+	}
+	subgraph cluster_tile4 {
+		graph [_draw_="c 7 -#000000 p 4 383 188 383 336 563 336 563 188 ",
+			_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 473 320.8 0 23 5 -tile4 ",
+			bb="383,188,563,336",
+			label=tile4,
+			lheight=0.21,
+			lp="473,324.5",
+			lwidth=0.32,
+			rankdir=LR
+		];
+		subgraph cluster_order_4 {
+			graph [_draw_="c 7 -#000000 p 4 391 196 391 305 555 305 555 196 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 473 289.8 0 45 7 -order_4 ",
+				bb="391,196,555,305",
+				label=order_4,
+				lheight=0.21,
+				lp="473,293.5",
+				lwidth=0.62,
+				rankdir=LR
+			];
+			"sobel/Gy"	[_draw_="c 7 -#000000 p 4 399 204.5 399 273.5 547 273.5 547 204.5 c 7 -#000000 L 2 467 204.5 467 273.5 c 7 -#000000 L 2 467 250.5 547 250.5 \
+c 7 -#000000 L 2 467 227.5 547 227.5 ",
+				_ldraw_="F 14 11 -Times-Roman c 7 -#000000 T 433 235.3 0 52 8 -sobel/Gy F 14 11 -Times-Roman c 7 -#000000 T 507 258.3 0 64 10 -combinator \
+F 14 11 -Times-Roman c 7 -#000000 T 507 235.3 0 14 2 -gy F 14 11 -Times-Roman c 7 -#000000 T 507 212.3 0 24 4 -resy ",
+				height=0.97222,
+				label="{sobel/Gy|{<combinator>combinator|<gy>gy|<resy>resy}}",
+				pos="473,239",
+				rects="399,204.5,467,273.5 467,250.5,547,273.5 467,227.5,547,250.5 467,204.5,547,227.5",
+				shape=record,
+				width=2.0556];
+		}
+	}
+	"sobel/getPx":gx -> gxsig:producer	[_draw_="c 7 -#000000 B 7 187 328 209.09 328 210.91 343.33 232.5 348 263.89 354.8 303.69 378.81 312.31 358.91 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 315.77 359.45 314 349 308.87 358.27 ",
+		pos="e,314,349 187,328 209.09,328 210.91,343.33 232.5,348 263.89,354.8 303.69,378.81 312.31,358.91"];
+	"sobel/getPx":gy -> gysig:producer	[_draw_="c 7 -#000000 B 4 187 281 198.69 281 278.11 292.74 305.07 288.76 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 306.82 291.79 314 284 303.53 285.61 ",
+		pos="e,314,284 187,281 198.69,281 278.11,292.74 305.07,288.76"];
+	gxsig:consumer -> "sobel/Gx":gx	[_draw_="c 7 -#000000 B 7 351 313 407.21 313 352.46 398.48 399 430 415.84 441.41 481.73 451.44 501.42 439.61 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 504.5 441.3 507 431 498.62 437.49 ",
+		pos="e,507,431 351,313 407.21,313 352.46,398.48 399,430 415.84,441.41 481.73,451.44 501.42,439.61"];
+	gysig:consumer -> "sobel/Gy":gy	[_draw_="c 7 -#000000 B 10 351 248 375.26 248 375.48 268.04 399 274 462.76 290.16 499.83 319.84 547 274 554.93 266.29 559.96 251.85 556.61 \
+244.15 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 558.38 241.13 548 239 554.78 247.14 ",
+		pos="e,548,239 351,248 375.26,248 375.48,268.04 399,274 462.76,290.16 499.83,319.84 547,274 554.93,266.29 559.96,251.85 556.61,244.15"];
+	"sobel/Gx":resx -> absxsig:producer	[_draw_="c 7 -#000000 B 10 507 359 507 298.34 415.5 358.19 380 309 370.49 295.83 377.38 178.33 372 163 369.74 156.57 368.92 150.38 366.23 \
+146.4 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 367.53 143.15 357 142 364.52 149.46 ",
+		pos="e,357,142 507,359 507,298.34 415.5,358.19 380,309 370.49,295.83 377.38,178.33 372,163 369.74,156.57 368.92,150.38 366.23,146.4"];
+	absxsig:consumer -> "sobel/Abs":resx	[_draw_="c 7 -#000000 B 10 357 118 402.03 118 358.53 49.47 396 24.5 424.48 5.52 525.45 0.65 550 24.5 557.74 32.02 562.67 46.02 559.59 53.67 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 557.65 50.75 551 59 561.34 56.7 ",
+		pos="e,551,59 357,118 402.03,118 358.53,49.469 396,24.5 424.48,5.5223 525.45,0.65437 550,24.5 557.74,32.015 562.67,46.019 559.59,53.671"];
+	"sobel/Gy":resy -> absysig:producer	[_draw_="c 7 -#000000 B 4 507 203 507 139.7 431.94 200.17 367.28 206.48 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 366.81 203 357 207 367.16 209.99 ",
+		pos="e,357,207 507,203 507,139.7 431.94,200.17 367.28,206.48"];
+	absysig:consumer -> "sobel/Abs":resy	[_draw_="c 7 -#000000 B 7 357 183 447.58 183 496.17 190.36 550 117.5 556.27 109.02 561.64 95.89 559.4 88.52 ",
+		_hdraw_="S 5 -solid c 7 -#000000 C 7 -#000000 P 3 561.28 85.56 551 83 557.44 91.41 ",
+		pos="e,551,83 357,183 447.58,183 496.17,190.36 550,117.5 556.27,109.02 561.64,95.892 559.4,88.517"];
+}
