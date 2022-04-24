@@ -34,9 +34,9 @@ implementation group: 'org.eclipse.xtend', name: 'org.eclipse.xtend.lib', versio
 implementation group: 'org.eclipse.xtend', name: 'org.eclipse.xtend.lib.macro', version: '2.25.0'
 
 // https://mvnrepository.com/artifact/io.github.forsyde/forsyde-io-java-core
-implementation group: 'io.github.forsyde', name: 'forsyde-io-java-core', version: '0.5.5'
+implementation group: 'io.github.forsyde', name: 'forsyde-io-java-core', version: '0.5.+'
 
-implementation 'io.github.forsyde:forsyde-io-java-sdf3:0.5.5'
+implementation 'io.github.forsyde:forsyde-io-java-sdf3:0.5.+'
 }
 
 tasks.named('test') {

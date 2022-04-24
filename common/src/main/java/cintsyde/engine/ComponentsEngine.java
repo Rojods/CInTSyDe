@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class ComponentsEngine {
 
     final public List<ComponentCreator<?>> registeredCreators = new ArrayList<>();
