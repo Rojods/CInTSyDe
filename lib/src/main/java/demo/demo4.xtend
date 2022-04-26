@@ -1,38 +1,30 @@
 package demo
 
-import factory.c.CFactory
-import strategy.c.rtos.freertos.fooInc
-import strategy.c.rtos.freertos.ConfigFreeRTOS
-import strategy.c.rtos.freertos.MainFreeRTOS
-import strategy.c.rtos.freertos.SDFChannelIncFreeRTOS
-import strategy.c.rtos.freertos.SDFChannelSrcFreeRTOS
-import strategy.c.rtos.freertos.SDFCombIncFreeRTOS
-import strategy.c.rtos.freertos.SDFCombSrcFreeRTOS
-import strategy.c.rtos.freertos.StartTaskIncFreeRTOS
-import strategy.c.rtos.freertos.StartTaskSrcFreeRTOS
-import util.Load
-/**
- * freertos
- */
+import forsyde.io.java.core.ForSyDeSystemGraph
+import forsyde.io.java.drivers.ForSyDeXMIDriver
+import utils.Load
+import forsyde.io.java.core.Vertex
+import forsyde.io.java.core.Trait
+import java.util.Set
+import java.util.HashSet
+
 class demo4 {
 	def static void main(String[] args) {
-		println("freertos start!");
-		val forsyde="forsyde-io\\sobel2mpsoc_mapped_no_outside_port.forsyde.xmi";
-		var String root = "generatedCode\\c\\freertos";
-		var model = Load.load(forsyde);
-		println("freertos start!");
-		var  f = new CFactory(root);
-		f.add(new MainFreeRTOS(model));
-		f.add(new fooInc(model));
-		f.add(new SDFChannelIncFreeRTOS(model));
-		f.add(new SDFChannelSrcFreeRTOS(model));
-		f.add(new SDFCombIncFreeRTOS(model));
-		f.add(new SDFCombSrcFreeRTOS(model));
-		f.add(new ConfigFreeRTOS(model));
-		f.add(new StartTaskSrcFreeRTOS(model));
-		f.add(new StartTaskIncFreeRTOS(model));
-		f.create();		
-		println("freertos end!");
-					
+		val forsyde="forsyde-io\\complete-mapped-sobel-model.forsyde.xmi";
+		val root="generateCode\\c\\single"
+		var model = Load.load(forsyde);	
+		var Set<Vertex> s = new HashSet
+		for(Vertex v: model.vertexSet()) {
+//			for(Trait t :v.vertexTraits) {
+//				var a =t.getName();
+//				if(a=="WCET") println(v.getIdentifier())
+//			}
+			if(v.hasTrait("WCET")) {
+				println(v.getIdentifier())
+				s.add(v)
+			}
+			VertexAcessor.getNamedPort(model,wcet,"application",)
+		}
+		
 	}
 }

@@ -1,44 +1,32 @@
 package demo
+import utils.Load
 
-
-import factory.c.CFactory
-
-
-
-import strategy.Strategy
-
-
-import util.Load
-
-import strategy.c.single.*
-import strategy.c.multi.MainSourceStrategy_multi
+import generator.generator
+import template.RTOS.actor.*
+import template.RTOS.channel.*
+import template.RTOS.subsystem.*
 /**
- * 
- * demo for multi platform,c language
+ * RTOS
  */
 class demo3 {
 	def static void main(String[] args) {
-		val forsyde="forsyde-io\\sobel2mpsoc_mapped_no_outside_port.forsyde.xmi";
-		val root="generatedCode\\c\\multi"
-		var model = Load.load(forsyde);		
-		var system="example"
-		var fac = new CFactory(root)
-
-		fac.add(new SDFChannelHeader(model))
-		fac.add(new SDFChannelSource(model))
+		val forsyde="forsyde-io\\complete-mapped-sobel-model.forsyde.xmi";
+		//val forsyde="forsyde-io\\test1.forsyde.xmi"
+		val root="generateCode\\c\\freertos"
+		var model = Load.load(forsyde);	
 		
-		
-		fac.add(new SDFCombHeader(model))
-		fac.add(new SDFCombSource(model))
-		
-		
-		fac.add(new MainSourceStrategy_multi(model))
-		
-
-		
-		fac.create()
-		
+		var gen = new generator(model,root)	
+		gen.add(new actorInc() )
+		gen.add(new actorSrc() )
+		gen.add(new channelSrc() )
+		gen.add(new channelInc() )
+		gen.add(new Config())
+		gen.add(new StartTaskInc())
+		gen.add(new StartTaskSrc())
+		gen.add(new System())
+		gen.create()
 		println("end!")
-		
 	}
+	
+	
 }
