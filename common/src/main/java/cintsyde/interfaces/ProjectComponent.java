@@ -17,5 +17,5 @@ public interface ProjectComponent<BaseT> extends Component<BaseT> {
 
     List<Path> generateFiles(Path rootPath) throws Exception;
 
-    ProjectComponent<BaseT> getInstance();
+    // ProjectComponent<BaseT> getInstance();
 }

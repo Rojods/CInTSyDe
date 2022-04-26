@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public interface ComponentGenerationEngine<BaseT> {
 
-    ComponentGenerationEngine<BaseT> getInstance();
+    // ComponentGenerationEngine<BaseT> getInstance();
 
     List<ProjectComponent<BaseT>> getRegisteredProjectComponents();
 

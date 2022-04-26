@@ -36,8 +36,7 @@ public class SDFToSharedMemMultiCore implements ForSyDeIOProjectComponent {
         return null;
     }
 
-    @Override
-    public ProjectComponent<ForSyDeSystemGraph> getInstance() {
+    static public ProjectComponent<ForSyDeSystemGraph> getInstance() {
         return instance;
     }
 }
