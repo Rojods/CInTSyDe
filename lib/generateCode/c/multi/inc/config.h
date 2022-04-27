@@ -1,0 +1,9 @@
+#ifndef CONFIG_H_
+#define CONFIG_H_
+#define ABSYSIG_NONBLOCKING 0
+#define GXSIG_NONBLOCKING 0
+#define GYSIG_NONBLOCKING 0
+#define ABSXSIG_NONBLOCKING 0
+
+
+#endif

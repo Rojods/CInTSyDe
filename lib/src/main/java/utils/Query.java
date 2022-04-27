@@ -1,23 +1,49 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import forsyde.io.java.core.EdgeInfo;
-import forsyde.io.java.core.EdgeTrait;
 import forsyde.io.java.core.ForSyDeSystemGraph;
-import forsyde.io.java.core.Trait;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
 import forsyde.io.java.core.VertexProperty;
 import forsyde.io.java.core.VertexTrait;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
+import generator.Generator;
+
 import java.lang.Math;
 public class Query {
+	
+	public static String getInlineCode(Vertex v) {
+		
+		var implActor =VertexAcessor.getNamedPort(Generator.model,v,"combFunctions",VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE)
+				  .orElse(null);		
+		if(implActor!=null) {
+			Map<String, VertexProperty> properties = implActor.getProperties();
+			var tmp =properties.get("inlinedCode").unwrap();
+			String inlineCode=(String)tmp;
+			
+			var b=new StringBuilder(inlineCode);
+			var start=0;
+			var index=0;
+					
+			while( (index=b.indexOf(";",start))!=-1 ){
+				start=index+1;
+				b.insert(index+1,"\n");
+			}
+			return b.toString();
+		}else {
+			return "error! combfunction actor not found!";
+		}
+		
 
+
+		
+
+	}
 	
 	public static Integer getFiringSlot(SDFComb comb) {
 		Map<String, VertexProperty> a = comb.getProperties();
@@ -132,13 +158,11 @@ public class Query {
 	
 	
 	public static  long getTokenSizeInBits(Vertex vertex) {
-		if(vertex.hasTrait("moc::sdf::SDFChannel")) {
-			return SDFChannel.enforce(vertex).getTokenSizeInBits();
-		}else {
+
 			Map<String, VertexProperty> a = vertex.getProperties();
 			long b = (Long)a.get("tokenSizeInBits").unwrap();
 			return b;
-		}
+		
 	}
 	
 	
@@ -160,37 +184,29 @@ public class Query {
 		}	
 		
 	}
-//	public static Set<String> allDataEdges(Vertex vertex,ForSyDeSystemGraph model){
-//		Set<String> allDataEdges = model.outgoingEdgesOf(vertex)
-//										.stream()
-//										.filter(edgeinfo->edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
-//										.map(e->e.getTarget())
-//										.collect(Collectors.toSet());	
-//		
-//		allDataEdges.addAll(
-//				model.incomingEdgesOf(vertex)
-//				.stream()
-//				.filter(edgeinfo->edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
-//				.map(e->e.getSource())
-//				.collect(Collectors.toSet())				
-//				);
-//	return allDataEdges;
-//	}
+
 	
 	/**
 	 * @param vertex	vertex must be a has trait SDFComb
 	 */
-	public static  long getWCET(Vertex vertex,ForSyDeSystemGraph model) {
-//		Set<EdgeInfo> edgeinfos=  model.incomingEdgesOf(vertex);
-//		edgeinfos.stream().filter(e->e.hasTrait())
+	public static  int getWCET(Vertex vertex,ForSyDeSystemGraph model) {
+		 Optional<Vertex> a;
+		 Set<Vertex> wcet=new HashSet<>();
+		for(Vertex v: model.vertexSet()) {
+			if(v.hasTrait("WCET")) {
+				wcet.add(v);
+				
+			}
+		}
 		
-
-//		for(Vertex v: model.vertexSet()) {
-//			for(Trait t :v.vertexTraits) {
-//				var a =t.getName();
-//				
-//			}
-//		}
-		return 4000;
+		for(Vertex v:wcet) {
+			a= VertexAcessor.getNamedPort(model, v,"application",VertexTrait.MOC_SDF_SDFCOMB );
+			if(a.isPresent()&&a.get()==vertex) {
+				Map<String, VertexProperty> b = v.getProperties();
+				int c = (int)b.get("time").unwrap();
+				return c;
+			 }
+		}
+		return 1;
 	}
 }

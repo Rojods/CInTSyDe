@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "system_example.h": "c",
-        "spinlock.h": "c"
-    }
-}
