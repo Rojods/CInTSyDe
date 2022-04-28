@@ -17,12 +17,17 @@ import generator.Generator;
 import java.lang.Math;
 public class Query {
 	
-	public static String getInlineCode(Vertex v) {
+	
+	
+	
+	/**
+	 * 
+	 * @param v is a combFunction actor
+	 * @return
+	 */
+	public static String getInlineCode(Vertex impl) {
 		
-		var implActor =VertexAcessor.getNamedPort(Generator.model,v,"combFunctions",VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE)
-				  .orElse(null);		
-		if(implActor!=null) {
-			Map<String, VertexProperty> properties = implActor.getProperties();
+			Map<String, VertexProperty> properties = impl.getProperties();
 			var tmp =properties.get("inlinedCode").unwrap();
 			String inlineCode=(String)tmp;
 			
@@ -35,9 +40,7 @@ public class Query {
 				b.insert(index+1,"\n");
 			}
 			return b.toString();
-		}else {
-			return "error! combfunction actor not found!";
-		}
+
 		
 
 

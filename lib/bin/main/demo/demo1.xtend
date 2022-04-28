@@ -1,23 +1,33 @@
 package demo
 
 import utils.Load
+
 import generator.Generator
-import generator.SDFChannelProcessingModule
-import generator.SDFCombProcessingModule
+import generator.*
 import template.baremetal.SDFCombTemplateSrc
+import forsyde.io.java.drivers.ForSyDeFiodlHandler
+import template.baremetal.*
 
 class demo1 {
 	def static void main(String[] args) {
 		val path="forsyde-io\\complete-mapped-sobel-model.forsyde.xmi";
 		val path2="forsyde-io\\sobel-application.fiodl"
 		val root="generateCode\\c\\single"
-		var model = Load.load(path2);	
-		var Generator gen = new Generator(model,root)
+		//var model1 = Load.load(path)
+		var model2 = (new ForSyDeFiodlHandler()).loadModel(path2)	
+		
+		//model1.mergeInPlace(model2)
+		
+		var Generator gen = new Generator(model2,root)
 		
 		var actorModule= new SDFCombProcessingModule
 		actorModule.add(new SDFCombTemplateSrc)
+		actorModule.add(new SDFCombTemplateInc)
 		gen.add(actorModule)
 		
+		var initModule= new InitProcessingModule
+		initModule.add(new DataTypeTemplateInc)
+		gen.add(initModule)
 		
 		gen.create()
 		

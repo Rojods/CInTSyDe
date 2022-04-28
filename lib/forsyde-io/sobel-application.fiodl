@@ -109,7 +109,7 @@ systemgraph {
             if (offsetY >= dimY - 2) {
                 offsetY = 0;
             }
-            dimsOut[0] = dimX;
+             [0] = dimX;
             dimsOut[1] = dimY;
         ",
         "inputPorts": ["system_img_source_address", "dimX", "dimY", "offsetX", "offsetY"],

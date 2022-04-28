@@ -1,30 +1,36 @@
 package demo
 
+import utils.Load
+import forsyde.io.java.core.Vertex
+import java.util.Set
+import java.util.HashSet
+import java.util.ArrayList
+import java.util.Map
+import java.util.HashMap
+import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
+import forsyde.io.java.drivers.ForSyDeModelHandler
+
 class test {
 	def static void main(String[] args) {
-		var String a = "aaa;bbbbbbb;c"
-		var b=new StringBuilder(a)
-		var start=0
-		var index=0
+		val path="forsyde-io\\complete-mapped-sobel-model.forsyde.xmi";
+		val path2="forsyde-io\\sobel-application.fiodl"
+		val root="generateCode\\c\\single"
+
+		//var model = (new ForSyDeModelHandler()).loadModel(path)
 		
-		while( (index=b.indexOf(";",start))!=-1 ){
-			start=index+1
-			b.insert(index+1,"\n")
-		}
+		var model1 = Load.load(path)
+		var model2 = Load.load(path2);	
 		
-//		
-//		index=b.indexOf(";",start)
-//		start=index+1
-//		println(index)
-//		println(" start "+ start)
-//		b.insert(index+1,"\n")
-//		println(b.toString())
-//		
-//		index=b.indexOf(";",start)
-//		start=index+1
-//		println(index)
-//		println(" start "+ start)
-//		b.insert(index+1,"\n")
-		println(b.toString())
+		model1.mergeInPlace(model2)
+		
+//		for(Vertex v:model1.vertexSet()){
+//			if(v.getIdentifier()=="Abs"){
+//				var b=1
+//			}
+//		}
+
+
+		
+		
 	}
 }

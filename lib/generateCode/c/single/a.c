@@ -16,6 +16,6 @@ void actor_name(actorPort name){
     read from actor port
 
     inline code
-
+    
     write to actor port
 }
