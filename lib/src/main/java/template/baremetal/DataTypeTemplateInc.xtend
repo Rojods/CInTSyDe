@@ -1,6 +1,7 @@
 package template.baremetal
 
 import template.templateInterface.InitTemplate
+
 import generator.Generator
 import java.util.List
 import forsyde.io.java.core.VertexTrait
@@ -13,22 +14,19 @@ import fileAnnotation.FileTypeAnno
 
 @FileTypeAnno(type=FileType.C_INCLUDE)
 class DataTypeTemplateInc implements InitTemplate {
-	List<VertexTrait> primitiveDataTypeList
-
+	// List<VertexTrait> primitiveTraitList
 	new() {
-		primitiveDataTypeList = new ArrayList<VertexTrait>
-		init()
+//		primitiveTraitList = new ArrayList<VertexTrait>
+//		primitiveTraitList.add(VertexTrait.TYPING_DATATYPES_INTEGER)
+//		primitiveTraitList.add(VertexTrait.TYPING_DATATYPES_FLOAT)
+//		primitiveTraitList.add(VertexTrait.TYPING_DATATYPES_DOUBLE)
+//		primitiveTraitList.add(VertexTrait.TYPING_DATATYPES_ARRAY)
 	}
 
-	def init() {
-		primitiveDataTypeList.add(VertexTrait.TYPING_DATATYPES_INTEGER)
-		primitiveDataTypeList.add(VertexTrait.TYPING_DATATYPES_FLOAT)
-		primitiveDataTypeList.add(VertexTrait.TYPING_DATATYPES_DOUBLE)
-		primitiveDataTypeList.add(VertexTrait.TYPING_DATATYPES_ARRAY)
-	}
 	override getFileName() {
 		return "datatype_definition"
 	}
+
 	override create() {
 		var model = Generator.model
 
@@ -36,13 +34,32 @@ class DataTypeTemplateInc implements InitTemplate {
 			#ifndef DATATYPE_DEFINITION_
 			#define DATATYPE_DEFINITION_
 			#include <stdio.h>
-			//double
+			/*
+			==============================================================
+					TYPING_DATATYPES_DOUBLE
+			==============================================================
+			*/
 			«doubleTypeDef()»
-			//float
+			
+			/*
+			==============================================================
+					TYPING_DATATYPES_FLOAT
+			==============================================================
+			*/
 			«floatTypeDef()»
-			//int
+			
+			/*
+			==============================================================
+					TYPING_DATATYPES_INTEGER
+			==============================================================
+			*/
 			«intTypeDef()»
-			//array
+			
+			/*
+			==============================================================
+					TYPING_DATATYPES_ARRAY
+			==============================================================
+			*/
 			«arrayTypeDef()»
 			
 			#endif
@@ -92,20 +109,22 @@ class DataTypeTemplateInc implements InitTemplate {
 		'''
 			«var arrayVertexSet=Generator.model.vertexSet.stream().filter([v|v.hasTrait(VertexTrait.TYPING_DATATYPES_ARRAY)]).collect(Collectors.toSet())»
 			«FOR arrayVertex : arrayVertexSet SEPARATOR "" AFTER ""»
-				«var maximumElems=(arrayVertex.getProperties().get("maximumElems").unwrap() as Integer)»
-				«IF maximumElems>0»
-					typedef «getInnerType(arrayVertex)» «arrayVertex.getIdentifier()»[«maximumElems»];
-				«ENDIF»
-				«IF maximumElems<0»
-					typedef «getInnerType(arrayVertex)» *«arrayVertex.getIdentifier()»;
-				«ENDIF»					
+				«IF arrayVertex.getProperties().get("maximumElems")!==null»
+					«var maximumElems=(arrayVertex.getProperties().get("maximumElems").unwrap() as Integer)»
+					«IF maximumElems>0»
+						typedef «getInnerType(arrayVertex)» «arrayVertex.getIdentifier()»[«maximumElems»];
+					«ENDIF»
+					«IF maximumElems<0»
+						typedef «getInnerType(arrayVertex)» *«arrayVertex.getIdentifier()»;
+					«ENDIF»	
+				«ENDIF»				
 			«ENDFOR»			
 		'''
 	}
 
 	private def String getInnerType(Vertex arrayType) {
 
-		//var maximumElems = (arrayType.getProperties().get("maximumElems").unwrap() as Integer)
+		// var maximumElems = (arrayType.getProperties().get("maximumElems").unwrap() as Integer)
 		var innertypeVertex = VertexAcessor.getNamedPort(Generator.model, arrayType, "innerType",
 			VertexTrait.TYPING_DATATYPES_DATATYPE).orElse(null)
 		if (innertypeVertex == null) {
@@ -116,10 +135,7 @@ class DataTypeTemplateInc implements InitTemplate {
 
 	}
 
-	def add(VertexTrait trait) {
-		primitiveDataTypeList.add(trait)
-	}
-	
-
-	
+//	def addPrimitiveTraitType(VertexTrait trait) {
+//		primitiveTraitList.add(trait)
+//	}
 }

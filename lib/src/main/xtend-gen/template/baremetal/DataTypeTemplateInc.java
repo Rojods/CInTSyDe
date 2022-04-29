@@ -6,10 +6,9 @@ import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
+import forsyde.io.java.core.VertexProperty;
 import forsyde.io.java.core.VertexTrait;
 import generator.Generator;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -19,23 +18,7 @@ import template.templateInterface.InitTemplate;
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class DataTypeTemplateInc implements InitTemplate {
-  private List<VertexTrait> primitiveDataTypeList;
-  
   public DataTypeTemplateInc() {
-    ArrayList<VertexTrait> _arrayList = new ArrayList<VertexTrait>();
-    this.primitiveDataTypeList = _arrayList;
-    this.init();
-  }
-  
-  public boolean init() {
-    boolean _xblockexpression = false;
-    {
-      this.primitiveDataTypeList.add(VertexTrait.TYPING_DATATYPES_INTEGER);
-      this.primitiveDataTypeList.add(VertexTrait.TYPING_DATATYPES_FLOAT);
-      this.primitiveDataTypeList.add(VertexTrait.TYPING_DATATYPES_DOUBLE);
-      _xblockexpression = this.primitiveDataTypeList.add(VertexTrait.TYPING_DATATYPES_ARRAY);
-    }
-    return _xblockexpression;
   }
   
   public String getFileName() {
@@ -53,22 +36,61 @@ public class DataTypeTemplateInc implements InitTemplate {
       _builder.newLine();
       _builder.append("#include <stdio.h>");
       _builder.newLine();
-      _builder.append("//double");
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("==============================================================");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("TYPING_DATATYPES_DOUBLE");
+      _builder.newLine();
+      _builder.append("==============================================================");
+      _builder.newLine();
+      _builder.append("*/");
       _builder.newLine();
       String _doubleTypeDef = this.doubleTypeDef();
       _builder.append(_doubleTypeDef);
       _builder.newLineIfNotEmpty();
-      _builder.append("//float");
+      _builder.newLine();
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("==============================================================");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("TYPING_DATATYPES_FLOAT");
+      _builder.newLine();
+      _builder.append("==============================================================");
+      _builder.newLine();
+      _builder.append("*/");
       _builder.newLine();
       String _floatTypeDef = this.floatTypeDef();
       _builder.append(_floatTypeDef);
       _builder.newLineIfNotEmpty();
-      _builder.append("//int");
+      _builder.newLine();
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("==============================================================");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("TYPING_DATATYPES_INTEGER");
+      _builder.newLine();
+      _builder.append("==============================================================");
+      _builder.newLine();
+      _builder.append("*/");
       _builder.newLine();
       String _intTypeDef = this.intTypeDef();
       _builder.append(_intTypeDef);
       _builder.newLineIfNotEmpty();
-      _builder.append("//array");
+      _builder.newLine();
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("==============================================================");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("TYPING_DATATYPES_ARRAY");
+      _builder.newLine();
+      _builder.append("==============================================================");
+      _builder.newLine();
+      _builder.append("*/");
       _builder.newLine();
       String _arrayTypeDef = this.arrayTypeDef();
       _builder.append(_arrayTypeDef);
@@ -227,33 +249,39 @@ public class DataTypeTemplateInc implements InitTemplate {
         } else {
           _builder.appendImmediate("", "");
         }
-        Object _unwrap = arrayVertex.getProperties().get("maximumElems").unwrap();
-        Integer maximumElems = ((Integer) _unwrap);
-        _builder.newLineIfNotEmpty();
         {
-          if (((maximumElems).intValue() > 0)) {
-            _builder.append("typedef ");
-            String _innerType = this.getInnerType(arrayVertex);
-            _builder.append(_innerType);
-            _builder.append(" ");
-            String _identifier = arrayVertex.getIdentifier();
-            _builder.append(_identifier);
-            _builder.append("[");
-            _builder.append(maximumElems);
-            _builder.append("];");
+          VertexProperty _get = arrayVertex.getProperties().get("maximumElems");
+          boolean _tripleNotEquals = (_get != null);
+          if (_tripleNotEquals) {
+            Object _unwrap = arrayVertex.getProperties().get("maximumElems").unwrap();
+            Integer maximumElems = ((Integer) _unwrap);
             _builder.newLineIfNotEmpty();
-          }
-        }
-        {
-          if (((maximumElems).intValue() < 0)) {
-            _builder.append("typedef ");
-            String _innerType_1 = this.getInnerType(arrayVertex);
-            _builder.append(_innerType_1);
-            _builder.append(" *");
-            String _identifier_1 = arrayVertex.getIdentifier();
-            _builder.append(_identifier_1);
-            _builder.append(";");
-            _builder.newLineIfNotEmpty();
+            {
+              if (((maximumElems).intValue() > 0)) {
+                _builder.append("typedef ");
+                String _innerType = this.getInnerType(arrayVertex);
+                _builder.append(_innerType);
+                _builder.append(" ");
+                String _identifier = arrayVertex.getIdentifier();
+                _builder.append(_identifier);
+                _builder.append("[");
+                _builder.append(maximumElems);
+                _builder.append("];");
+                _builder.newLineIfNotEmpty();
+              }
+            }
+            {
+              if (((maximumElems).intValue() < 0)) {
+                _builder.append("typedef ");
+                String _innerType_1 = this.getInnerType(arrayVertex);
+                _builder.append(_innerType_1);
+                _builder.append(" *");
+                String _identifier_1 = arrayVertex.getIdentifier();
+                _builder.append(_identifier_1);
+                _builder.append(";");
+                _builder.newLineIfNotEmpty();
+              }
+            }
           }
         }
       }
@@ -273,9 +301,5 @@ public class DataTypeTemplateInc implements InitTemplate {
     } else {
       return innertypeVertex.getIdentifier();
     }
-  }
-  
-  public boolean add(final VertexTrait trait) {
-    return this.primitiveDataTypeList.add(trait);
   }
 }

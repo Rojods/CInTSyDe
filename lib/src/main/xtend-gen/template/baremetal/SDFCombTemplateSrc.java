@@ -1,16 +1,20 @@
 package template.baremetal;
 
+import com.google.common.base.Objects;
 import fileAnnotation.FileType;
 import fileAnnotation.FileTypeAnno;
+import forsyde.io.java.core.EdgeInfo;
+import forsyde.io.java.core.EdgeTrait;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
 import forsyde.io.java.core.VertexProperty;
 import forsyde.io.java.core.VertexTrait;
 import generator.Generator;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.ActorTemplate;
 import utils.Name;
@@ -103,20 +107,28 @@ public class SDFCombTemplateSrc implements ActorTemplate {
     String ret = "";
     for (final Vertex impl : this.implActorSet) {
       {
-        Object _unwrap = impl.getProperties().get("portToTypeName").unwrap();
-        final HashMap<String, String> portToTypeNameHashMap = ((HashMap<String, String>) _unwrap);
-        Object _unwrap_1 = impl.getProperties().get("inputPorts").unwrap();
-        final ArrayList<String> inputPortList = ((ArrayList<String>) _unwrap_1);
-        Object _unwrap_2 = impl.getProperties().get("outputPorts").unwrap();
-        final ArrayList<String> outputPortList = ((ArrayList<String>) _unwrap_2);
-        HashSet<String> inputPortAndoutputPortSet = new HashSet<String>();
-        inputPortAndoutputPortSet.addAll(inputPortList);
-        inputPortAndoutputPortSet.addAll(outputPortList);
+        Set<String> _ports = impl.getPorts();
+        HashSet<String> implPortSet = new HashSet<String>(_ports);
+        implPortSet.remove("portTypes");
+        HashMap<String, String> portToTypeNameHashMap = new HashMap<String, String>();
+        final Predicate<EdgeInfo> _function = new Predicate<EdgeInfo>() {
+          public boolean test(final EdgeInfo edgeInfo) {
+            return edgeInfo.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION);
+          }
+        };
+        Set<EdgeInfo> dataDefinitionEdgeInfoSet = Generator.model.outgoingEdgesOf(impl).stream().filter(_function).collect(Collectors.<EdgeInfo>toSet());
+        for (final EdgeInfo e : dataDefinitionEdgeInfoSet) {
+          String _source = e.getSource();
+          boolean _notEquals = (!Objects.equal(_source, "portTypes"));
+          if (_notEquals) {
+            portToTypeNameHashMap.put(e.getSourcePort().orElse(""), e.getTarget());
+          }
+        }
         String _ret = ret;
         StringConcatenation _builder = new StringConcatenation();
         {
           boolean _hasElements = false;
-          for(final String port : inputPortAndoutputPortSet) {
+          for(final String port : implPortSet) {
             if (!_hasElements) {
               _hasElements = true;
             } else {
@@ -147,6 +159,10 @@ public class SDFCombTemplateSrc implements ActorTemplate {
     return ret;
   }
   
+  public boolean isExtern(final String string) {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
+  }
+  
   public String read(final Vertex vertex) {
     String _xblockexpression = null;
     {
@@ -171,9 +187,9 @@ public class SDFCombTemplateSrc implements ActorTemplate {
                 Integer _get = inputPortsHashMap.get(port);
                 boolean _equals = ((_get).intValue() == 1);
                 if (_equals) {
-                  _builder.append("read_nonblocking(");
+                  _builder.append("read_non_blocking(&channel,&");
                   _builder.append(port);
-                  _builder.append("_channel);");
+                  _builder.append(");");
                   _builder.newLineIfNotEmpty();
                 } else {
                   _builder.append("for(int i=0;i<");
@@ -182,9 +198,9 @@ public class SDFCombTemplateSrc implements ActorTemplate {
                   _builder.append(";++i){");
                   _builder.newLineIfNotEmpty();
                   _builder.append("\t");
-                  _builder.append("read_nonblocking(");
+                  _builder.append("read_non_blocking(&channel,");
                   _builder.append(port, "\t");
-                  _builder.append("_channel);");
+                  _builder.append("+i);");
                   _builder.newLineIfNotEmpty();
                   _builder.append("}");
                   _builder.newLine();

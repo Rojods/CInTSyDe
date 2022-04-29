@@ -3,19 +3,43 @@ typedef double DoubleType;
 typedef DoubleType Array6OfDoubleType[6];
 typedef  DoubleType*  ArrayXOfDoubleType;
 typedef ArrayXOfDoubleType* ArrayXOfArrayXDoubleType;
-int main(){
-    Array6OfDoubleType a;
-    ArrayXOfDoubleType b=a;
-    ArrayXOfArrayXDoubleType c = &b;
 
+void foo(double b, DoubleType* ptr){
+    printf("--->%p\n",ptr);
+    *ptr=b;
+
+}
+
+int main(){
+
+
+    Array6OfDoubleType a;
+    // for(int i=0;i<6;++i){
+    //     a[i] = i;   
+    // }
+
+    // for(int i=0;i<6;++i){
+    //     printf("%f\n",*(a+i));  
+    // }
+    for(int i=0;i<6;++i){
+        DoubleType* p=a;
+        //      (((innerType*)memory)+i)
+        foo(i,  (a+i) );
+    }
+    printf("=========\n");
+    for(int i=0;i<6;++i){
+        // DoubleType* p=a;
+        // printf("%f\n",p[i]);
+        
+        printf("%f\n",a[i]);
+    }
     return 0;
 }
-void actor_name(actorPort name){
-    initilize the inline code memory
 
-    read from actor port
 
-    inline code
-    
-    write to actor port
-}
+typedef struct {
+    int* buf;
+    int size;
+    int front;
+    int rear;
+}channel_int;

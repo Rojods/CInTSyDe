@@ -1,13 +1,18 @@
 package template.rtos;
 
+import com.google.common.base.Objects;
 import fileAnnotation.FileType;
 import fileAnnotation.FileTypeAnno;
+import forsyde.io.java.core.EdgeInfo;
+import forsyde.io.java.core.EdgeTrait;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexProperty;
-import java.util.ArrayList;
+import generator.Generator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.ActorTemplate;
 import utils.Name;
@@ -94,10 +99,6 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append("/* Initilize Memory           */");
       _builder.newLine();
       _builder.append("\t");
-      String _initMemory = this.initMemory();
-      _builder.append(_initMemory, "\t");
-      _builder.newLineIfNotEmpty();
-      _builder.append("\t");
       _builder.append("while(1){");
       _builder.newLine();
       _builder.append("\t\t");
@@ -153,20 +154,28 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
     String ret = "";
     for (final Vertex impl : this.implActorSet) {
       {
-        Object _unwrap = impl.getProperties().get("portToTypeName").unwrap();
-        final HashMap<String, String> portToTypeNameHashMap = ((HashMap<String, String>) _unwrap);
-        Object _unwrap_1 = impl.getProperties().get("inputPorts").unwrap();
-        final ArrayList<String> inputPortList = ((ArrayList<String>) _unwrap_1);
-        Object _unwrap_2 = impl.getProperties().get("outputPorts").unwrap();
-        final ArrayList<String> outputPortList = ((ArrayList<String>) _unwrap_2);
-        HashSet<String> inputPortAndoutputPortSet = new HashSet<String>();
-        inputPortAndoutputPortSet.addAll(inputPortList);
-        inputPortAndoutputPortSet.addAll(outputPortList);
+        Set<String> _ports = impl.getPorts();
+        HashSet<String> implPortSet = new HashSet<String>(_ports);
+        implPortSet.remove("portTypes");
+        HashMap<String, String> portToTypeNameHashMap = new HashMap<String, String>();
+        final Predicate<EdgeInfo> _function = new Predicate<EdgeInfo>() {
+          public boolean test(final EdgeInfo edgeInfo) {
+            return edgeInfo.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION);
+          }
+        };
+        Set<EdgeInfo> dataDefinitionEdgeInfoSet = Generator.model.outgoingEdgesOf(impl).stream().filter(_function).collect(Collectors.<EdgeInfo>toSet());
+        for (final EdgeInfo e : dataDefinitionEdgeInfoSet) {
+          String _source = e.getSource();
+          boolean _notEquals = (!Objects.equal(_source, "portTypes"));
+          if (_notEquals) {
+            portToTypeNameHashMap.put(e.getSourcePort().orElse(""), e.getTarget());
+          }
+        }
         String _ret = ret;
         StringConcatenation _builder = new StringConcatenation();
         {
           boolean _hasElements = false;
-          for(final String port : inputPortAndoutputPortSet) {
+          for(final String port : implPortSet) {
             if (!_hasElements) {
               _hasElements = true;
             } else {

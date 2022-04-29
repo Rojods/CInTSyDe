@@ -17,7 +17,9 @@ import generator.Generator;
 import java.lang.Math;
 public class Query {
 	
-	
+	public static void help1(Vertex vertex) {
+		
+	}
 	
 	
 	/**
@@ -40,12 +42,6 @@ public class Query {
 				b.insert(index+1,"\n");
 			}
 			return b.toString();
-
-		
-
-
-		
-
 	}
 	
 	public static Integer getFiringSlot(SDFComb comb) {

@@ -19,7 +19,7 @@ inline void actor_getPx(){
 	
 	/* Read From Input Port  */
 	for(int i=0;i<6;++i){
-		read_nonblocking(gray_channel);
+		read_non_blocking(&channel,gray+i);
 	}
 	/* Inline Code           */
 	//in combFunction getPxImpl1
@@ -38,6 +38,12 @@ inline void actor_getPx(){
 	imgBlockY[5]=gray[5];
 
 	/* Write To Output Ports */
+	for(int i=0;i<6;++i){
+		write(gx_channel);
+	}
+	for(int i=0;i<6;++i){
+		write(gy_channel);
+	}
 	for(int i=0;i<6;++i){
 		write(copyY_channel);
 	}

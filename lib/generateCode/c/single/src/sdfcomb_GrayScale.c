@@ -14,16 +14,16 @@
 inline void actor_GrayScale(){
 	/* Initilize Memory      */
 	UInt16  offsetX;
-	  dimsOut;
-	UInt16  offsetY;
+	Array2OfUInt16  dimsOut;
 	Array6OfDoubleType  gray;
+	UInt16  offsetY;
 	ArrayXOfArrayXOfDoubleType  system_img_source_address;
 	UInt16  dimY;
 	UInt16  dimX;
 	
 	/* Read From Input Port  */
-	read_nonblocking(offsetXIn_channel);
-	read_nonblocking(offsetYIn_channel);
+	read_non_blocking(&channel,&offsetXIn);
+	read_non_blocking(&channel,&offsetYIn);
 	/* Inline Code           */
 	//in combFunction GrayScaleImpl
 	gray[0]=0.3125*system_img_source_address[offsetY+0][offsetX+0]+0.5625*system_img_source_address[offsetY+0][offsetX+1]+0.125*system_img_source_address[offsetY+0][offsetX+2];
@@ -35,7 +35,7 @@ inline void actor_GrayScale(){
 	if(offsetX>=dimX-2){offsetY+=1;
 	offsetX=0;
 	}if(offsetY>=dimY-2){offsetY=0;
-	}[0]=dimX;
+	}dimsOut[0]=dimX;
 	dimsOut[1]=dimY;
 
 	/* Write To Output Ports */

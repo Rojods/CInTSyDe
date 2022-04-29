@@ -13,6 +13,10 @@ import java.util.Set
 import template.templateInterface.ActorTemplate
 import utils.Name
 import utils.Query
+import forsyde.io.java.core.EdgeInfo
+import java.util.stream.Collectors
+import forsyde.io.java.core.EdgeTrait
+
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFCombTemplateSrcRTOS implements ActorTemplate {
 	Set<Vertex> implActorSet
@@ -49,7 +53,7 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 		*/
 		void task_«name»(void* pdata){
 			/* Initilize Memory           */
-			«initMemory()»
+«««			«initMemory()»
 			while(1){
 				/* Read From Channel      */
 				«read(vertex)»
@@ -73,17 +77,22 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 		var Set<String> variableNameRecord = new HashSet
 		var String ret = ""
 		for (Vertex impl : implActorSet) {
+			var implPortSet=new HashSet<String>(impl.getPorts())  
+			implPortSet.remove("portTypes")
 
-			val portToTypeNameHashMap = (impl.getProperties().get("portToTypeName").unwrap() as HashMap<String, String>)
-			val inputPortList = (impl.getProperties().get("inputPorts").unwrap() as ArrayList<String>)
-			val outputPortList = (impl.getProperties().get("outputPorts").unwrap() as ArrayList<String>)
-
-			var inputPortAndoutputPortSet = new HashSet
-			inputPortAndoutputPortSet.addAll(inputPortList)
-			inputPortAndoutputPortSet.addAll(outputPortList)
-
+			var HashMap<String,String> portToTypeNameHashMap= new HashMap
+			var dataDefinitionEdgeInfoSet = Generator.model.outgoingEdgesOf(impl)
+											.stream()
+											.filter([edgeInfo|edgeInfo.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION)])
+											.collect(Collectors.toSet())
+			for(EdgeInfo e:dataDefinitionEdgeInfoSet){
+				if(e.getSource()!="portTypes"){
+					portToTypeNameHashMap.put(e.getSourcePort().orElse(""),e.getTarget())
+				}				
+			}									
+								
 			ret += '''
-				«FOR port : inputPortAndoutputPortSet SEPARATOR "" AFTER ""»
+				«FOR port : implPortSet SEPARATOR "" AFTER ""»
 					«IF !variableNameRecord.contains(port)»
 						«portToTypeNameHashMap.get(port)»  «port»;
 						«var tmp=variableNameRecord.add(port)»

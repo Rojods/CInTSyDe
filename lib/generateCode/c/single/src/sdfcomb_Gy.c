@@ -13,10 +13,13 @@
 */			
 inline void actor_Gy(){
 	/* Initilize Memory      */
-	  gy;
-	  imgBlockY;
+	DoubleType  gy;
+	Array6OfDoubleType  imgBlockY;
 	
 	/* Read From Input Port  */
+	for(int i=0;i<6;++i){
+		read_non_blocking(&channel,gy+i);
+	}
 	/* Inline Code           */
 	//in combFunction GyImpl
 	gy=gy+imgBlockY[0];
@@ -27,4 +30,5 @@ inline void actor_Gy(){
 	gy=gy-imgBlockY[5];
 
 	/* Write To Output Ports */
+	write(resy_channel);
 }
