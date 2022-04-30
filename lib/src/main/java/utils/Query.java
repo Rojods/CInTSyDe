@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import forsyde.io.java.core.EdgeTrait;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
@@ -17,11 +20,26 @@ import generator.Generator;
 import java.lang.Math;
 public class Query {
 	
-	public static void help1(Vertex vertex) {
-		
+	public static Set<String> findInputSDFChannelName(Vertex actor){
+		var inputSDFChannelNameSet = Generator.model.incomingEdgesOf(actor).stream().filter(
+				 edgeinfo ->
+					edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE) 
+				
+			).map(e->e.getSource()).collect(Collectors.toSet());
+				
+				
+		return inputSDFChannelNameSet;
 	}
-	
-	
+	public static Set<String> findOutputSDFChannelName(Vertex actor){
+		var outputSDFChannelNameSet = Generator.model.outgoingEdgesOf(actor).stream().filter(
+				 edgeinfo ->
+					edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE) 
+				
+			).map(e->e.getSource()).collect(Collectors.toSet());
+				
+				
+		return outputSDFChannelNameSet;
+	}	
 	/**
 	 * 
 	 * @param v is a combFunction actor

@@ -1,12 +1,25 @@
 package demo
 
-import utils.Load
+import forsyde.io.java.drivers.ForSyDeFiodlHandler
 
 import generator.Generator
-import generator.*
+import generator.InitProcessingModule
+import generator.SDFChannelProcessingModule
+
+import template.baremetal.CircularFIFOTemplateInc
+import template.baremetal.CircularFIFOTemplateSrc
+import template.baremetal.DataTypeTemplateInc
+import template.baremetal.SDFChannelTemplateSrc
+import template.baremetal.SDFCombTemplateInc
 import template.baremetal.SDFCombTemplateSrc
-import forsyde.io.java.drivers.ForSyDeFiodlHandler
-import template.baremetal.*
+import template.baremetal.SpinLockTemplateInc
+import template.baremetal.SpinLockTemplateSrc
+import template.baremetal.uniprocessor.SubsystemTemplateInc
+import template.baremetal.uniprocessor.SubsystemTemplateInc2
+import template.baremetal.uniprocessor.SubsystemTemplateSrc
+import utils.Load
+import generator.SDFCombProcessingModule
+import generator.SubsystemUniprocessorModule
 
 class demo1 {
 	def static void main(String[] args) {
@@ -20,10 +33,28 @@ class demo1 {
 		
 		var Generator gen = new Generator(model2,root)
 		
+		
+		var sdfchannelModule = new SDFChannelProcessingModule
+		sdfchannelModule.add(new SDFChannelTemplateSrc)
+		gen.add(sdfchannelModule)
+		
+		
+		
 		var actorModule= new SDFCombProcessingModule
 		actorModule.add(new SDFCombTemplateSrc)
 		actorModule.add(new SDFCombTemplateInc)
 		gen.add(actorModule)
+		
+		
+		var subsystem = new SubsystemUniprocessorModule
+		subsystem.add(new SubsystemTemplateSrc)
+		subsystem.add(new SubsystemTemplateInc2)
+		subsystem.add(new SubsystemTemplateInc)
+		gen.add(subsystem)
+		
+		
+		
+		
 		
 		var initModule= new InitProcessingModule
 		initModule.add(new DataTypeTemplateInc)
@@ -31,6 +62,10 @@ class demo1 {
 		initModule.add(new CircularFIFOTemplateSrc)
 		initModule.add(new SpinLockTemplateInc)
 		initModule.add(new SpinLockTemplateSrc)
+		
+		
+		
+		
 		
 		gen.add(initModule)
 		

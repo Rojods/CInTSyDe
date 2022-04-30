@@ -307,4 +307,29 @@ public class SDFCombTemplateSrc implements ActorTemplate {
     }
     return _builder.toString();
   }
+  
+  private String getExternSDFChannel(final Vertex actor) {
+    String _xblockexpression = null;
+    {
+      Set<String> SDFChannelNameSet = Query.findInputSDFChannelName(actor);
+      SDFChannelNameSet.addAll(Query.findOutputSDFChannelName(actor));
+      StringConcatenation _builder = new StringConcatenation();
+      {
+        boolean _hasElements = false;
+        for(final String sdfchannelName : SDFChannelNameSet) {
+          if (!_hasElements) {
+            _hasElements = true;
+          } else {
+            _builder.appendImmediate("", "");
+          }
+          _builder.newLine();
+        }
+        if (_hasElements) {
+          _builder.append("");
+        }
+      }
+      _xblockexpression = _builder.toString();
+    }
+    return _xblockexpression;
+  }
 }

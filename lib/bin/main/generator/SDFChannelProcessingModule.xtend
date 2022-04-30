@@ -5,6 +5,10 @@ import template.templateInterface.ChannelTemplate
 import java.util.HashSet
 import forsyde.io.java.core.Vertex
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
+import fileAnnotation.FileType
+import fileAnnotation.FileTypeAnno
+import utils.Save
+import utils.Name
 
 class SDFChannelProcessingModule implements ModuleInterface{
 	Set<ChannelTemplate> templates
@@ -18,7 +22,15 @@ class SDFChannelProcessingModule implements ModuleInterface{
 	
 	def void process(Vertex v){
 		templates.stream().forEach( [t| 
-			t.create(v)
+			 var anno = t.getClass(). getAnnotation(FileTypeAnno)
+			 
+			 if(anno.type()==FileType.C_INCLUDE){
+			 	Save.save(Generator.root+"/inc/sdfchannel_"+Name.name(v)+".h",t.create(v));
+			 }
+			 
+			 if(anno.type()==FileType.C_SOURCE){
+			 	Save.save(Generator.root+"/src/sdfchannel_"+Name.name(v)+".c",t.create(v))
+			 }
 		] )
 	}
 	

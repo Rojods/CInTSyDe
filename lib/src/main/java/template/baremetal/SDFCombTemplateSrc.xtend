@@ -214,5 +214,16 @@ class SDFCombTemplateSrc implements ActorTemplate {
 		'''
 
 	}
+	
+	private def String getExternSDFChannel(Vertex actor){
+	
+	 	var SDFChannelNameSet=Query.findInputSDFChannelName(actor)
+	 	SDFChannelNameSet.addAll(Query.findOutputSDFChannelName(actor))   		
+		'''
+		«FOR sdfchannelName:SDFChannelNameSet SEPARATOR""AFTER""»
+		
+		«ENDFOR»
+		'''
+	}
 
 }

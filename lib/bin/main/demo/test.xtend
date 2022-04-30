@@ -9,6 +9,7 @@ import java.util.Map
 import java.util.HashMap
 import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
 import forsyde.io.java.drivers.ForSyDeModelHandler
+import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 
 class test {
 	def static void main(String[] args) {
@@ -22,14 +23,17 @@ class test {
 		var model2 = Load.load(path2);	
 		
 		model1.mergeInPlace(model2)
+		model1.vertexSet().stream().filter([v|SDFComb::conforms(v)])
+									.forEach([v|println(v)])
+									
+									
+		var a = model1.vertexSet().stream().filter([v|SDFChannel::conforms(v)])
+			.filter([v|v.getIdentifier()=="GrayScaleY"])
+			.findAny().get()
 		
-//		for(Vertex v:model1.vertexSet()){
-//			if(v.getIdentifier()=="Abs"){
-//				var b=1
-//			}
-//		}
-
-
+//		var b = a.getProperties().get("__initialTokenValues_ordering__").unwrap()
+//
+//		var c = 1
 		
 		
 	}
