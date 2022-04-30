@@ -32,6 +32,7 @@ class InitProcessingModule implements ModuleInterface {
 			 var anno = t.getClass(). getAnnotation(FileTypeAnno)
 			 
 			 if(anno.type()==FileType.C_INCLUDE){
+			 	println("save ")
 			 	Save.save(Generator.root+"/inc/"+t.getFileName()+".h",t.create())
 			 }
 			 

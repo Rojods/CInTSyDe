@@ -87,13 +87,14 @@ public class Query {
 	public static int getBufferSize(Vertex ch){
 		
 		 Map<String, VertexProperty> a = ch.getProperties();
-		 if(ch.hasTrait("moc::sdf::SDFChannel")) {
+		 if(a.get("maximumTokens")!=null) {
 			 Integer ret = (Integer)a.get("maximumTokens").unwrap();
 			 return ret;
 		 }else {
-			 long b = (Long)a.get("tokenSizeInBits").unwrap();
-			 long c = (Long)a.get("maxSizeInBits").unwrap();
-			 return (int) (c/b);
+//			 long b = (Long)a.get("tokenSizeInBits").unwrap();
+//			 long c = (Long)a.get("maxSizeInBits").unwrap();
+//			 return (int) (c/b);
+			 return 1;
 		 }
 		
 	}		
@@ -106,8 +107,25 @@ public class Query {
 	}
 	public static long getTokenSize(Vertex ch) {
 		Map<String, VertexProperty> a = ch.getProperties();
-		long b = (Long)a.get("tokenSizeInBits").unwrap();
-		return (long)Math.ceil( ((float)b)/8  ); 
+		if(a.get("tokenSizeInBits")!=null) {
+//			System.out.println(ch.getIdentifier());
+			var tmp = a.get("tokenSizeInBits").unwrap();
+			if(tmp instanceof Integer) {
+				int b = (Integer)a.get("tokenSizeInBits").unwrap();
+				return (long)Math.ceil( ((float)b)/8  ); 
+			}
+			if(tmp instanceof Long) {
+				long b = (Long)a.get("tokenSizeInBits").unwrap();
+				return (long)Math.ceil( ((float)b)/8  ); 
+			}			
+			
+			return -1;
+			
+
+		}else {
+			return 1;
+		}
+
 		
 	}	
 	
@@ -224,6 +242,6 @@ public class Query {
 				return c;
 			 }
 		}
-		return 1;
+		return -1;
 	}
 }

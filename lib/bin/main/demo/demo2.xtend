@@ -66,6 +66,6 @@ class demo2 {
 		
 		gen.create()
 		
-		println("end!")		
+		println("end!")	
 	}
 }

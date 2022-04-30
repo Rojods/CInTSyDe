@@ -21,23 +21,26 @@ import forsyde.io.java.core.EdgeTrait
 class SDFCombTemplateSrcRTOS implements ActorTemplate {
 	Set<Vertex> implActorSet
 	
-	override create(Vertex vertex) {
-		var name=Name.name(vertex)
+	override create(Vertex actor) {
+		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model,actor, "combFunctions",
+			VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING)
+		var name=actor.getIdentifier()
 		'''
+		#include "../inc/config.h"
 		/*
 		==============================================
 			Define Task Stack
 		==============================================
 		*/
-		StackType_t task_«name»_stk[TASK_STACKSIZE];
+		StackType_t task_«name»_stk[«name.toUpperCase()»_STACKSIZE];
 		StaticTask_t tcb_«name»;
-		/*
-
 		
+		/*
 		==============================================
 			Declare Extern Message Queue Handler
 		==============================================
 		*/
+		
 		/*
 		==============================================
 			Define Soft Timer and Soft Timer Semaphore
@@ -45,7 +48,8 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 		*/
 		
 		SemaphoreHandle_t timer_sem_«name»;
-		TimerHandle_t task_timer_«name»;
+		TimerHandle_t timer_«name»;
+		//void timer_«name»_callback(TimerHandle_t xTimer);
 		/*
 		==============================================
 			Define Task Function
@@ -56,17 +60,26 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 «««			«initMemory()»
 			while(1){
 				/* Read From Channel      */
-				«read(vertex)»
+				«read(actor)»
 				/* Inline Code            */
 				«getInlineCode()»
 				/* Write To Channel       */
-				«write(vertex)»
+				«write(actor)»
 				/* Pend Timer's Semaphore */	
 				xSemaphoreTake(task_sem_«name», portMAX_DELAY);	
 				
 			}
 			
 			
+		}
+		
+		/*
+		=============================================
+		Soft Timer Callback Function
+		=============================================
+		*/
+		void timer_«name»_callback(TimerHandle_t xTimer){
+			xSemaphoreGive(task_sem_«name»);
 		}
 		'''
 	}

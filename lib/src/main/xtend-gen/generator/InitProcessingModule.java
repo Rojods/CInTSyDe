@@ -6,6 +6,7 @@ import fileAnnotation.FileTypeAnno;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import template.templateInterface.InitTemplate;
 import utils.Save;
 
@@ -32,6 +33,7 @@ public class InitProcessingModule implements ModuleInterface {
     FileType _type = anno.type();
     boolean _equals = Objects.equal(_type, FileType.C_INCLUDE);
     if (_equals) {
+      InputOutput.<String>println("save ");
       String _fileName = t.getFileName();
       String _plus = ((Generator.root + "/inc/") + _fileName);
       String _plus_1 = (_plus + ".h");

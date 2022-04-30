@@ -6,7 +6,9 @@ import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.EdgeInfo;
 import forsyde.io.java.core.EdgeTrait;
 import forsyde.io.java.core.Vertex;
+import forsyde.io.java.core.VertexAcessor;
 import forsyde.io.java.core.VertexProperty;
+import forsyde.io.java.core.VertexTrait;
 import generator.Generator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +17,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.ActorTemplate;
-import utils.Name;
 import utils.Query;
 
 @FileTypeAnno(type = FileType.C_SOURCE)
@@ -23,11 +24,15 @@ import utils.Query;
 public class SDFCombTemplateSrcRTOS implements ActorTemplate {
   private Set<Vertex> implActorSet;
   
-  public String create(final Vertex vertex) {
+  public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
-      String name = Name.name(vertex);
+      this.implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions", 
+        VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexAcessor.VertexPortDirection.OUTGOING);
+      String name = actor.getIdentifier();
       StringConcatenation _builder = new StringConcatenation();
+      _builder.append("#include \"../inc/config.h\"");
+      _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
       _builder.append("==============================================");
@@ -41,15 +46,17 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.newLine();
       _builder.append("StackType_t task_");
       _builder.append(name);
-      _builder.append("_stk[TASK_STACKSIZE];");
+      _builder.append("_stk[");
+      String _upperCase = name.toUpperCase();
+      _builder.append(_upperCase);
+      _builder.append("_STACKSIZE];");
       _builder.newLineIfNotEmpty();
       _builder.append("StaticTask_t tcb_");
       _builder.append(name);
       _builder.append(";");
       _builder.newLineIfNotEmpty();
+      _builder.newLine();
       _builder.append("/*");
-      _builder.newLine();
-      _builder.newLine();
       _builder.newLine();
       _builder.append("==============================================");
       _builder.newLine();
@@ -59,6 +66,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append("==============================================");
       _builder.newLine();
       _builder.append("*/");
+      _builder.newLine();
       _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
@@ -76,9 +84,13 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append(name);
       _builder.append(";");
       _builder.newLineIfNotEmpty();
-      _builder.append("TimerHandle_t task_timer_");
+      _builder.append("TimerHandle_t timer_");
       _builder.append(name);
       _builder.append(";");
+      _builder.newLineIfNotEmpty();
+      _builder.append("//void timer_");
+      _builder.append(name);
+      _builder.append("_callback(TimerHandle_t xTimer);");
       _builder.newLineIfNotEmpty();
       _builder.append("/*");
       _builder.newLine();
@@ -105,7 +117,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append("/* Read From Channel      */");
       _builder.newLine();
       _builder.append("\t\t");
-      String _read = this.read(vertex);
+      String _read = this.read(actor);
       _builder.append(_read, "\t\t");
       _builder.newLineIfNotEmpty();
       _builder.append("\t\t");
@@ -119,7 +131,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append("/* Write To Channel       */");
       _builder.newLine();
       _builder.append("\t\t");
-      String _write = this.write(vertex);
+      String _write = this.write(actor);
       _builder.append(_write, "\t\t");
       _builder.newLineIfNotEmpty();
       _builder.append("\t\t");
@@ -139,6 +151,28 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.newLine();
       _builder.append("\t");
       _builder.newLine();
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("=============================================");
+      _builder.newLine();
+      _builder.append("Soft Timer Callback Function");
+      _builder.newLine();
+      _builder.append("=============================================");
+      _builder.newLine();
+      _builder.append("*/");
+      _builder.newLine();
+      _builder.append("void timer_");
+      _builder.append(name);
+      _builder.append("_callback(TimerHandle_t xTimer){");
+      _builder.newLineIfNotEmpty();
+      _builder.append("\t");
+      _builder.append("xSemaphoreGive(task_sem_");
+      _builder.append(name, "\t");
+      _builder.append(");");
+      _builder.newLineIfNotEmpty();
       _builder.append("}");
       _builder.newLine();
       _xblockexpression = _builder.toString();
