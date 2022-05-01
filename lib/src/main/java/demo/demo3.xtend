@@ -5,7 +5,9 @@ import utils.Load
 import forsyde.io.java.drivers.ForSyDeFiodlHandler
 import generator.*
 import template.rtos.*
-
+/**
+ * rtos
+ */
 class demo3 {
 	def static void main(String[] args) {
 		val path="forsyde-io\\complete-mapped-sobel-model.forsyde.xmi";

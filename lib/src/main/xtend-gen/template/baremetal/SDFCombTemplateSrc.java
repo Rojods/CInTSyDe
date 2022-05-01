@@ -1,10 +1,8 @@
 package template.baremetal;
 
-import com.google.common.base.Objects;
 import fileAnnotation.FileType;
 import fileAnnotation.FileTypeAnno;
-import forsyde.io.java.core.EdgeInfo;
-import forsyde.io.java.core.EdgeTrait;
+import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
 import forsyde.io.java.core.VertexProperty;
@@ -14,10 +12,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.ActorTemplate;
-import utils.Name;
 import utils.Query;
 
 @FileTypeAnno(type = FileType.C_SOURCE)
@@ -25,17 +21,23 @@ import utils.Query;
 public class SDFCombTemplateSrc implements ActorTemplate {
   private Set<Vertex> implActorSet;
   
-  public String create(final Vertex vertex) {
+  private Set<Vertex> inputSDFChannelSet;
+  
+  private Set<Vertex> outputSDFChannelSet;
+  
+  public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
-      this.implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, vertex, "combFunctions", 
+      this.implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions", 
         VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexAcessor.VertexPortDirection.OUTGOING);
+      this.inputSDFChannelSet = Query.findInputSDFChannels(actor);
+      this.outputSDFChannelSet = Query.findOutputSDFChannels(actor);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("/* Includes-------------------------- */");
       _builder.newLine();
       _builder.append("#include \"../inc/datatype_definition.h\"");
       _builder.newLine();
-      String name = Name.name(vertex);
+      String name = actor.getIdentifier();
       _builder.newLineIfNotEmpty();
       _builder.append("/*");
       _builder.newLine();
@@ -68,7 +70,7 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append("/* Initilize Memory      */");
       _builder.newLine();
       _builder.append("\t");
-      String _initMemory = this.initMemory();
+      String _initMemory = this.initMemory(actor);
       _builder.append(_initMemory, "\t");
       _builder.newLineIfNotEmpty();
       _builder.append("\t");
@@ -77,7 +79,7 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append("/* Read From Input Port  */");
       _builder.newLine();
       _builder.append("\t");
-      String _read = this.read(vertex);
+      String _read = this.read(actor);
       _builder.append(_read, "\t");
       _builder.newLineIfNotEmpty();
       _builder.append("\t");
@@ -92,7 +94,7 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append("/* Write To Output Ports */");
       _builder.newLine();
       _builder.append("\t");
-      String _write = this.write(vertex);
+      String _write = this.write(actor);
       _builder.append(_write, "\t");
       _builder.newLineIfNotEmpty();
       _builder.append("}");
@@ -102,58 +104,57 @@ public class SDFCombTemplateSrc implements ActorTemplate {
     return _xblockexpression;
   }
   
-  public String initMemory() {
+  public String initMemory(final Vertex actor) {
+    ForSyDeSystemGraph model = Generator.model;
+    Set<String> impls = Query.findCombFuntionVertex(model, actor);
     Set<String> variableNameRecord = new HashSet<String>();
     String ret = "";
-    for (final Vertex impl : this.implActorSet) {
+    for (final String impl : impls) {
       {
-        Set<String> _ports = impl.getPorts();
-        HashSet<String> implPortSet = new HashSet<String>(_ports);
-        implPortSet.remove("portTypes");
-        HashMap<String, String> portToTypeNameHashMap = new HashMap<String, String>();
-        final Predicate<EdgeInfo> _function = new Predicate<EdgeInfo>() {
-          public boolean test(final EdgeInfo edgeInfo) {
-            return edgeInfo.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION);
+        final Predicate<Vertex> _function = new Predicate<Vertex>() {
+          public boolean test(final Vertex v) {
+            return v.getIdentifier().equals(impl);
           }
         };
-        Set<EdgeInfo> dataDefinitionEdgeInfoSet = Generator.model.outgoingEdgesOf(impl).stream().filter(_function).collect(Collectors.<EdgeInfo>toSet());
-        for (final EdgeInfo e : dataDefinitionEdgeInfoSet) {
-          String _source = e.getSource();
-          boolean _notEquals = (!Objects.equal(_source, "portTypes"));
-          if (_notEquals) {
-            portToTypeNameHashMap.put(e.getSourcePort().orElse(""), e.getTarget());
-          }
-        }
-        String _ret = ret;
-        StringConcatenation _builder = new StringConcatenation();
-        {
-          boolean _hasElements = false;
-          for(final String port : implPortSet) {
-            if (!_hasElements) {
-              _hasElements = true;
-            } else {
-              _builder.appendImmediate("", "");
-            }
-            {
-              boolean _contains = variableNameRecord.contains(port);
-              boolean _not = (!_contains);
-              if (_not) {
-                String _get = portToTypeNameHashMap.get(port);
-                _builder.append(_get);
-                _builder.append("  ");
-                _builder.append(port);
-                _builder.append(";");
-                _builder.newLineIfNotEmpty();
-                boolean tmp = variableNameRecord.add(port);
-                _builder.newLineIfNotEmpty();
-              }
+        Vertex actorimpl = model.vertexSet().stream().filter(_function).findAny().orElse(null);
+        Set<String> inputPortSet = Query.findImplInputPortSet(actorimpl);
+        for (final String inport : inputPortSet) {
+          {
+            String datatype = Query.findImplPortDataType(model, actorimpl, inport);
+            boolean _contains = variableNameRecord.contains(inport);
+            boolean _not = (!_contains);
+            if (_not) {
+              String _ret = ret;
+              StringConcatenation _builder = new StringConcatenation();
+              _builder.append(datatype);
+              _builder.append(" ");
+              _builder.append(inport);
+              _builder.append("; ");
+              _builder.newLineIfNotEmpty();
+              ret = (_ret + _builder);
+              variableNameRecord.add(inport);
             }
           }
-          if (_hasElements) {
-            _builder.append("");
+        }
+        Set<String> outputPortSet = Query.findImplOutputPortSet(actorimpl);
+        for (final String outport : outputPortSet) {
+          {
+            String datatype = Query.findImplPortDataType(model, actorimpl, outport);
+            boolean _contains = variableNameRecord.contains(outport);
+            boolean _not = (!_contains);
+            if (_not) {
+              String _ret = ret;
+              StringConcatenation _builder = new StringConcatenation();
+              _builder.append(datatype);
+              _builder.append(" ");
+              _builder.append(outport);
+              _builder.append("; ");
+              _builder.newLineIfNotEmpty();
+              ret = (_ret + _builder);
+              variableNameRecord.add(outport);
+            }
           }
         }
-        ret = (_ret + _builder);
       }
     }
     return ret;
@@ -311,17 +312,18 @@ public class SDFCombTemplateSrc implements ActorTemplate {
   private String getExternSDFChannel(final Vertex actor) {
     String _xblockexpression = null;
     {
-      Set<String> SDFChannelNameSet = Query.findInputSDFChannelName(actor);
-      SDFChannelNameSet.addAll(Query.findOutputSDFChannelName(actor));
+      Set<Vertex> SDFChannelSet = Query.findInputSDFChannels(actor);
+      SDFChannelSet.addAll(Query.findOutputSDFChannels(actor));
       StringConcatenation _builder = new StringConcatenation();
       {
         boolean _hasElements = false;
-        for(final String sdfchannelName : SDFChannelNameSet) {
+        for(final Vertex sdfchannel : SDFChannelSet) {
           if (!_hasElements) {
             _hasElements = true;
           } else {
             _builder.appendImmediate("", "");
           }
+          _builder.append("\t");
           _builder.newLine();
         }
         if (_hasElements) {

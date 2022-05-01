@@ -1,4 +1,3 @@
-
 #ifndef  GX_H_
 #define GX_H_
 #include "datatype_definition.h"

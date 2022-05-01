@@ -13,14 +13,14 @@
 */			
 inline void actor_Abs(){
 	/* Initilize Memory      */
-	Array2OfUInt16  dims;
-	UInt16  offsetXIn;
-	UInt16  offsetYIn;
-	ArrayXOfArrayXOfDoubleType  system_img_sink_address;
-	DoubleType  resy;
-	DoubleType  resx;
-	UInt16  offsetYOut;
-	UInt16  offsetXOut;
+	Array2OfUInt16 dims; 
+	UInt16 offsetXIn; 
+	UInt16 offsetYIn; 
+	ArrayXOfArrayXOfDoubleType system_img_sink_address; 
+	DoubleType resy; 
+	DoubleType resx; 
+	UInt16 offsetYOut; 
+	UInt16 offsetXOut; 
 	
 	/* Read From Input Port  */
 	read_non_blocking(&channel,&offsetXIn);

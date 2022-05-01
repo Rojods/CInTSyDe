@@ -24,12 +24,18 @@ import utils.Query;
 public class SDFCombTemplateSrcRTOS implements ActorTemplate {
   private Set<Vertex> implActorSet;
   
+  private Set<Vertex> inputSDFChannelSet;
+  
+  private Set<Vertex> outputSDFChannelSet;
+  
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
       this.implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions", 
         VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexAcessor.VertexPortDirection.OUTGOING);
       String name = actor.getIdentifier();
+      this.inputSDFChannelSet = Query.findInputSDFChannels(actor);
+      this.outputSDFChannelSet = Query.findOutputSDFChannels(actor);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("#include \"../inc/config.h\"");
       _builder.newLine();
@@ -67,7 +73,52 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
+      _builder.append("/* Input Message Queue */");
       _builder.newLine();
+      {
+        boolean _hasElements = false;
+        for(final Vertex sdfchannel : this.inputSDFChannelSet) {
+          if (!_hasElements) {
+            _hasElements = true;
+          } else {
+            _builder.appendImmediate("", "");
+          }
+          _builder.append("extern QueueHandle_t msg_queue_");
+          String _identifier = sdfchannel.getIdentifier();
+          _builder.append(_identifier);
+          _builder.append(";");
+          _builder.newLineIfNotEmpty();
+        }
+        if (_hasElements) {
+          _builder.append("");
+        }
+      }
+      _builder.append("/* Output Message Quueue */");
+      _builder.newLine();
+      {
+        boolean _hasElements_1 = false;
+        for(final Vertex sdfchannel_1 : this.outputSDFChannelSet) {
+          if (!_hasElements_1) {
+            _hasElements_1 = true;
+          } else {
+            _builder.appendImmediate("", "");
+          }
+          {
+            boolean _contains = this.inputSDFChannelSet.contains(sdfchannel_1);
+            boolean _not = (!_contains);
+            if (_not) {
+              _builder.append("extern QueueHandle_t msg_queue_");
+              String _identifier_1 = sdfchannel_1.getIdentifier();
+              _builder.append(_identifier_1);
+              _builder.append(";");
+              _builder.newLineIfNotEmpty();
+            }
+          }
+        }
+        if (_hasElements_1) {
+          _builder.append("");
+        }
+      }
       _builder.append("/*");
       _builder.newLine();
       _builder.append("==============================================");
@@ -88,7 +139,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append(name);
       _builder.append(";");
       _builder.newLineIfNotEmpty();
-      _builder.append("//void timer_");
+      _builder.append("static void timer_");
       _builder.append(name);
       _builder.append("_callback(TimerHandle_t xTimer);");
       _builder.newLineIfNotEmpty();
@@ -111,10 +162,14 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append("/* Initilize Memory           */");
       _builder.newLine();
       _builder.append("\t");
+      String _initMemory = this.initMemory();
+      _builder.append(_initMemory, "\t");
+      _builder.newLineIfNotEmpty();
+      _builder.append("\t");
       _builder.append("while(1){");
       _builder.newLine();
       _builder.append("\t\t");
-      _builder.append("/* Read From Channel      */");
+      _builder.append("/* Read From»hannel      */");
       _builder.newLine();
       _builder.append("\t\t");
       String _read = this.read(actor);
@@ -142,7 +197,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append(name, "\t\t");
       _builder.append(", portMAX_DELAY);\t");
       _builder.newLineIfNotEmpty();
-      _builder.append("\t\t");
+      _builder.append("\t");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("}");

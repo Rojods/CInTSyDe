@@ -22,14 +22,18 @@ import forsyde.io.java.core.EdgeTrait
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFCombTemplateSrc implements ActorTemplate {
 	Set<Vertex> implActorSet
+	Set<Vertex> inputSDFChannelSet
+	Set<Vertex> outputSDFChannelSet
 
-	override create(Vertex vertex) {
-		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, vertex, "combFunctions",
+	override create(Vertex actor) {
+		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions",
 			VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING)
+		this.inputSDFChannelSet = Query.findInputSDFChannels(actor)
+		this.outputSDFChannelSet = Query.findOutputSDFChannels(actor)
 		'''
 			/* Includes-------------------------- */
 			#include "../inc/datatype_definition.h"
-			«var name = Name.name(vertex)»
+			«var name = actor.getIdentifier()»
 			/*
 			========================================
 				Declare Extern Channal Variables
@@ -43,47 +47,47 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			*/			
 			inline void actor_«name»(){
 				/* Initilize Memory      */
-				«initMemory()»
+				«initMemory(actor)»
 				
 				/* Read From Input Port  */
-				«read(vertex)»
+				«read(actor)»
 				/* Inline Code           */
 				«getInlineCode()»
 			
 				/* Write To Output Ports */
-				«write(vertex)»
+				«write(actor)»
 			}
 		'''
 	}
 
-	def String initMemory() {
+	def String initMemory(Vertex actor) {
+		var model = Generator.model
+		var impls = Query.findCombFuntionVertex(model, actor)
 		var Set<String> variableNameRecord = new HashSet
 		var String ret = ""
-		for (Vertex impl : implActorSet) {
-			var implPortSet = new HashSet<String>(impl.getPorts())
-			implPortSet.remove("portTypes")
 
-			var HashMap<String, String> portToTypeNameHashMap = new HashMap
-			var dataDefinitionEdgeInfoSet = Generator.model.outgoingEdgesOf(impl).stream().filter([ edgeInfo |
-				edgeInfo.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION)
-			]).collect(Collectors.toSet())
-			for (EdgeInfo e : dataDefinitionEdgeInfoSet) {
-				if (e.getSource() != "portTypes") {
-					portToTypeNameHashMap.put(e.getSourcePort().orElse(""), e.getTarget())
+		for (String impl : impls) {
+			var actorimpl = model.vertexSet().stream().filter([v|v.getIdentifier().equals(impl)]).findAny().orElse(null)
+			var inputPortSet = Query.findImplInputPortSet(actorimpl)
+			for (String inport : inputPortSet) {
+				var datatype = Query.findImplPortDataType(model, actorimpl, inport)
+				if (!variableNameRecord.contains(inport)) {
+					ret += '''
+						«datatype» «inport»; 
+					'''
+					variableNameRecord.add(inport)
 				}
 			}
-
-			ret += '''
-				«FOR port : implPortSet SEPARATOR "" AFTER ""»
-					«IF !variableNameRecord.contains(port)»
-				«««						«IF isExtern(port)»
-						«portToTypeNameHashMap.get(port)»  «port»;
-				«««						«ELSE»
-«««						«ENDIF»
-						«var tmp=variableNameRecord.add(port)»
-					«ENDIF»
-				«ENDFOR»
-			'''
+			var outputPortSet = Query.findImplOutputPortSet(actorimpl)
+			for (String outport : outputPortSet) {
+				var datatype = Query.findImplPortDataType(model, actorimpl, outport)
+				if (!variableNameRecord.contains(outport)) {
+					ret += '''
+						«datatype» «outport»; 
+					'''
+					variableNameRecord.add(outport)
+				}
+			}
 		}
 		return ret
 	}
@@ -93,76 +97,6 @@ class SDFCombTemplateSrc implements ActorTemplate {
 	}
 
 	def String read(Vertex vertex) {
-		
-//		var String ret = ""
-////		var inputFunctionPortsAndChannelNameHashMap = new HashMap<String,String>
-////		var inputFunctionPortsAndConsumptionHashMap = new HashMap<String,Integer>
-//		var record = new HashSet<String>
-//		for (Vertex impl : implActorSet) {
-//			var inputPortsProperty = (impl.getProperties().get("inputPorts").unwrap() as ArrayList<String>)
-//			for (String implPort : inputPortsProperty) {
-//
-//				if (!record.contains(implPort)) {
-//					record.add(implPort)
-//					println(impl.getIdentifier() + " --->  " + implPort)
-//					Generator.model.incomingEdgesOf(impl).stream().forEach([e|println(e)])
-//					var edgeinfo = Generator.model.incomingEdgesOf(impl).stream().filter([ e |
-//						
-//						e.getTargetPort().isPresent() && e.getTargetPort().get() == implPort
-//					]).findAny().orElse(null)
-//						
-//					if (edgeinfo !== null) {
-//						val actorPortName = edgeinfo.getSourcePort().orElse("")
-//						var consumptionProperty = vertex.getProperties().get("consumption")
-//						var int consumption = 0
-//						if (consumptionProperty !== null) {
-//							var consumptionPropertyHashMap = (consumptionProperty.unwrap() as HashMap<String, Integer>)
-//							if (consumptionPropertyHashMap.keySet().contains(actorPortName)) {
-//								consumption = consumptionPropertyHashMap.get(actorPortName)
-//							} else {
-//								consumption = 1
-//							}
-//
-//						}
-//					println("in vertex =======================" + vertex.getIdentifier())
-//					println("impl port "+implPort)
-//					Generator.model.incomingEdgesOf(vertex).stream().filter([ e |
-//							e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE) || e.hasTrait(EdgeTrait.IMPL_DATAMOVEMENT)
-//						]).filter([e|e.getTargetPort().isPresent() && e.getTargetPort().get() == actorPortName]).forEach(e|println(e))
-//						var channelEdgeInfo = Generator.model.incomingEdgesOf(vertex).stream().filter([ e |
-//							e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE) || e.hasTrait(EdgeTrait.IMPL_DATAMOVEMENT)
-//						]).filter([e|e.getTargetPort().isPresent() && e.getTargetPort().get() == actorPortName]).
-//							findAny()
-//						if (channelEdgeInfo.isPresent()) {
-//							var channelName = channelEdgeInfo.get().getSource()
-//							ret += '''
-//								«IF consumption==1»
-//									read_non_blocking(&«channelName»,&«implPort»);
-//								«ELSE»
-//									for(int i=0;i<«consumption»;++i){
-//										read_non_blocking(&«channelName»,«implPort»+i);
-//									}
-//								«ENDIF»					
-//							'''
-//						} else {
-//							ret+=
-//							'''
-//							«implPort» Not conenced to Channel 
-//							'''
-//						}
-//
-//					} else {
-//						var channelName = "Not found Channel!"
-//						ret += '''
-//							read_non_blocking (Not found Channel!, «implPort»)
-//						'''
-//					}
-//				}
-//
-//			}
-//
-//		}
-//		return ret
 		var consumption = vertex.getProperties().get("consumption")
 		if (consumption !== null) {
 			var inputPortsHashMap = (consumption.unwrap() as HashMap<String, Integer>)
@@ -214,15 +148,15 @@ class SDFCombTemplateSrc implements ActorTemplate {
 		'''
 
 	}
-	
-	private def String getExternSDFChannel(Vertex actor){
-	
-	 	var SDFChannelNameSet=Query.findInputSDFChannelName(actor)
-	 	SDFChannelNameSet.addAll(Query.findOutputSDFChannelName(actor))   		
+
+	private def String getExternSDFChannel(Vertex actor) {
+
+		var SDFChannelSet = Query.findInputSDFChannels(actor)
+		SDFChannelSet.addAll(Query.findOutputSDFChannels(actor))
 		'''
-		«FOR sdfchannelName:SDFChannelNameSet SEPARATOR""AFTER""»
-		
-		«ENDFOR»
+			«FOR sdfchannel : SDFChannelSet SEPARATOR "" AFTER ""»
+				
+			«ENDFOR»
 		'''
 	}
 

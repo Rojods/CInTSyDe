@@ -4,9 +4,11 @@ import fileAnnotation.FileType;
 import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexProperty;
+import generator.Generator;
 import java.util.Map;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.ChannelTemplate;
+import utils.Query;
 
 /**
  * without distinguish if the sdfchannel is a state variable
@@ -17,6 +19,7 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
   public String create(final Vertex sdfchannel) {
     String _xblockexpression = null;
     {
+      String type = Query.findSDFChannelDataType(Generator.model, sdfchannel);
       Map<String, VertexProperty> properties = sdfchannel.getProperties();
       StringConcatenation _builder = new StringConcatenation();
       String sdfname = sdfchannel.getIdentifier();
@@ -29,7 +32,8 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
           Object _unwrap = properties.get("maximumTokens").unwrap();
           Integer maximumTokens = ((Integer) _unwrap);
           _builder.newLineIfNotEmpty();
-          _builder.append("type buffer_");
+          _builder.append(type);
+          _builder.append(" buffer_");
           _builder.append(sdfname);
           _builder.append("[");
           _builder.append(((maximumTokens).intValue() + 1));
@@ -50,7 +54,8 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
           _builder.append("={.flag=0};");
           _builder.newLineIfNotEmpty();
         } else {
-          _builder.append("type buffer_");
+          _builder.append(type);
+          _builder.append(" buffer_");
           _builder.append(sdfname);
           _builder.append("[2];");
           _builder.newLineIfNotEmpty();

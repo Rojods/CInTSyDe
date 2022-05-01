@@ -12,7 +12,10 @@ StaticTask_t tcb_Gx;
 	Declare Extern Message Queue Handler
 ==============================================
 */
-
+/* Input Message Queue */
+extern QueueHandle_t msg_queue_gxsig;
+/* Output Message Quueue */
+extern QueueHandle_t msg_queue_absxsig;
 /*
 ==============================================
 	Define Soft Timer and Soft Timer Semaphore
@@ -21,7 +24,7 @@ StaticTask_t tcb_Gx;
 
 SemaphoreHandle_t timer_sem_Gx;
 TimerHandle_t timer_Gx;
-//void timer_Gx_callback(TimerHandle_t xTimer);
+static void timer_Gx_callback(TimerHandle_t xTimer);
 /*
 ==============================================
 	Define Task Function
@@ -29,8 +32,10 @@ TimerHandle_t timer_Gx;
 */
 void task_Gx(void* pdata){
 	/* Initilize Memory           */
+	DoubleType  gx;
+	Array6OfDoubleType  imgBlockX;
 	while(1){
-		/* Read From Channel      */
+		/* Read From»hannel      */
 		for(int i=0;i<6;++i){
 			read_nonblocking(gx_channel);
 		}
@@ -46,7 +51,7 @@ void task_Gx(void* pdata){
 		write(resx_channel);
 		/* Pend Timer's Semaphore */	
 		xSemaphoreTake(task_sem_Gx, portMAX_DELAY);	
-		
+	
 	}
 	
 	

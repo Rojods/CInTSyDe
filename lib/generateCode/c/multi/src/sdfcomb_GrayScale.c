@@ -13,13 +13,13 @@
 */			
 inline void actor_GrayScale(){
 	/* Initilize Memory      */
-	UInt16  offsetX;
-	Array2OfUInt16  dimsOut;
-	Array6OfDoubleType  gray;
-	UInt16  offsetY;
-	ArrayXOfArrayXOfDoubleType  system_img_source_address;
-	UInt16  dimY;
-	UInt16  dimX;
+	UInt16 offsetX; 
+	UInt16 offsetY; 
+	ArrayXOfArrayXOfDoubleType system_img_source_address; 
+	UInt16 dimY; 
+	UInt16 dimX; 
+	Array2OfUInt16 dimsOut; 
+	Array6OfDoubleType gray; 
 	
 	/* Read From Input Port  */
 	read_non_blocking(&channel,&offsetXIn);

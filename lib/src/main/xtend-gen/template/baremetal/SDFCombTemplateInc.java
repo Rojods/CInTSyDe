@@ -9,20 +9,18 @@ import generator.Generator;
 import java.util.Set;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.ActorTemplate;
-import utils.Name;
 
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class SDFCombTemplateInc implements ActorTemplate {
   private Set<Vertex> implActorSet;
   
-  public String create(final Vertex vertex) {
+  public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
-      this.implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, vertex, "combFunctions", VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexAcessor.VertexPortDirection.OUTGOING);
+      this.implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions", VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexAcessor.VertexPortDirection.OUTGOING);
       StringConcatenation _builder = new StringConcatenation();
-      _builder.newLine();
-      String name = Name.name(vertex);
+      String name = actor.getIdentifier();
       _builder.newLineIfNotEmpty();
       String _upperCase = name.toUpperCase();
       String tmp = (_upperCase + "_H_");

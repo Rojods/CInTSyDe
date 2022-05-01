@@ -13,8 +13,8 @@
 */			
 inline void actor_Gx(){
 	/* Initilize Memory      */
-	DoubleType  gx;
-	Array6OfDoubleType  imgBlockX;
+	Array6OfDoubleType imgBlockX; 
+	DoubleType gx; 
 	
 	/* Read From Input Port  */
 	for(int i=0;i<6;++i){

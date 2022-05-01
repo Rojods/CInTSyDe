@@ -438,7 +438,11 @@ systemgraph {
     edge [] from AbsImpl port offsetXOut to Abs port offsetXOut
     edge [] from Abs port offsetYIn to AbsImpl port offsetYIn
     edge [] from AbsImpl port offsetYOut to Abs port offsetYOut
-
+    
+    edge [] from Abs port resx to AbsImpl port resx
+     edge [] from Abs port resy to AbsImpl port resy
+    
+    
     vertex GrayScaleToGetPx [moc::sdf::SDFChannel]
     (consumer, producer, initialTokenValues)
     {

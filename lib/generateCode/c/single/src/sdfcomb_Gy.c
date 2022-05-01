@@ -13,8 +13,8 @@
 */			
 inline void actor_Gy(){
 	/* Initilize Memory      */
-	DoubleType  gy;
-	Array6OfDoubleType  imgBlockY;
+	Array6OfDoubleType imgBlockY; 
+	DoubleType gy; 
 	
 	/* Read From Input Port  */
 	for(int i=0;i<6;++i){

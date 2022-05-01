@@ -14,15 +14,14 @@ import fileAnnotation.FileType
 @FileTypeAnno(type=FileType.C_INCLUDE)
 class SDFCombTemplateInc implements ActorTemplate{
 	Set<Vertex> implActorSet
-	override create(Vertex vertex) {
+	override create(Vertex actor) {
 		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model
-			,vertex, "combFunctions"
+			,actor, "combFunctions"
 			,VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE
 			, VertexPortDirection.OUTGOING
 			)
 		'''
-		
-		«var name = Name.name(vertex)»
+		«var name = actor.getIdentifier()»
 		«var tmp=name.toUpperCase()+"_H_"»
 		#ifndef  «tmp»
 		#define «tmp»

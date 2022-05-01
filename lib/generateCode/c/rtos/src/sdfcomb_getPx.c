@@ -12,7 +12,11 @@ StaticTask_t tcb_getPx;
 	Declare Extern Message Queue Handler
 ==============================================
 */
-
+/* Input Message Queue */
+extern QueueHandle_t msg_queue_GrayScaleToGetPx;
+/* Output Message Quueue */
+extern QueueHandle_t msg_queue_gysig;
+extern QueueHandle_t msg_queue_gxsig;
 /*
 ==============================================
 	Define Soft Timer and Soft Timer Semaphore
@@ -21,7 +25,7 @@ StaticTask_t tcb_getPx;
 
 SemaphoreHandle_t timer_sem_getPx;
 TimerHandle_t timer_getPx;
-//void timer_getPx_callback(TimerHandle_t xTimer);
+static void timer_getPx_callback(TimerHandle_t xTimer);
 /*
 ==============================================
 	Define Task Function
@@ -29,8 +33,11 @@ TimerHandle_t timer_getPx;
 */
 void task_getPx(void* pdata){
 	/* Initilize Memory           */
+	Array6OfDoubleType  gray;
+	Array6OfDoubleType  imgBlockX;
+	Array6OfDoubleType  imgBlockY;
 	while(1){
-		/* Read From Channel      */
+		/* Read From»hannel      */
 		for(int i=0;i<6;++i){
 			read_nonblocking(gray_channel);
 		}
@@ -64,7 +71,7 @@ void task_getPx(void* pdata){
 		}
 		/* Pend Timer's Semaphore */	
 		xSemaphoreTake(task_sem_getPx, portMAX_DELAY);	
-		
+	
 	}
 	
 	

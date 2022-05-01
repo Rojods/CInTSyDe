@@ -12,7 +12,13 @@ StaticTask_t tcb_Abs;
 	Declare Extern Message Queue Handler
 ==============================================
 */
-
+/* Input Message Queue */
+extern QueueHandle_t msg_queue_GrayScaleToAbs;
+extern QueueHandle_t msg_queue_AbsY;
+extern QueueHandle_t msg_queue_AbsX;
+extern QueueHandle_t msg_queue_absysig;
+extern QueueHandle_t msg_queue_absxsig;
+/* Output Message Quueue */
 /*
 ==============================================
 	Define Soft Timer and Soft Timer Semaphore
@@ -21,7 +27,7 @@ StaticTask_t tcb_Abs;
 
 SemaphoreHandle_t timer_sem_Abs;
 TimerHandle_t timer_Abs;
-//void timer_Abs_callback(TimerHandle_t xTimer);
+static void timer_Abs_callback(TimerHandle_t xTimer);
 /*
 ==============================================
 	Define Task Function
@@ -29,8 +35,16 @@ TimerHandle_t timer_Abs;
 */
 void task_Abs(void* pdata){
 	/* Initilize Memory           */
+	Array2OfUInt16  dims;
+	UInt16  offsetXIn;
+	UInt16  offsetYIn;
+	ArrayXOfArrayXOfDoubleType  system_img_sink_address;
+	DoubleType  resy;
+	DoubleType  resx;
+	UInt16  offsetYOut;
+	UInt16  offsetXOut;
 	while(1){
-		/* Read From Channel      */
+		/* Read From»hannel      */
 		read_nonblocking(offsetXIn_channel);
 		read_nonblocking(offsetYIn_channel);
 		read_nonblocking(resy_channel);
@@ -51,7 +65,7 @@ void task_Abs(void* pdata){
 		write(offsetXOut_channel);
 		/* Pend Timer's Semaphore */	
 		xSemaphoreTake(task_sem_Abs, portMAX_DELAY);	
-		
+	
 	}
 	
 	

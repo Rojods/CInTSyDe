@@ -13,9 +13,9 @@
 */			
 inline void actor_getPx(){
 	/* Initilize Memory      */
-	Array6OfDoubleType  gray;
-	Array6OfDoubleType  imgBlockX;
-	Array6OfDoubleType  imgBlockY;
+	Array6OfDoubleType gray; 
+	Array6OfDoubleType imgBlockY; 
+	Array6OfDoubleType imgBlockX; 
 	
 	/* Read From Input Port  */
 	for(int i=0;i<6;++i){

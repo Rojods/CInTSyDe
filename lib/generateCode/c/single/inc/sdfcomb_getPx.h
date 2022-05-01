@@ -1,4 +1,3 @@
-
 #ifndef  GETPX_H_
 #define GETPX_H_
 #include "datatype_definition.h"

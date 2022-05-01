@@ -15,6 +15,9 @@ import template.rtos.SDFCombTemplateSrcRTOS;
 import template.rtos.StartTaskTemplateSrcRTOS;
 import utils.Load;
 
+/**
+ * rtos
+ */
 @SuppressWarnings("all")
 public class demo3 {
   public static void main(final String[] args) {
