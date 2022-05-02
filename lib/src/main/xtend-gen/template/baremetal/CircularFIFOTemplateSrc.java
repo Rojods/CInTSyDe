@@ -84,7 +84,7 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
         _builder.newLine();
         _builder.append("void init_channel_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append(" *channel ,");
         _builder.append(type);
@@ -108,7 +108,7 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
         _builder.newLine();
         _builder.append("int read_non_blocking_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append(" *channel, ");
         _builder.append(type);
@@ -154,7 +154,7 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
         _builder.newLine();
         _builder.append("int read_blocking_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append("* channel,");
         _builder.append(type);
@@ -211,7 +211,7 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
         _builder.newLine();
         _builder.append("int write_non_blocking_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append("* channel, ");
         _builder.append(type);
@@ -267,7 +267,7 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
         _builder.newLine();
         _builder.append("int write_blocking_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append("* channel, ");
         _builder.append(type);

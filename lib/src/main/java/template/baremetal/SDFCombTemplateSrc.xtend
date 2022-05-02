@@ -13,11 +13,12 @@ import java.util.HashMap
 import java.util.HashSet
 import java.util.Set
 import template.templateInterface.ActorTemplate
-import utils.Name
+
 import utils.Query
 import java.util.stream.Collectors
 import forsyde.io.java.core.EdgeInfo
 import forsyde.io.java.core.EdgeTrait
+import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFCombTemplateSrc implements ActorTemplate {
@@ -26,10 +27,11 @@ class SDFCombTemplateSrc implements ActorTemplate {
 	Set<Vertex> outputSDFChannelSet
 
 	override create(Vertex actor) {
+		var model = Generator.model
 		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions",
 			VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING)
-		this.inputSDFChannelSet = Query.findInputSDFChannels(actor)
-		this.outputSDFChannelSet = Query.findOutputSDFChannels(actor)
+		this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor)
+		this.outputSDFChannelSet = Query.findOutputSDFChannels(model, actor)
 		'''
 			/* Includes-------------------------- */
 			#include "../inc/datatype_definition.h"
@@ -39,7 +41,7 @@ class SDFCombTemplateSrc implements ActorTemplate {
 				Declare Extern Channal Variables
 			========================================
 			*/
-			
+			«extern()»
 			/*
 			========================================
 				Actor Function
@@ -57,6 +59,25 @@ class SDFCombTemplateSrc implements ActorTemplate {
 				/* Write To Output Ports */
 				«write(actor)»
 			}
+		'''
+	}
+	
+	def String extern() {
+		var Set<Vertex> record=new HashSet
+		'''
+		«FOR sdf: this.inputSDFChannelSet SEPARATOR"" AFTER""»
+		«IF !record.contains(sdf)»
+		extern fifo_«sdf.getIdentifier()»;
+		«var tmp=record.add(sdf)»
+		«ENDIF»
+		«ENDFOR»
+		
+		«FOR sdf: this.outputSDFChannelSet SEPARATOR"" AFTER""»
+		«IF !record.contains(sdf)»
+		extern fifo_«sdf.getIdentifier()»;
+		«var tmp=record.add(sdf)»
+		«ENDIF»
+		«ENDFOR»		
 		'''
 	}
 
@@ -92,50 +113,82 @@ class SDFCombTemplateSrc implements ActorTemplate {
 		return ret
 	}
 
-	def boolean isExtern(String string) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	def String read(Vertex actor) {
+		var model = Generator.model
+		var impls = Query.findCombFuntionVertex(model, actor)
+		var Set<String> variableNameRecord = new HashSet
+		var String ret = ""
+		for (String impl : impls) {
+			var actorimpl = Query.findVertexByName(model, impl)
+			var inputPortSet = Query.findImplInputPortSet(actorimpl)
+			for (String inport : inputPortSet) {
+
+				if (!variableNameRecord.contains(inport)) {
+					var datatype = Query.findImplPortDataType(model, actorimpl, inport)
+					var actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, actorimpl, inport)
+					var sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName)
+					try {
+						var consumption = SDFComb.enforce(actor).getConsumption().get(actorPortName)
+						if (consumption == 1) {
+							ret += '''
+								read_non_blocking(&fifo_«sdfchannelName»,&«inport»);
+							'''
+						} else {
+							ret += '''
+								for(int i=0;i<«consumption»;++i){
+									read_non_blocking(&fifo_«sdfchannelName»,&«inport»[i]);
+								}
+							'''
+						}
+						variableNameRecord.add(inport)
+					} catch (Exception e) {
+						println("In actor " + actor.getIdentifier() + " port " + inport + " no comsumption")
+						return "error "+inport+";"
+					}
+
+				}
+			}
+		}
+		return ret
 	}
 
-	def String read(Vertex vertex) {
-		var consumption = vertex.getProperties().get("consumption")
-		if (consumption !== null) {
-			var inputPortsHashMap = (consumption.unwrap() as HashMap<String, Integer>)
-			'''
-				«FOR port : inputPortsHashMap.keySet() SEPARATOR "" AFTER ""»
-					«IF inputPortsHashMap.get(port)==1»
-						read_non_blocking(&channel,&«port»);
-					«ELSE»
-						for(int i=0;i<«inputPortsHashMap.get(port)»;++i){
-							read_non_blocking(&channel,«port»+i);
-						}
-					«ENDIF»
-				«ENDFOR»
-			'''
-		} else {
-			'''
-			'''
-		}
-	}
+	def String write(Vertex actor) {
+		var model = Generator.model
+		var impls = Query.findCombFuntionVertex(model, actor)
+		var Set<String> variableNameRecord = new HashSet
+		var String ret = ""
+		for (String impl : impls) {
+			var actorimpl = Query.findVertexByName(model, impl)
+			var outputPortSet = Query.findImplOutputPortSet(actorimpl)
+			for (String outport : outputPortSet) {
 
-	def String write(Vertex vertex) {
-		var production = vertex.getProperties().get("production")
-		if (production !== null) {
-			var inputPortsHashMap = (production.unwrap() as HashMap<String, Integer>)
-			'''
-				«FOR port : inputPortsHashMap.keySet() SEPARATOR "" AFTER ""»
-					«IF inputPortsHashMap.get(port)==1»
-						write(«port»_channel);
-					«ELSE»
-						for(int i=0;i<«inputPortsHashMap.get(port)»;++i){
-							write(«port»_channel);
+				if (!variableNameRecord.contains(outport)) {
+					var datatype = Query.findImplPortDataType(model, actorimpl, outport)
+					var actorPortName = Query.findActorPortConnectedToImplOutputPort(model, actor, actorimpl, outport)
+					var sdfchannelName = Query.findOutputSDFChannelConnectedToActorPort(model, actor, actorPortName)
+					try {
+						var production = SDFComb.enforce(actor).getProduction().get(actorPortName)
+						if (production == 1) {
+							ret += '''
+								write_non_blocking(&fifo_«sdfchannelName»,&«outport»);
+							'''
+						} else {
+							ret += '''
+								for(int i=0;i<«production »;++i){
+									write_non_blocking(&fifo_«sdfchannelName»,&«outport»[i]);
+								}
+							'''
 						}
-					«ENDIF»
-				«ENDFOR»
-			'''
-		} else {
-			'''
-			'''
+						variableNameRecord.add(outport)
+					} catch (Exception e) {
+						println("In actor " + actor.getIdentifier() + " port " + outport + " no production")
+						return "error "+outport+";"
+					}
+
+				}
+			}
 		}
+		return ret
 	}
 
 	private def String getInlineCode() {
@@ -151,8 +204,8 @@ class SDFCombTemplateSrc implements ActorTemplate {
 
 	private def String getExternSDFChannel(Vertex actor) {
 
-		var SDFChannelSet = Query.findInputSDFChannels(actor)
-		SDFChannelSet.addAll(Query.findOutputSDFChannels(actor))
+		var SDFChannelSet = Query.findInputSDFChannels(Generator.model, actor)
+		SDFChannelSet.addAll(Query.findOutputSDFChannels(Generator.model, actor))
 		'''
 			«FOR sdfchannel : SDFChannelSet SEPARATOR "" AFTER ""»
 				

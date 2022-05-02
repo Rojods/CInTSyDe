@@ -5,6 +5,11 @@
 	Declare Extern Channal Variables
 ========================================
 */
+extern fifo_GrayScaleToAbs;
+extern fifo_AbsY;
+extern fifo_AbsX;
+extern fifo_absysig;
+extern fifo_absxsig;
 
 /*
 ========================================
@@ -23,13 +28,7 @@ inline void actor_Abs(){
 	UInt16 offsetXOut; 
 	
 	/* Read From Input Port  */
-	read_non_blocking(&channel,&offsetXIn);
-	read_non_blocking(&channel,&offsetYIn);
-	read_non_blocking(&channel,&resy);
-	read_non_blocking(&channel,&resx);
-	for(int i=0;i<2;++i){
-		read_non_blocking(&channel,dimsIn+i);
-	}
+	error system_img_sink_address;
 	/* Inline Code           */
 	//in combFunction AbsImpl
 	if(resx<0.0)resx=-resx;
@@ -40,6 +39,6 @@ inline void actor_Abs(){
 	}system_img_sink_address[offsetX][offsetY]=resx+resy;
 
 	/* Write To Output Ports */
-	write(offsetYOut_channel);
-	write(offsetXOut_channel);
+	write_non_blocking(&fifo_AbsY,&offsetYOut);
+	write_non_blocking(&fifo_AbsX,&offsetXOut);
 }

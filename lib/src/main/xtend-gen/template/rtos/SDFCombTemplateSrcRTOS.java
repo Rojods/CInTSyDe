@@ -34,8 +34,8 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       this.implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions", 
         VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexAcessor.VertexPortDirection.OUTGOING);
       String name = actor.getIdentifier();
-      this.inputSDFChannelSet = Query.findInputSDFChannels(actor);
-      this.outputSDFChannelSet = Query.findOutputSDFChannels(actor);
+      this.inputSDFChannelSet = Query.findInputSDFChannels(Generator.model, actor);
+      this.outputSDFChannelSet = Query.findOutputSDFChannels(Generator.model, actor);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("#include \"../inc/config.h\"");
       _builder.newLine();

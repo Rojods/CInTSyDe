@@ -102,7 +102,9 @@ public class Query {
 			String implPort) {
 		var actorPort = model.edgeSet().stream().filter(e -> e.getSource().equals(actor.getIdentifier()))
 				.filter(e -> e.getTarget().equals(impl.getIdentifier())).filter(e -> e.getTargetPort().isPresent())
-				.filter(e -> e.getTargetPort().get().equals(implPort)).findAny().get().getSourcePort().get();
+				.filter(e -> e.getTargetPort().get().equals(implPort))
+				.findAny()
+				.get().getSourcePort().get();
 		return actorPort;
 	}
 
@@ -192,14 +194,14 @@ public class Query {
 	 * @param actor
 	 * @return
 	 */
-	public static Set<Vertex> findInputSDFChannels(Vertex actor) {
-		var inputSDFChannelNameSet = Generator.model.incomingEdgesOf(actor).stream()
+	public static Set<Vertex> findInputSDFChannels(ForSyDeSystemGraph model,Vertex actor) {
+		var inputSDFChannelNameSet = model.incomingEdgesOf(actor).stream()
 				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE)).map(e -> e.getSource())
 				.collect(Collectors.toSet());
 
 		Set<Vertex> inputSDFChannelSet = new HashSet<>();
 		for (String sdfname : inputSDFChannelNameSet) {
-			Vertex sdfchannel = Generator.model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname))
+			Vertex sdfchannel = model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname))
 					.findAny().get();
 			inputSDFChannelSet.add(sdfchannel);
 		}
@@ -212,20 +214,45 @@ public class Query {
 	 * @param actor
 	 * @return
 	 */
-	public static Set<Vertex> findOutputSDFChannels(Vertex actor) {
-		var outputSDFChannelNameSet = Generator.model.outgoingEdgesOf(actor).stream()
+	public static Set<Vertex> findOutputSDFChannels(ForSyDeSystemGraph model,Vertex actor) {
+		var outputSDFChannelNameSet = model.outgoingEdgesOf(actor).stream()
 				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE)).map(e -> e.getTarget())
 				.collect(Collectors.toSet());
 
 		Set<Vertex> outputSDFChannelSet = new HashSet<>();
 		for (String sdfname : outputSDFChannelNameSet) {
-			Vertex sdfchannel = Generator.model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname))
+			Vertex sdfchannel = model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname))
 					.findAny().get();
 			outputSDFChannelSet.add(sdfchannel);
 		}
 		return outputSDFChannelSet;
 	}
-
+	
+	public static String findInputSDFChannelConnectedToActorPort(ForSyDeSystemGraph model, Vertex actor, String actorPort) {
+		var edge = model.incomingEdgesOf(actor).stream()
+				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
+				.filter(e->e.getTargetPort().get().equals(actorPort))
+				.findAny()
+				.orElse(null);
+		if(edge!=null) {
+			return edge.getSource();
+		}
+		return actor.getIdentifier()+" port "+actorPort+" Not read from any sdf channel";	
+			
+	}
+	
+	public static String findOutputSDFChannelConnectedToActorPort(ForSyDeSystemGraph model, Vertex actor, String actorPort) {
+		var edge = model.outgoingEdgesOf(actor).stream()
+				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
+				.filter(e->e.getSourcePort().get().equals(actorPort))
+				.findAny()
+				.orElse(null);
+		if(edge!=null) {
+			return edge.getTarget();
+		}
+		return actor.getIdentifier()+" port "+actorPort+" Not write to any sdf channel";	
+			
+	}
 	/**
 	 * 
 	 * @param v is a combFunction actor

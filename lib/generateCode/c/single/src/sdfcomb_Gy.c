@@ -5,7 +5,9 @@
 	Declare Extern Channal Variables
 ========================================
 */
+extern fifo_gysig;
 
+extern fifo_absysig;
 /*
 ========================================
 	Actor Function
@@ -17,9 +19,7 @@ inline void actor_Gy(){
 	DoubleType gy; 
 	
 	/* Read From Input Port  */
-	for(int i=0;i<6;++i){
-		read_non_blocking(&channel,gy+i);
-	}
+	error imgBlockY;
 	/* Inline Code           */
 	//in combFunction GyImpl
 	gy=gy+imgBlockY[0];
@@ -30,5 +30,5 @@ inline void actor_Gy(){
 	gy=gy-imgBlockY[5];
 
 	/* Write To Output Ports */
-	write(resy_channel);
+	error gy;
 }

@@ -14,13 +14,13 @@ typedef struct
     size_t front;
     size_t rear;
 size_t size;	    
-}circular_channel_DoubleType;
+}circular_fifo_DoubleType;
 
-void init_channel_DoubleType(circular_channel_DoubleType *channel ,DoubleType* buffer, size_t size);
-int read_non_blocking_DoubleType(circular_channel_DoubleType* channel,DoubleType* dst );
-int read_blocking_DoubleType(circular_channel_DoubleType* ptr,DoubleType* dst,spinlock *lock);
-int write_non_blocking_DoubleType(circular_channel_DoubleType* ptr,DoubleType* src );
-int write_blocking_DoubleType(circular_channel_DoubleType* ptr,DoubleType* src,spinlock *lock);	
+void init_channel_DoubleType(circular_fifo_DoubleType *channel ,DoubleType* buffer, size_t size);
+int read_non_blocking_DoubleType(circular_fifo_DoubleType* channel,DoubleType* dst );
+int read_blocking_DoubleType(circular_fifo_DoubleType* ptr,DoubleType* dst,spinlock *lock);
+int write_non_blocking_DoubleType(circular_fifo_DoubleType* ptr,DoubleType* src );
+int write_blocking_DoubleType(circular_fifo_DoubleType* ptr,DoubleType* src,spinlock *lock);	
 	
 /*
 =============================================================
@@ -33,13 +33,13 @@ typedef struct
     size_t front;
     size_t rear;
 size_t size;	    
-}circular_channel_Double;
+}circular_fifo_Double;
 
-void init_channel_Double(circular_channel_Double *channel ,Double* buffer, size_t size);
-int read_non_blocking_Double(circular_channel_Double* channel,Double* dst );
-int read_blocking_Double(circular_channel_Double* ptr,Double* dst,spinlock *lock);
-int write_non_blocking_Double(circular_channel_Double* ptr,Double* src );
-int write_blocking_Double(circular_channel_Double* ptr,Double* src,spinlock *lock);	
+void init_channel_Double(circular_fifo_Double *channel ,Double* buffer, size_t size);
+int read_non_blocking_Double(circular_fifo_Double* channel,Double* dst );
+int read_blocking_Double(circular_fifo_Double* ptr,Double* dst,spinlock *lock);
+int write_non_blocking_Double(circular_fifo_Double* ptr,Double* src );
+int write_blocking_Double(circular_fifo_Double* ptr,Double* src,spinlock *lock);	
 	
 /*
 =============================================================
@@ -52,13 +52,13 @@ typedef struct
     size_t front;
     size_t rear;
 size_t size;	    
-}circular_channel_UInt16;
+}circular_fifo_UInt16;
 
-void init_channel_UInt16(circular_channel_UInt16 *channel ,UInt16* buffer, size_t size);
-int read_non_blocking_UInt16(circular_channel_UInt16* channel,UInt16* dst );
-int read_blocking_UInt16(circular_channel_UInt16* ptr,UInt16* dst,spinlock *lock);
-int write_non_blocking_UInt16(circular_channel_UInt16* ptr,UInt16* src );
-int write_blocking_UInt16(circular_channel_UInt16* ptr,UInt16* src,spinlock *lock);	
+void init_channel_UInt16(circular_fifo_UInt16 *channel ,UInt16* buffer, size_t size);
+int read_non_blocking_UInt16(circular_fifo_UInt16* channel,UInt16* dst );
+int read_blocking_UInt16(circular_fifo_UInt16* ptr,UInt16* dst,spinlock *lock);
+int write_non_blocking_UInt16(circular_fifo_UInt16* ptr,UInt16* src );
+int write_blocking_UInt16(circular_fifo_UInt16* ptr,UInt16* src,spinlock *lock);	
 	
 /*
 =============================================================
@@ -71,12 +71,12 @@ typedef struct
     size_t front;
     size_t rear;
 size_t size;	    
-}circular_channel_UInt32;
+}circular_fifo_UInt32;
 
-void init_channel_UInt32(circular_channel_UInt32 *channel ,UInt32* buffer, size_t size);
-int read_non_blocking_UInt32(circular_channel_UInt32* channel,UInt32* dst );
-int read_blocking_UInt32(circular_channel_UInt32* ptr,UInt32* dst,spinlock *lock);
-int write_non_blocking_UInt32(circular_channel_UInt32* ptr,UInt32* src );
-int write_blocking_UInt32(circular_channel_UInt32* ptr,UInt32* src,spinlock *lock);	
+void init_channel_UInt32(circular_fifo_UInt32 *channel ,UInt32* buffer, size_t size);
+int read_non_blocking_UInt32(circular_fifo_UInt32* channel,UInt32* dst );
+int read_blocking_UInt32(circular_fifo_UInt32* ptr,UInt32* dst,spinlock *lock);
+int write_non_blocking_UInt32(circular_fifo_UInt32* ptr,UInt32* src );
+int write_blocking_UInt32(circular_fifo_UInt32* ptr,UInt32* src,spinlock *lock);	
 	
 #endif

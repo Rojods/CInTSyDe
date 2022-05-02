@@ -5,14 +5,15 @@ import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
-import forsyde.io.java.core.VertexProperty;
 import forsyde.io.java.core.VertexTrait;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
 import generator.Generator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import template.templateInterface.ActorTemplate;
 import utils.Query;
 
@@ -28,10 +29,11 @@ public class SDFCombTemplateSrc implements ActorTemplate {
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
+      ForSyDeSystemGraph model = Generator.model;
       this.implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions", 
         VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexAcessor.VertexPortDirection.OUTGOING);
-      this.inputSDFChannelSet = Query.findInputSDFChannels(actor);
-      this.outputSDFChannelSet = Query.findOutputSDFChannels(actor);
+      this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor);
+      this.outputSDFChannelSet = Query.findOutputSDFChannels(model, actor);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("/* Includes-------------------------- */");
       _builder.newLine();
@@ -50,7 +52,9 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
-      _builder.newLine();
+      String _extern = this.extern();
+      _builder.append(_extern);
+      _builder.newLineIfNotEmpty();
       _builder.append("/*");
       _builder.newLine();
       _builder.append("========================================");
@@ -99,6 +103,69 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.newLineIfNotEmpty();
       _builder.append("}");
       _builder.newLine();
+      _xblockexpression = _builder.toString();
+    }
+    return _xblockexpression;
+  }
+  
+  public String extern() {
+    String _xblockexpression = null;
+    {
+      Set<Vertex> record = new HashSet<Vertex>();
+      StringConcatenation _builder = new StringConcatenation();
+      {
+        boolean _hasElements = false;
+        for(final Vertex sdf : this.inputSDFChannelSet) {
+          if (!_hasElements) {
+            _hasElements = true;
+          } else {
+            _builder.appendImmediate("", "");
+          }
+          {
+            boolean _contains = record.contains(sdf);
+            boolean _not = (!_contains);
+            if (_not) {
+              _builder.append("extern fifo_");
+              String _identifier = sdf.getIdentifier();
+              _builder.append(_identifier);
+              _builder.append(";");
+              _builder.newLineIfNotEmpty();
+              boolean tmp = record.add(sdf);
+              _builder.newLineIfNotEmpty();
+            }
+          }
+        }
+        if (_hasElements) {
+          _builder.append("");
+        }
+      }
+      _builder.newLine();
+      {
+        boolean _hasElements_1 = false;
+        for(final Vertex sdf_1 : this.outputSDFChannelSet) {
+          if (!_hasElements_1) {
+            _hasElements_1 = true;
+          } else {
+            _builder.appendImmediate("", "");
+          }
+          {
+            boolean _contains_1 = record.contains(sdf_1);
+            boolean _not_1 = (!_contains_1);
+            if (_not_1) {
+              _builder.append("extern fifo_");
+              String _identifier_1 = sdf_1.getIdentifier();
+              _builder.append(_identifier_1);
+              _builder.append(";");
+              _builder.newLineIfNotEmpty();
+              boolean tmp_1 = record.add(sdf_1);
+              _builder.newLineIfNotEmpty();
+            }
+          }
+        }
+        if (_hasElements_1) {
+          _builder.append("");
+        }
+      }
       _xblockexpression = _builder.toString();
     }
     return _xblockexpression;
@@ -160,128 +227,138 @@ public class SDFCombTemplateSrc implements ActorTemplate {
     return ret;
   }
   
-  public boolean isExtern(final String string) {
-    throw new UnsupportedOperationException("TODO: auto-generated method stub");
-  }
-  
-  public String read(final Vertex vertex) {
-    String _xblockexpression = null;
-    {
-      VertexProperty consumption = vertex.getProperties().get("consumption");
-      String _xifexpression = null;
-      if ((consumption != null)) {
-        String _xblockexpression_1 = null;
-        {
-          Object _unwrap = consumption.unwrap();
-          HashMap<String, Integer> inputPortsHashMap = ((HashMap<String, Integer>) _unwrap);
-          StringConcatenation _builder = new StringConcatenation();
-          {
-            Set<String> _keySet = inputPortsHashMap.keySet();
-            boolean _hasElements = false;
-            for(final String port : _keySet) {
-              if (!_hasElements) {
-                _hasElements = true;
+  public String read(final Vertex actor) {
+    ForSyDeSystemGraph model = Generator.model;
+    Set<String> impls = Query.findCombFuntionVertex(model, actor);
+    Set<String> variableNameRecord = new HashSet<String>();
+    String ret = "";
+    for (final String impl : impls) {
+      {
+        Vertex actorimpl = Query.findVertexByName(model, impl);
+        Set<String> inputPortSet = Query.findImplInputPortSet(actorimpl);
+        for (final String inport : inputPortSet) {
+          boolean _contains = variableNameRecord.contains(inport);
+          boolean _not = (!_contains);
+          if (_not) {
+            String datatype = Query.findImplPortDataType(model, actorimpl, inport);
+            String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, actorimpl, inport);
+            String sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName);
+            try {
+              Integer consumption = SDFComb.enforce(actor).getConsumption().get(actorPortName);
+              if (((consumption).intValue() == 1)) {
+                String _ret = ret;
+                StringConcatenation _builder = new StringConcatenation();
+                _builder.append("read_non_blocking(&fifo_");
+                _builder.append(sdfchannelName);
+                _builder.append(",&");
+                _builder.append(inport);
+                _builder.append(");");
+                _builder.newLineIfNotEmpty();
+                ret = (_ret + _builder);
               } else {
-                _builder.appendImmediate("", "");
+                String _ret_1 = ret;
+                StringConcatenation _builder_1 = new StringConcatenation();
+                _builder_1.append("for(int i=0;i<");
+                _builder_1.append(consumption);
+                _builder_1.append(";++i){");
+                _builder_1.newLineIfNotEmpty();
+                _builder_1.append("\t");
+                _builder_1.append("read_non_blocking(&fifo_");
+                _builder_1.append(sdfchannelName, "\t");
+                _builder_1.append(",&");
+                _builder_1.append(inport, "\t");
+                _builder_1.append("[i]);");
+                _builder_1.newLineIfNotEmpty();
+                _builder_1.append("}");
+                _builder_1.newLine();
+                ret = (_ret_1 + _builder_1);
               }
-              {
-                Integer _get = inputPortsHashMap.get(port);
-                boolean _equals = ((_get).intValue() == 1);
-                if (_equals) {
-                  _builder.append("read_non_blocking(&channel,&");
-                  _builder.append(port);
-                  _builder.append(");");
-                  _builder.newLineIfNotEmpty();
-                } else {
-                  _builder.append("for(int i=0;i<");
-                  Integer _get_1 = inputPortsHashMap.get(port);
-                  _builder.append(_get_1);
-                  _builder.append(";++i){");
-                  _builder.newLineIfNotEmpty();
-                  _builder.append("\t");
-                  _builder.append("read_non_blocking(&channel,");
-                  _builder.append(port, "\t");
-                  _builder.append("+i);");
-                  _builder.newLineIfNotEmpty();
-                  _builder.append("}");
-                  _builder.newLine();
-                }
+              variableNameRecord.add(inport);
+            } catch (final Throwable _t) {
+              if (_t instanceof Exception) {
+                String _identifier = actor.getIdentifier();
+                String _plus = ("In actor " + _identifier);
+                String _plus_1 = (_plus + " port ");
+                String _plus_2 = (_plus_1 + inport);
+                String _plus_3 = (_plus_2 + " no comsumption");
+                InputOutput.<String>println(_plus_3);
+                return (("error " + inport) + ";");
+              } else {
+                throw Exceptions.sneakyThrow(_t);
               }
-            }
-            if (_hasElements) {
-              _builder.append("");
             }
           }
-          _xblockexpression_1 = _builder.toString();
         }
-        _xifexpression = _xblockexpression_1;
-      } else {
-        StringConcatenation _builder = new StringConcatenation();
-        _xifexpression = _builder.toString();
       }
-      _xblockexpression = _xifexpression;
     }
-    return _xblockexpression;
+    return ret;
   }
   
-  public String write(final Vertex vertex) {
-    String _xblockexpression = null;
-    {
-      VertexProperty production = vertex.getProperties().get("production");
-      String _xifexpression = null;
-      if ((production != null)) {
-        String _xblockexpression_1 = null;
-        {
-          Object _unwrap = production.unwrap();
-          HashMap<String, Integer> inputPortsHashMap = ((HashMap<String, Integer>) _unwrap);
-          StringConcatenation _builder = new StringConcatenation();
-          {
-            Set<String> _keySet = inputPortsHashMap.keySet();
-            boolean _hasElements = false;
-            for(final String port : _keySet) {
-              if (!_hasElements) {
-                _hasElements = true;
+  public String write(final Vertex actor) {
+    ForSyDeSystemGraph model = Generator.model;
+    Set<String> impls = Query.findCombFuntionVertex(model, actor);
+    Set<String> variableNameRecord = new HashSet<String>();
+    String ret = "";
+    for (final String impl : impls) {
+      {
+        Vertex actorimpl = Query.findVertexByName(model, impl);
+        Set<String> outputPortSet = Query.findImplOutputPortSet(actorimpl);
+        for (final String outport : outputPortSet) {
+          boolean _contains = variableNameRecord.contains(outport);
+          boolean _not = (!_contains);
+          if (_not) {
+            String datatype = Query.findImplPortDataType(model, actorimpl, outport);
+            String actorPortName = Query.findActorPortConnectedToImplOutputPort(model, actor, actorimpl, outport);
+            String sdfchannelName = Query.findOutputSDFChannelConnectedToActorPort(model, actor, actorPortName);
+            try {
+              Integer production = SDFComb.enforce(actor).getProduction().get(actorPortName);
+              if (((production).intValue() == 1)) {
+                String _ret = ret;
+                StringConcatenation _builder = new StringConcatenation();
+                _builder.append("write_non_blocking(&fifo_");
+                _builder.append(sdfchannelName);
+                _builder.append(",&");
+                _builder.append(outport);
+                _builder.append(");");
+                _builder.newLineIfNotEmpty();
+                ret = (_ret + _builder);
               } else {
-                _builder.appendImmediate("", "");
+                String _ret_1 = ret;
+                StringConcatenation _builder_1 = new StringConcatenation();
+                _builder_1.append("for(int i=0;i<");
+                _builder_1.append(production);
+                _builder_1.append(";++i){");
+                _builder_1.newLineIfNotEmpty();
+                _builder_1.append("\t");
+                _builder_1.append("write_non_blocking(&fifo_");
+                _builder_1.append(sdfchannelName, "\t");
+                _builder_1.append(",&");
+                _builder_1.append(outport, "\t");
+                _builder_1.append("[i]);");
+                _builder_1.newLineIfNotEmpty();
+                _builder_1.append("}");
+                _builder_1.newLine();
+                ret = (_ret_1 + _builder_1);
               }
-              {
-                Integer _get = inputPortsHashMap.get(port);
-                boolean _equals = ((_get).intValue() == 1);
-                if (_equals) {
-                  _builder.append("write(");
-                  _builder.append(port);
-                  _builder.append("_channel);");
-                  _builder.newLineIfNotEmpty();
-                } else {
-                  _builder.append("for(int i=0;i<");
-                  Integer _get_1 = inputPortsHashMap.get(port);
-                  _builder.append(_get_1);
-                  _builder.append(";++i){");
-                  _builder.newLineIfNotEmpty();
-                  _builder.append("\t");
-                  _builder.append("write(");
-                  _builder.append(port, "\t");
-                  _builder.append("_channel);");
-                  _builder.newLineIfNotEmpty();
-                  _builder.append("}");
-                  _builder.newLine();
-                }
+              variableNameRecord.add(outport);
+            } catch (final Throwable _t) {
+              if (_t instanceof Exception) {
+                String _identifier = actor.getIdentifier();
+                String _plus = ("In actor " + _identifier);
+                String _plus_1 = (_plus + " port ");
+                String _plus_2 = (_plus_1 + outport);
+                String _plus_3 = (_plus_2 + " no production");
+                InputOutput.<String>println(_plus_3);
+                return (("error " + outport) + ";");
+              } else {
+                throw Exceptions.sneakyThrow(_t);
               }
-            }
-            if (_hasElements) {
-              _builder.append("");
             }
           }
-          _xblockexpression_1 = _builder.toString();
         }
-        _xifexpression = _xblockexpression_1;
-      } else {
-        StringConcatenation _builder = new StringConcatenation();
-        _xifexpression = _builder.toString();
       }
-      _xblockexpression = _xifexpression;
     }
-    return _xblockexpression;
+    return ret;
   }
   
   private String getInlineCode() {
@@ -312,8 +389,8 @@ public class SDFCombTemplateSrc implements ActorTemplate {
   private String getExternSDFChannel(final Vertex actor) {
     String _xblockexpression = null;
     {
-      Set<Vertex> SDFChannelSet = Query.findInputSDFChannels(actor);
-      SDFChannelSet.addAll(Query.findOutputSDFChannels(actor));
+      Set<Vertex> SDFChannelSet = Query.findInputSDFChannels(Generator.model, actor);
+      SDFChannelSet.addAll(Query.findOutputSDFChannels(Generator.model, actor));
       StringConcatenation _builder = new StringConcatenation();
       {
         boolean _hasElements = false;

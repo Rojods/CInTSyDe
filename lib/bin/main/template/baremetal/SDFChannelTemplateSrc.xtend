@@ -35,12 +35,12 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 				«var maximumTokens = properties.get("maximumTokens").unwrap() as Integer»
 				«type» buffer_«sdfname»[«maximumTokens+1»];
 				int buffer_«sdfname»_size = «maximumTokens+1»;
-				circular_fifo_type fifo_«sdfname»;
+				circular_fifo_«type» fifo_«sdfname»;
 				spinlock spinlock_«sdfname»={.flag=0};
 			«ELSE»
 				«type» buffer_«sdfname»[2];
 				int buffer_«sdfname»_size = 2;
-				circular_fifo_type fifo_«sdfname»;
+				circular_fifo_«type» fifo_«sdfname»;
 				spinlock spinlock_«sdfname»={.flag=0};			
 «««				«var numOfInitialTokens = properties.get("numOfInitialTokens").unwrap() as Integer»
 «««				type «sdfname»[«numOfInitialTokens»]={0};
@@ -49,11 +49,6 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 		'''
 	}
 
-//	def String help(Vertex sdfchannel) {
-//		var String ret = ""
-//		sdfchannel.getProperties().get("__initialTokenValues_ordering__").unwrap() as HashMap<String, Integer>
-//		'''
-//		'''
-//	}
+
 
 }

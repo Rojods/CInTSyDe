@@ -7,6 +7,7 @@ import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import fileAnnotation.FileType
 import fileAnnotation.FileTypeAnno
 import generator.Schedule
+import utils.Query
 
 @FileTypeAnno(type=FileType.C_INCLUDE)
 class SubsystemTemplateInc2 implements SubsystemTemplate{
@@ -39,10 +40,11 @@ class SubsystemTemplateInc2 implements SubsystemTemplate{
 		'''
 			«FOR channel: Generator.sdfchannelSet»
 				«var sdfname=channel.getIdentifier()»
+				«var type = Query.findSDFChannelDataType(Generator.model,channel)»
 				/* extern sdfchannel «sdfname»*/
-				extern type buffer_«sdfname»[];
+				extern «type» buffer_«sdfname»[];
 				extern int buffer_«sdfname»_size;
-				extern circular_fifo_type fifo_«sdfname»;
+				extern circular_fifo_«type» fifo_«sdfname»;
 				
 			«ENDFOR»
 		'''

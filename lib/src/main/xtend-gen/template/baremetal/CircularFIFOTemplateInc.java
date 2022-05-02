@@ -109,14 +109,14 @@ public class CircularFIFOTemplateInc implements InitTemplate {
         _builder.newLine();
         _builder.append("size_t size;\t    ");
         _builder.newLine();
-        _builder.append("}circular_channel_");
+        _builder.append("}circular_fifo_");
         _builder.append(type);
         _builder.append(";");
         _builder.newLineIfNotEmpty();
         _builder.newLine();
         _builder.append("void init_channel_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append(" *channel ,");
         _builder.append(type);
@@ -124,7 +124,7 @@ public class CircularFIFOTemplateInc implements InitTemplate {
         _builder.newLineIfNotEmpty();
         _builder.append("int read_non_blocking_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append("* channel,");
         _builder.append(type);
@@ -132,7 +132,7 @@ public class CircularFIFOTemplateInc implements InitTemplate {
         _builder.newLineIfNotEmpty();
         _builder.append("int read_blocking_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append("* ptr,");
         _builder.append(type);
@@ -140,7 +140,7 @@ public class CircularFIFOTemplateInc implements InitTemplate {
         _builder.newLineIfNotEmpty();
         _builder.append("int write_non_blocking_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append("* ptr,");
         _builder.append(type);
@@ -148,7 +148,7 @@ public class CircularFIFOTemplateInc implements InitTemplate {
         _builder.newLineIfNotEmpty();
         _builder.append("int write_blocking_");
         _builder.append(type);
-        _builder.append("(circular_channel_");
+        _builder.append("(circular_fifo_");
         _builder.append(type);
         _builder.append("* ptr,");
         _builder.append(type);

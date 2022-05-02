@@ -15,54 +15,54 @@ Only the subsystem.c includes this file.
 ==============================================
 */		
 /* extern sdfchannel GrayScaleToAbs*/
-extern type buffer_GrayScaleToAbs[];
+extern UInt16 buffer_GrayScaleToAbs[];
 extern int buffer_GrayScaleToAbs_size;
-extern circular_fifo_type fifo_GrayScaleToAbs;
+extern circular_fifo_UInt16 fifo_GrayScaleToAbs;
 
 /* extern sdfchannel AbsY*/
-extern type buffer_AbsY[];
+extern UInt16 buffer_AbsY[];
 extern int buffer_AbsY_size;
-extern circular_fifo_type fifo_AbsY;
+extern circular_fifo_UInt16 fifo_AbsY;
 
 /* extern sdfchannel AbsX*/
-extern type buffer_AbsX[];
+extern UInt16 buffer_AbsX[];
 extern int buffer_AbsX_size;
-extern circular_fifo_type fifo_AbsX;
+extern circular_fifo_UInt16 fifo_AbsX;
 
 /* extern sdfchannel GrayScaleToGetPx*/
-extern type buffer_GrayScaleToGetPx[];
+extern Array6OfDoubleType buffer_GrayScaleToGetPx[];
 extern int buffer_GrayScaleToGetPx_size;
-extern circular_fifo_type fifo_GrayScaleToGetPx;
+extern circular_fifo_Array6OfDoubleType fifo_GrayScaleToGetPx;
 
 /* extern sdfchannel gysig*/
-extern type buffer_gysig[];
+extern Array6OfDoubleType buffer_gysig[];
 extern int buffer_gysig_size;
-extern circular_fifo_type fifo_gysig;
+extern circular_fifo_Array6OfDoubleType fifo_gysig;
 
 /* extern sdfchannel gxsig*/
-extern type buffer_gxsig[];
+extern Array6OfDoubleType buffer_gxsig[];
 extern int buffer_gxsig_size;
-extern circular_fifo_type fifo_gxsig;
+extern circular_fifo_Array6OfDoubleType fifo_gxsig;
 
 /* extern sdfchannel absysig*/
-extern type buffer_absysig[];
+extern UInt16 buffer_absysig[];
 extern int buffer_absysig_size;
-extern circular_fifo_type fifo_absysig;
+extern circular_fifo_UInt16 fifo_absysig;
 
 /* extern sdfchannel GrayScaleX*/
-extern type buffer_GrayScaleX[];
+extern UInt16 buffer_GrayScaleX[];
 extern int buffer_GrayScaleX_size;
-extern circular_fifo_type fifo_GrayScaleX;
+extern circular_fifo_UInt16 fifo_GrayScaleX;
 
 /* extern sdfchannel absxsig*/
-extern type buffer_absxsig[];
+extern UInt16 buffer_absxsig[];
 extern int buffer_absxsig_size;
-extern circular_fifo_type fifo_absxsig;
+extern circular_fifo_UInt16 fifo_absxsig;
 
 /* extern sdfchannel GrayScaleY*/
-extern type buffer_GrayScaleY[];
+extern UInt16 buffer_GrayScaleY[];
 extern int buffer_GrayScaleY_size;
-extern circular_fifo_type fifo_GrayScaleY;
+extern circular_fifo_UInt16 fifo_GrayScaleY;
 
 
 #endif

@@ -5,7 +5,10 @@
 	Declare Extern Channal Variables
 ========================================
 */
+extern fifo_GrayScaleToGetPx;
 
+extern fifo_gysig;
+extern fifo_gxsig;
 /*
 ========================================
 	Actor Function
@@ -19,7 +22,7 @@ inline void actor_getPx(){
 	
 	/* Read From Input Port  */
 	for(int i=0;i<6;++i){
-		read_non_blocking(&channel,gray+i);
+		read_non_blocking(&fifo_GrayScaleToGetPx,&gray[i]);
 	}
 	/* Inline Code           */
 	//in combFunction getPxImpl1
@@ -39,15 +42,9 @@ inline void actor_getPx(){
 
 	/* Write To Output Ports */
 	for(int i=0;i<6;++i){
-		write(gx_channel);
+		write_non_blocking(&fifo_getPx port copyY Not write to any sdf channel,&imgBlockY[i]);
 	}
 	for(int i=0;i<6;++i){
-		write(gy_channel);
-	}
-	for(int i=0;i<6;++i){
-		write(copyY_channel);
-	}
-	for(int i=0;i<6;++i){
-		write(copyX_channel);
+		write_non_blocking(&fifo_getPx port copyX Not write to any sdf channel,&imgBlockX[i]);
 	}
 }

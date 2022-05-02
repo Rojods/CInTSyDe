@@ -7,6 +7,7 @@ import generator.Generator;
 import generator.Schedule;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.SubsystemTemplate;
+import utils.Query;
 
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
@@ -60,11 +61,15 @@ public class SubsystemTemplateInc2 implements SubsystemTemplate {
       for(final Vertex channel : Generator.sdfchannelSet) {
         String sdfname = channel.getIdentifier();
         _builder.newLineIfNotEmpty();
+        String type = Query.findSDFChannelDataType(Generator.model, channel);
+        _builder.newLineIfNotEmpty();
         _builder.append("/* extern sdfchannel ");
         _builder.append(sdfname);
         _builder.append("*/");
         _builder.newLineIfNotEmpty();
-        _builder.append("extern type buffer_");
+        _builder.append("extern ");
+        _builder.append(type);
+        _builder.append(" buffer_");
         _builder.append(sdfname);
         _builder.append("[];");
         _builder.newLineIfNotEmpty();
@@ -72,7 +77,9 @@ public class SubsystemTemplateInc2 implements SubsystemTemplate {
         _builder.append(sdfname);
         _builder.append("_size;");
         _builder.newLineIfNotEmpty();
-        _builder.append("extern circular_fifo_type fifo_");
+        _builder.append("extern circular_fifo_");
+        _builder.append(type);
+        _builder.append(" fifo_");
         _builder.append(sdfname);
         _builder.append(";");
         _builder.newLineIfNotEmpty();

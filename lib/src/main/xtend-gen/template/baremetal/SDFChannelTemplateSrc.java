@@ -45,7 +45,9 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
           _builder.append(((maximumTokens).intValue() + 1));
           _builder.append(";");
           _builder.newLineIfNotEmpty();
-          _builder.append("circular_fifo_type fifo_");
+          _builder.append("circular_fifo_");
+          _builder.append(type);
+          _builder.append(" fifo_");
           _builder.append(sdfname);
           _builder.append(";");
           _builder.newLineIfNotEmpty();
@@ -63,7 +65,9 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
           _builder.append(sdfname);
           _builder.append("_size = 2;");
           _builder.newLineIfNotEmpty();
-          _builder.append("circular_fifo_type fifo_");
+          _builder.append("circular_fifo_");
+          _builder.append(type);
+          _builder.append(" fifo_");
           _builder.append(sdfname);
           _builder.append(";");
           _builder.newLineIfNotEmpty();

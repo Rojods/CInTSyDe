@@ -5,7 +5,11 @@
 	Declare Extern Channal Variables
 ========================================
 */
+extern fifo_GrayScaleX;
+extern fifo_GrayScaleY;
 
+extern fifo_GrayScaleToAbs;
+extern fifo_GrayScaleToGetPx;
 /*
 ========================================
 	Actor Function
@@ -22,8 +26,7 @@ inline void actor_GrayScale(){
 	Array6OfDoubleType gray; 
 	
 	/* Read From Input Port  */
-	read_non_blocking(&channel,&offsetXIn);
-	read_non_blocking(&channel,&offsetYIn);
+	error system_img_source_address;
 	/* Inline Code           */
 	//in combFunction GrayScaleImpl
 	gray[0]=0.3125*system_img_source_address[offsetY+0][offsetX+0]+0.5625*system_img_source_address[offsetY+0][offsetX+1]+0.125*system_img_source_address[offsetY+0][offsetX+2];
@@ -39,12 +42,12 @@ inline void actor_GrayScale(){
 	dimsOut[1]=dimY;
 
 	/* Write To Output Ports */
+	write_non_blocking(&fifo_GrayScaleX,&offsetX);
 	for(int i=0;i<2;++i){
-		write(dimsOut_channel);
+		write_non_blocking(&fifo_GrayScaleToAbs,&dimsOut[i]);
 	}
 	for(int i=0;i<6;++i){
-		write(gray_channel);
+		write_non_blocking(&fifo_GrayScaleToGetPx,&gray[i]);
 	}
-	write(offsetYOut_channel);
-	write(offsetXOut_channel);
+	write_non_blocking(&fifo_GrayScaleY,&offsetY);
 }

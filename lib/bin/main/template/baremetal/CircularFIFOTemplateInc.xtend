@@ -54,13 +54,13 @@ class CircularFIFOTemplateInc implements InitTemplate {
 				    size_t front;
 				    size_t rear;
 				size_t size;	    
-				}circular_channel_«type»;
+				}circular_fifo_«type»;
 				
-				void init_channel_«type»(circular_channel_«type» *channel ,«type»* buffer, size_t size);
-				int read_non_blocking_«type»(circular_channel_«type»* channel,«type»* dst );
-				int read_blocking_«type»(circular_channel_«type»* ptr,«type»* dst,spinlock *lock);
-				int write_non_blocking_«type»(circular_channel_«type»* ptr,«type»* src );
-				int write_blocking_«type»(circular_channel_«type»* ptr,«type»* src,spinlock *lock);	
+				void init_channel_«type»(circular_fifo_«type» *channel ,«type»* buffer, size_t size);
+				int read_non_blocking_«type»(circular_fifo_«type»* channel,«type»* dst );
+				int read_blocking_«type»(circular_fifo_«type»* ptr,«type»* dst,spinlock *lock);
+				int write_non_blocking_«type»(circular_fifo_«type»* ptr,«type»* src );
+				int write_blocking_«type»(circular_fifo_«type»* ptr,«type»* src,spinlock *lock);	
 					
 			«ENDFOR»
 		'''

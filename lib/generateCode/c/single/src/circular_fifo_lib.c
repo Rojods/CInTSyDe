@@ -5,14 +5,14 @@
 				DoubleType Channel Definition
 =============================================================
 */				
-void init_channel_DoubleType(circular_channel_DoubleType *channel ,DoubleType* buffer, size_t size){
+void init_channel_DoubleType(circular_fifo_DoubleType *channel ,DoubleType* buffer, size_t size){
     channel->buffer = buffer;
     channel->size=size;
     channel->front = 0;
     channel->rear = 0;			
 }
 			
-int read_non_blocking_DoubleType(circular_channel_DoubleType *channel, DoubleType *data){
+int read_non_blocking_DoubleType(circular_fifo_DoubleType *channel, DoubleType *data){
 	if(channel->front==channel->rear){
 	    	//empty 
 	    	return -1;
@@ -25,7 +25,7 @@ int read_non_blocking_DoubleType(circular_channel_DoubleType *channel, DoubleTyp
 	    	return 0;
 	    }
 }
-int read_blocking_DoubleType(circular_channel_DoubleType* channel,DoubleType* data,spinlock* lock){
+int read_blocking_DoubleType(circular_fifo_DoubleType* channel,DoubleType* data,spinlock* lock){
 	spinlock_get(lock);
 	if(channel->front==channel->rear){
 	    	//empty 
@@ -42,7 +42,7 @@ int read_blocking_DoubleType(circular_channel_DoubleType* channel,DoubleType* da
 	    }
 }				
 			
-int write_non_blocking_DoubleType(circular_channel_DoubleType* channel, DoubleType value){
+int write_non_blocking_DoubleType(circular_fifo_DoubleType* channel, DoubleType value){
     /*if the buffer is full*/
     if((channel->rear+1)%channel->size == channel->front){
         //full!
@@ -59,7 +59,7 @@ int write_non_blocking_DoubleType(circular_channel_DoubleType* channel, DoubleTy
 
 }	
 			
-int write_blocking_DoubleType(circular_channel_DoubleType* channel, DoubleType value,spinlock* lock){
+int write_blocking_DoubleType(circular_fifo_DoubleType* channel, DoubleType value,spinlock* lock){
 	spinlock_get(lock);
 	
 	   /*if the buffer is full*/
@@ -84,14 +84,14 @@ int write_blocking_DoubleType(circular_channel_DoubleType* channel, DoubleType v
 				Double Channel Definition
 =============================================================
 */				
-void init_channel_Double(circular_channel_Double *channel ,Double* buffer, size_t size){
+void init_channel_Double(circular_fifo_Double *channel ,Double* buffer, size_t size){
     channel->buffer = buffer;
     channel->size=size;
     channel->front = 0;
     channel->rear = 0;			
 }
 			
-int read_non_blocking_Double(circular_channel_Double *channel, Double *data){
+int read_non_blocking_Double(circular_fifo_Double *channel, Double *data){
 	if(channel->front==channel->rear){
 	    	//empty 
 	    	return -1;
@@ -104,7 +104,7 @@ int read_non_blocking_Double(circular_channel_Double *channel, Double *data){
 	    	return 0;
 	    }
 }
-int read_blocking_Double(circular_channel_Double* channel,Double* data,spinlock* lock){
+int read_blocking_Double(circular_fifo_Double* channel,Double* data,spinlock* lock){
 	spinlock_get(lock);
 	if(channel->front==channel->rear){
 	    	//empty 
@@ -121,7 +121,7 @@ int read_blocking_Double(circular_channel_Double* channel,Double* data,spinlock*
 	    }
 }				
 			
-int write_non_blocking_Double(circular_channel_Double* channel, Double value){
+int write_non_blocking_Double(circular_fifo_Double* channel, Double value){
     /*if the buffer is full*/
     if((channel->rear+1)%channel->size == channel->front){
         //full!
@@ -138,7 +138,7 @@ int write_non_blocking_Double(circular_channel_Double* channel, Double value){
 
 }	
 			
-int write_blocking_Double(circular_channel_Double* channel, Double value,spinlock* lock){
+int write_blocking_Double(circular_fifo_Double* channel, Double value,spinlock* lock){
 	spinlock_get(lock);
 	
 	   /*if the buffer is full*/
@@ -163,14 +163,14 @@ int write_blocking_Double(circular_channel_Double* channel, Double value,spinloc
 				UInt16 Channel Definition
 =============================================================
 */				
-void init_channel_UInt16(circular_channel_UInt16 *channel ,UInt16* buffer, size_t size){
+void init_channel_UInt16(circular_fifo_UInt16 *channel ,UInt16* buffer, size_t size){
     channel->buffer = buffer;
     channel->size=size;
     channel->front = 0;
     channel->rear = 0;			
 }
 			
-int read_non_blocking_UInt16(circular_channel_UInt16 *channel, UInt16 *data){
+int read_non_blocking_UInt16(circular_fifo_UInt16 *channel, UInt16 *data){
 	if(channel->front==channel->rear){
 	    	//empty 
 	    	return -1;
@@ -183,7 +183,7 @@ int read_non_blocking_UInt16(circular_channel_UInt16 *channel, UInt16 *data){
 	    	return 0;
 	    }
 }
-int read_blocking_UInt16(circular_channel_UInt16* channel,UInt16* data,spinlock* lock){
+int read_blocking_UInt16(circular_fifo_UInt16* channel,UInt16* data,spinlock* lock){
 	spinlock_get(lock);
 	if(channel->front==channel->rear){
 	    	//empty 
@@ -200,7 +200,7 @@ int read_blocking_UInt16(circular_channel_UInt16* channel,UInt16* data,spinlock*
 	    }
 }				
 			
-int write_non_blocking_UInt16(circular_channel_UInt16* channel, UInt16 value){
+int write_non_blocking_UInt16(circular_fifo_UInt16* channel, UInt16 value){
     /*if the buffer is full*/
     if((channel->rear+1)%channel->size == channel->front){
         //full!
@@ -217,7 +217,7 @@ int write_non_blocking_UInt16(circular_channel_UInt16* channel, UInt16 value){
 
 }	
 			
-int write_blocking_UInt16(circular_channel_UInt16* channel, UInt16 value,spinlock* lock){
+int write_blocking_UInt16(circular_fifo_UInt16* channel, UInt16 value,spinlock* lock){
 	spinlock_get(lock);
 	
 	   /*if the buffer is full*/
@@ -242,14 +242,14 @@ int write_blocking_UInt16(circular_channel_UInt16* channel, UInt16 value,spinloc
 				UInt32 Channel Definition
 =============================================================
 */				
-void init_channel_UInt32(circular_channel_UInt32 *channel ,UInt32* buffer, size_t size){
+void init_channel_UInt32(circular_fifo_UInt32 *channel ,UInt32* buffer, size_t size){
     channel->buffer = buffer;
     channel->size=size;
     channel->front = 0;
     channel->rear = 0;			
 }
 			
-int read_non_blocking_UInt32(circular_channel_UInt32 *channel, UInt32 *data){
+int read_non_blocking_UInt32(circular_fifo_UInt32 *channel, UInt32 *data){
 	if(channel->front==channel->rear){
 	    	//empty 
 	    	return -1;
@@ -262,7 +262,7 @@ int read_non_blocking_UInt32(circular_channel_UInt32 *channel, UInt32 *data){
 	    	return 0;
 	    }
 }
-int read_blocking_UInt32(circular_channel_UInt32* channel,UInt32* data,spinlock* lock){
+int read_blocking_UInt32(circular_fifo_UInt32* channel,UInt32* data,spinlock* lock){
 	spinlock_get(lock);
 	if(channel->front==channel->rear){
 	    	//empty 
@@ -279,7 +279,7 @@ int read_blocking_UInt32(circular_channel_UInt32* channel,UInt32* data,spinlock*
 	    }
 }				
 			
-int write_non_blocking_UInt32(circular_channel_UInt32* channel, UInt32 value){
+int write_non_blocking_UInt32(circular_fifo_UInt32* channel, UInt32 value){
     /*if the buffer is full*/
     if((channel->rear+1)%channel->size == channel->front){
         //full!
@@ -296,7 +296,7 @@ int write_non_blocking_UInt32(circular_channel_UInt32* channel, UInt32 value){
 
 }	
 			
-int write_blocking_UInt32(circular_channel_UInt32* channel, UInt32 value,spinlock* lock){
+int write_blocking_UInt32(circular_fifo_UInt32* channel, UInt32 value,spinlock* lock){
 	spinlock_get(lock);
 	
 	   /*if the buffer is full*/

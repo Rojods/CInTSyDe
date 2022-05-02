@@ -39,14 +39,14 @@ class CircularFIFOTemplateSrc implements InitTemplate {
 								«type» Channel Definition
 				=============================================================
 				*/				
-				void init_channel_«type»(circular_channel_«type» *channel ,«type»* buffer, size_t size){
+				void init_channel_«type»(circular_fifo_«type» *channel ,«type»* buffer, size_t size){
 				    channel->buffer = buffer;
 				    channel->size=size;
 				    channel->front = 0;
 				    channel->rear = 0;			
 				}
 			
-				int read_non_blocking_«type»(circular_channel_«type» *channel, «type» *data){
+				int read_non_blocking_«type»(circular_fifo_«type» *channel, «type» *data){
 					if(channel->front==channel->rear){
 					    	//empty 
 					    	return -1;
@@ -59,7 +59,7 @@ class CircularFIFOTemplateSrc implements InitTemplate {
 					    	return 0;
 					    }
 				}
-				int read_blocking_«type»(circular_channel_«type»* channel,«type»* data,spinlock* lock){
+				int read_blocking_«type»(circular_fifo_«type»* channel,«type»* data,spinlock* lock){
 					spinlock_get(lock);
 					if(channel->front==channel->rear){
 					    	//empty 
@@ -76,7 +76,7 @@ class CircularFIFOTemplateSrc implements InitTemplate {
 					    }
 				}				
 			
-				int write_non_blocking_«type»(circular_channel_«type»* channel, «type» value){
+				int write_non_blocking_«type»(circular_fifo_«type»* channel, «type» value){
 				    /*if the buffer is full*/
 				    if((channel->rear+1)%channel->size == channel->front){
 				        //full!
@@ -93,7 +93,7 @@ class CircularFIFOTemplateSrc implements InitTemplate {
 				
 				}	
 			
-				int write_blocking_«type»(circular_channel_«type»* channel, «type» value,spinlock* lock){
+				int write_blocking_«type»(circular_fifo_«type»* channel, «type» value,spinlock* lock){
 					spinlock_get(lock);
 					
 					   /*if the buffer is full*/

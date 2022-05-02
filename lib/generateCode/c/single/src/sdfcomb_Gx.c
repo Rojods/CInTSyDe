@@ -5,7 +5,9 @@
 	Declare Extern Channal Variables
 ========================================
 */
+extern fifo_gxsig;
 
+extern fifo_absxsig;
 /*
 ========================================
 	Actor Function
@@ -17,9 +19,7 @@ inline void actor_Gx(){
 	DoubleType gx; 
 	
 	/* Read From Input Port  */
-	for(int i=0;i<6;++i){
-		read_non_blocking(&channel,gx+i);
-	}
+	error imgBlockX;
 	/* Inline Code           */
 	//in combFunction GxImpl
 	gx=gx-imgBlockX[0];
@@ -30,5 +30,5 @@ inline void actor_Gx(){
 	gx=gx+imgBlockX[5];
 
 	/* Write To Output Ports */
-	write(resx_channel);
+	error gx;
 }
