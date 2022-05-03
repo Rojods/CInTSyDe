@@ -18,6 +18,8 @@ public class SoftTimerTemplateSrc implements InitTemplate {
     _builder.newLine();
     _builder.append("#include \"FreeRTOS.h\"");
     _builder.newLine();
+    _builder.append("#include \"../inc/config.h\"");
+    _builder.newLine();
     _builder.append("/*");
     _builder.newLine();
     _builder.append("********************************************");
@@ -50,6 +52,8 @@ public class SoftTimerTemplateSrc implements InitTemplate {
         _builder.newLine();
         _builder.append("*/");
         _builder.newLine();
+        _builder.append("#if FREERTOS==1");
+        _builder.newLine();
         _builder.append("SemaphoreHandle_t timer_sem_");
         _builder.append(name);
         _builder.append(";");
@@ -58,6 +62,7 @@ public class SoftTimerTemplateSrc implements InitTemplate {
         _builder.append(name);
         _builder.append(";");
         _builder.newLineIfNotEmpty();
+        _builder.append("#endif");
         _builder.newLine();
       }
       if (_hasElements) {

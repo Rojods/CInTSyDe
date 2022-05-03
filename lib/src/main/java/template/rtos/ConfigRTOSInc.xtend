@@ -16,9 +16,11 @@ class ConfigRTOSInc implements InitTemplate {
 			#define CONFIG_H_
 			/*
 			************************************************
-			This file define the stack size for each task
+							Config
 			************************************************
 			*/
+			#define FREERTOS 1
+			#define UCOS_2  0
 			#define STARTTASK_STACKSIZE 2048
 			«FOR actor:Generator.sdfcombSet   SEPARATOR "" AFTER""»
 			#define «actor.getIdentifier().toUpperCase()»_STACKSIZE 2048

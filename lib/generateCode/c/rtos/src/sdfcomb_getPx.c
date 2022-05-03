@@ -4,28 +4,32 @@
 	Define Task Stack
 ==============================================
 */
+#if FREERTOS==1
 StackType_t task_getPx_stk[GETPX_STACKSIZE];
 StaticTask_t tcb_getPx;
-
+#endif
 /*
 ==============================================
 	Declare Extern Message Queue Handler
 ==============================================
 */
 /* Input Message Queue */
+#if FREERTOS==1
 extern QueueHandle_t msg_queue_GrayScaleToGetPx;
 /* Output Message Quueue */
 extern QueueHandle_t msg_queue_gysig;
 extern QueueHandle_t msg_queue_gxsig;
+#endif
 /*
 ==============================================
 	Define Soft Timer and Soft Timer Semaphore
 ==============================================
 */
-
+#if FREERTOS==1
 SemaphoreHandle_t timer_sem_getPx;
 TimerHandle_t timer_getPx;
 static void timer_getPx_callback(TimerHandle_t xTimer);
+#endif
 /*
 ==============================================
 	Define Task Function
@@ -82,6 +86,8 @@ void task_getPx(void* pdata){
 Soft Timer Callback Function
 =============================================
 */
+#if FREERTOS==1
 void timer_getPx_callback(TimerHandle_t xTimer){
 	xSemaphoreGive(task_sem_getPx);
 }
+#endif

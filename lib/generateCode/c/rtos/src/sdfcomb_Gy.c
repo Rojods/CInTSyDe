@@ -4,27 +4,31 @@
 	Define Task Stack
 ==============================================
 */
+#if FREERTOS==1
 StackType_t task_Gy_stk[GY_STACKSIZE];
 StaticTask_t tcb_Gy;
-
+#endif
 /*
 ==============================================
 	Declare Extern Message Queue Handler
 ==============================================
 */
 /* Input Message Queue */
+#if FREERTOS==1
 extern QueueHandle_t msg_queue_gysig;
 /* Output Message Quueue */
 extern QueueHandle_t msg_queue_absysig;
+#endif
 /*
 ==============================================
 	Define Soft Timer and Soft Timer Semaphore
 ==============================================
 */
-
+#if FREERTOS==1
 SemaphoreHandle_t timer_sem_Gy;
 TimerHandle_t timer_Gy;
 static void timer_Gy_callback(TimerHandle_t xTimer);
+#endif
 /*
 ==============================================
 	Define Task Function
@@ -62,6 +66,8 @@ void task_Gy(void* pdata){
 Soft Timer Callback Function
 =============================================
 */
+#if FREERTOS==1
 void timer_Gy_callback(TimerHandle_t xTimer){
 	xSemaphoreGive(task_sem_Gy);
 }
+#endif

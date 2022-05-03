@@ -1,6 +1,7 @@
 package demo
 
 import utils.Load
+
 import org.jgrapht.alg.shortestpath.BFSShortestPath
 import forsyde.io.java.core.Vertex
 import forsyde.io.java.core.EdgeInfo

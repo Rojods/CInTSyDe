@@ -28,9 +28,13 @@ typedef unsigned int UInt32;
 		TYPING_DATATYPES_ARRAY
 ==============================================================
 */
+typedef Double Array1000OfDouble[1000];
+typedef Array1000OfDouble Array1000OfArrayOfDouble[1000];
 typedef DoubleType Array6OfDoubleType[6];
 typedef UInt16 Array2OfUInt16[2];
 typedef DoubleType *ArrayXOfDoubleType;
 typedef ArrayXOfDoubleType *ArrayXOfArrayXOfDoubleType;
+
+
 
 #endif

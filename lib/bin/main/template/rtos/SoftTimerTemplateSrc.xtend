@@ -12,6 +12,7 @@ class SoftTimerTemplateSrc implements InitTemplate {
 		#include "semphr.h"
 		#include "timers.h"	
 		#include "FreeRTOS.h"
+		#include "../inc/config.h"
 		/*
 		********************************************
 		Soft Timer and Semaphore
@@ -25,9 +26,10 @@ class SoftTimerTemplateSrc implements InitTemplate {
 		Soft Timer for Actor «name»
 		============================================
 		*/
+		#if FREERTOS==1
 		SemaphoreHandle_t timer_sem_«name»;
 		TimerHandle_t task_timer_«name»;
-		
+		#endif
 		«ENDFOR»
 		'''
 	}

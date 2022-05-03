@@ -38,15 +38,17 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 				Define Task Stack
 			==============================================
 			*/
+			#if FREERTOS==1
 			StackType_t task_«name»_stk[«name.toUpperCase()»_STACKSIZE];
 			StaticTask_t tcb_«name»;
-			
+			#endif
 			/*
 			==============================================
 				Declare Extern Message Queue Handler
 			==============================================
 			*/
 			/* Input Message Queue */
+			#if FREERTOS==1
 			«FOR sdfchannel : this.inputSDFChannelSet SEPARATOR "" AFTER ""»
 				extern QueueHandle_t msg_queue_«sdfchannel.getIdentifier()»;
 			«ENDFOR»
@@ -56,15 +58,17 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 					extern QueueHandle_t msg_queue_«sdfchannel.getIdentifier()»;
 				«ENDIF»
 			«ENDFOR»
+			#endif
 			/*
 			==============================================
 				Define Soft Timer and Soft Timer Semaphore
 			==============================================
 			*/
-			
+			#if FREERTOS==1
 			SemaphoreHandle_t timer_sem_«name»;
 			TimerHandle_t timer_«name»;
 			static void timer_«name»_callback(TimerHandle_t xTimer);
+			#endif
 			/*
 			==============================================
 				Define Task Function
@@ -93,9 +97,11 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 			Soft Timer Callback Function
 			=============================================
 			*/
+			#if FREERTOS==1
 			void timer_«name»_callback(TimerHandle_t xTimer){
 				xSemaphoreGive(task_sem_«name»);
 			}
+			#endif
 		'''
 	}
 

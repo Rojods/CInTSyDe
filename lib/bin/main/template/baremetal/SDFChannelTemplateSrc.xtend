@@ -31,6 +31,7 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 		'''	
 			«var sdfname=sdfchannel.getIdentifier()»
 			#include "../inc/circular_fifo_lib.h"
+«««			«IF VertexAcessor.getNamedPort(Generator.model,sdfchannel,"consumer",VertexTrait.MOC_SDF_SDFCOMB)!=VertexAcessor.getNamedPort(Generator.model,sdfchannel,"producer",VertexTrait.MOC_SDF_SDFCOMB)»
 			«IF sdfchannel.hasTrait("decision::sdf::BoundedSDFChannel")»
 				«var maximumTokens = properties.get("maximumTokens").unwrap() as Integer»
 				«type» buffer_«sdfname»[«maximumTokens+1»];
@@ -42,8 +43,7 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 				int buffer_«sdfname»_size = 2;
 				circular_fifo_«type» fifo_«sdfname»;
 				spinlock spinlock_«sdfname»={.flag=0};			
-«««				«var numOfInitialTokens = properties.get("numOfInitialTokens").unwrap() as Integer»
-«««				type «sdfname»[«numOfInitialTokens»]={0};
+«««			«ENDIF»
 			«ENDIF»
 			
 		'''

@@ -2,9 +2,11 @@
 #define CONFIG_H_
 /*
 ************************************************
-This file define the stack size for each task
+				Config
 ************************************************
 */
+#define FREERTOS 1
+#define UCOS_2  0
 #define STARTTASK_STACKSIZE 2048
 #define GX_STACKSIZE 2048
 #define ABS_STACKSIZE 2048

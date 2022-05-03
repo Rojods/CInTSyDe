@@ -20,11 +20,16 @@ public class ConfigRTOSInc implements InitTemplate {
     _builder.newLine();
     _builder.append("************************************************");
     _builder.newLine();
-    _builder.append("This file define the stack size for each task");
+    _builder.append("\t\t\t\t");
+    _builder.append("Config");
     _builder.newLine();
     _builder.append("************************************************");
     _builder.newLine();
     _builder.append("*/");
+    _builder.newLine();
+    _builder.append("#define FREERTOS 1");
+    _builder.newLine();
+    _builder.append("#define UCOS_2  0");
     _builder.newLine();
     _builder.append("#define STARTTASK_STACKSIZE 2048");
     _builder.newLine();

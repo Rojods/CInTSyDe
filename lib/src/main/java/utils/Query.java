@@ -358,4 +358,22 @@ public class Query {
 		}
 		return -1;
 	}
+	
+	public  static  String getInnerType(ForSyDeSystemGraph model,Vertex arrayType) {
+		var innerType = model.outgoingEdgesOf(arrayType).stream().filter( e ->
+			e.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION)
+		).filter(e->e.getSource().equals(arrayType.getIdentifier())  && e.getSourcePort().get().equals("innerType")).findAny().
+			get().getTarget();
+		return innerType;
+	}
+
+	public  static int  getMaximumElems(Vertex typeVertex) {
+		var maximumElems = 0;
+		if (typeVertex.getProperties().get("maximumElems") != null) {
+			maximumElems = ((Integer)typeVertex.getProperties().get("maximumElems").unwrap() );
+		} else {
+			maximumElems = ((Integer)typeVertex.getProperties().get("production").unwrap() );
+		}
+		return maximumElems;
+	}
 }

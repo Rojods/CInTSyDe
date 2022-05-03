@@ -50,6 +50,8 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
+      _builder.append("#if FREERTOS==1");
+      _builder.newLine();
       _builder.append("StackType_t task_");
       _builder.append(name);
       _builder.append("_stk[");
@@ -61,6 +63,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append(name);
       _builder.append(";");
       _builder.newLineIfNotEmpty();
+      _builder.append("#endif");
       _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
@@ -74,6 +77,8 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append("*/");
       _builder.newLine();
       _builder.append("/* Input Message Queue */");
+      _builder.newLine();
+      _builder.append("#if FREERTOS==1");
       _builder.newLine();
       {
         boolean _hasElements = false;
@@ -119,6 +124,8 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
           _builder.append("");
         }
       }
+      _builder.append("#endif");
+      _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
       _builder.append("==============================================");
@@ -130,6 +137,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
+      _builder.append("#if FREERTOS==1");
       _builder.newLine();
       _builder.append("SemaphoreHandle_t timer_sem_");
       _builder.append(name);
@@ -143,6 +151,8 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append(name);
       _builder.append("_callback(TimerHandle_t xTimer);");
       _builder.newLineIfNotEmpty();
+      _builder.append("#endif");
+      _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
       _builder.append("==============================================");
@@ -219,6 +229,8 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
+      _builder.append("#if FREERTOS==1");
+      _builder.newLine();
       _builder.append("void timer_");
       _builder.append(name);
       _builder.append("_callback(TimerHandle_t xTimer){");
@@ -229,6 +241,8 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append(");");
       _builder.newLineIfNotEmpty();
       _builder.append("}");
+      _builder.newLine();
+      _builder.append("#endif");
       _builder.newLine();
       _xblockexpression = _builder.toString();
     }
