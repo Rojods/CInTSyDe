@@ -19,6 +19,9 @@ import java.util.stream.Collectors
 import forsyde.io.java.core.EdgeInfo
 import forsyde.io.java.core.EdgeTrait
 import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
+import forsyde.io.java.core.ForSyDeSystemGraph
+import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer
+import forsyde.io.java.typed.viewers.impl.Executable
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFCombTemplateSrc implements ActorTemplate {
@@ -28,8 +31,9 @@ class SDFCombTemplateSrc implements ActorTemplate {
 
 	override create(Vertex actor) {
 		var model = Generator.model
-		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions",
-			VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING)
+		//implActorSet = (new SDFCombViewer(actor)).getCombFunctionsPort(Generator.model)
+	implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions",
+			VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING)	
 		this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor)
 		this.outputSDFChannelSet = Query.findOutputSDFChannels(model, actor)
 		'''
@@ -50,7 +54,6 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			inline void actor_«name»(){
 				/* Initilize Memory      */
 				«initMemory(actor)»
-				
 				/* Read From Input Port  */
 				«read(actor)»
 				/* Inline Code           */
@@ -61,23 +64,23 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			}
 		'''
 	}
-	
+
 	def String extern() {
-		var Set<Vertex> record=new HashSet
+		var Set<Vertex> record = new HashSet
 		'''
-		«FOR sdf: this.inputSDFChannelSet SEPARATOR"" AFTER""»
-		«IF !record.contains(sdf)»
-		extern fifo_«sdf.getIdentifier()»;
-		«var tmp=record.add(sdf)»
-		«ENDIF»
-		«ENDFOR»
-		
-		«FOR sdf: this.outputSDFChannelSet SEPARATOR"" AFTER""»
-		«IF !record.contains(sdf)»
-		extern fifo_«sdf.getIdentifier()»;
-		«var tmp=record.add(sdf)»
-		«ENDIF»
-		«ENDFOR»		
+			«FOR sdf : this.inputSDFChannelSet SEPARATOR "" AFTER ""»
+				«IF !record.contains(sdf)»
+					extern fifo_«sdf.getIdentifier()»;
+					«var tmp=record.add(sdf)»
+				«ENDIF»
+			«ENDFOR»
+			
+			«FOR sdf : this.outputSDFChannelSet SEPARATOR "" AFTER ""»
+				«IF !record.contains(sdf)»
+					extern fifo_«sdf.getIdentifier()»;
+					«var tmp=record.add(sdf)»
+				«ENDIF»
+			«ENDFOR»		
 		'''
 	}
 
@@ -93,9 +96,15 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			for (String inport : inputPortSet) {
 				var datatype = Query.findImplPortDataType(model, actorimpl, inport)
 				if (!variableNameRecord.contains(inport)) {
-					ret += '''
-						«datatype» «inport»; 
-					'''
+					if (Query.isSystemChannel(model, actorimpl, inport) === null) {
+						ret += '''
+							«datatype» «inport»; 
+						'''
+					} else {
+						ret += '''
+							«datatype» «inport» = «Query.isSystemChannel(model,actorimpl,inport)»; 
+						'''
+					}
 					variableNameRecord.add(inport)
 				}
 			}
@@ -103,9 +112,16 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			for (String outport : outputPortSet) {
 				var datatype = Query.findImplPortDataType(model, actorimpl, outport)
 				if (!variableNameRecord.contains(outport)) {
-					ret += '''
-						«datatype» «outport»; 
-					'''
+					if (Query.isSystemChannel(model, actorimpl, outport) === null) {
+						ret += '''
+							«datatype» «outport»; 
+						'''
+					} else {
+						ret += '''
+							«datatype» «outport» = «Query.isSystemChannel(model, actorimpl, outport)»; 
+						'''
+					}
+
 					variableNameRecord.add(outport)
 				}
 			}
@@ -122,29 +138,24 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			var actorimpl = Query.findVertexByName(model, impl)
 			var inputPortSet = Query.findImplInputPortSet(actorimpl)
 			for (String inport : inputPortSet) {
-
-				if (!variableNameRecord.contains(inport)) {
+				if (!variableNameRecord.contains(inport) && Query.isSystemChannel(model, actorimpl, inport) === null) {
 					var datatype = Query.findImplPortDataType(model, actorimpl, inport)
 					var actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, actorimpl, inport)
 					var sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName)
-					try {
-						var consumption = SDFComb.enforce(actor).getConsumption().get(actorPortName)
-						if (consumption == 1) {
-							ret += '''
-								read_non_blocking(&fifo_«sdfchannelName»,&«inport»);
-							'''
-						} else {
-							ret += '''
-								for(int i=0;i<«consumption»;++i){
-									read_non_blocking(&fifo_«sdfchannelName»,&«inport»[i]);
-								}
-							'''
-						}
-						variableNameRecord.add(inport)
-					} catch (Exception e) {
-						println("In actor " + actor.getIdentifier() + " port " + inport + " no comsumption")
-						return "error "+inport+";"
+					println(actor.getIdentifier()+" "+actorPortName)
+					var consumption = SDFComb.enforce(actor).getConsumption().get(actorPortName)
+					if (consumption == 1) {
+						ret += '''
+							read_non_blocking(&fifo_«sdfchannelName»,&«inport»);
+						'''
+					} else {
+						ret += '''
+							for(int i=0;i<«consumption»;++i){
+								read_non_blocking(&fifo_«sdfchannelName»,&«inport»[i]);
+							}
+						'''
 					}
+					variableNameRecord.add(inport)
 
 				}
 			}
@@ -174,7 +185,7 @@ class SDFCombTemplateSrc implements ActorTemplate {
 							'''
 						} else {
 							ret += '''
-								for(int i=0;i<«production »;++i){
+								for(int i=0;i<«production»;++i){
 									write_non_blocking(&fifo_«sdfchannelName»,&«outport»[i]);
 								}
 							'''
@@ -182,7 +193,7 @@ class SDFCombTemplateSrc implements ActorTemplate {
 						variableNameRecord.add(outport)
 					} catch (Exception e) {
 						println("In actor " + actor.getIdentifier() + " port " + outport + " no production")
-						return "error "+outport+";"
+						return "error " + outport + ";"
 					}
 
 				}

@@ -1,32 +1,28 @@
 package template.baremetal
 
-import template.templateInterface.InitTemplate
-
-import generator.Generator
-import java.util.List
-import forsyde.io.java.core.VertexTrait
-import java.util.ArrayList
-import forsyde.io.java.core.Vertex
-import forsyde.io.java.core.VertexAcessor
-import java.util.stream.Collectors
 import fileAnnotation.FileType
 import fileAnnotation.FileTypeAnno
-import forsyde.io.java.core.EdgeTrait
-import java.util.Set
+import forsyde.io.java.core.ForSyDeSystemGraph
+import forsyde.io.java.core.Vertex
+import forsyde.io.java.core.VertexTrait
+import forsyde.io.java.typed.viewers.typing.TypedDataBlockViewer
+import forsyde.io.java.typed.viewers.typing.datatypes.Array
+import forsyde.io.java.typed.viewers.typing.datatypes.ArrayViewer
+import forsyde.io.java.typed.viewers.typing.datatypes.Double
+import forsyde.io.java.typed.viewers.typing.datatypes.Float
+import forsyde.io.java.typed.viewers.typing.datatypes.IntegerViewer
+import generator.Generator
 import java.util.HashSet
-import utils.Query
+import java.util.Set
+import java.util.stream.Collectors
+import template.templateInterface.InitTemplate
 
 @FileTypeAnno(type=FileType.C_INCLUDE)
 class DataTypeTemplateInc implements InitTemplate {
-	// List<VertexTrait> primitiveTraitList
+
 	Set<String> record = new HashSet
 
 	new() {
-//		primitiveTraitList = new ArrayList<VertexTrait>
-//		primitiveTraitList.add(VertexTrait.TYPING_DATATYPES_INTEGER)
-//		primitiveTraitList.add(VertexTrait.TYPING_DATATYPES_FLOAT)
-//		primitiveTraitList.add(VertexTrait.TYPING_DATATYPES_DOUBLE)
-//		primitiveTraitList.add(VertexTrait.TYPING_DATATYPES_ARRAY)
 	}
 
 	override getFileName() {
@@ -35,7 +31,9 @@ class DataTypeTemplateInc implements InitTemplate {
 
 	override create() {
 		var model = Generator.model
-
+		var outset = model.vertexSet().stream().filter([ v |
+			!v.hasTrait(VertexTrait.MOC_SDF_SDFCHANNEL) && v.hasTrait(VertexTrait.TYPING_TYPEDDATABLOCK)
+		]).collect(Collectors.toSet())
 		'''
 			#ifndef DATATYPE_DEFINITION_
 			#define DATATYPE_DEFINITION_
@@ -45,39 +43,46 @@ class DataTypeTemplateInc implements InitTemplate {
 					TYPING_DATATYPES_DOUBLE
 			==============================================================
 			*/
-			«doubleTypeDef()»
+			«doubleTypeDef(model)»
 			
 			/*
 			==============================================================
 					TYPING_DATATYPES_FLOAT
 			==============================================================
 			*/
-			«floatTypeDef()»
+			«floatTypeDef(model)»
 			
 			/*
 			==============================================================
 					TYPING_DATATYPES_INTEGER
 			==============================================================
 			*/
-			«intTypeDef()»
+			«intTypeDef(model)»
 			
 			/*
 			==============================================================
 					TYPING_DATATYPES_ARRAY
 			==============================================================
 			*/
-			«arrayTypeDef()»
+			«arrayTypeDef(model)»
 			
-			
-			
+			/*
+			==============================================================
+					Outside Source and Sink Extern
+			==============================================================			
+			*/
+			«FOR v : outset SEPARATOR "" AFTER ""»
+				extern «findType(model,v)»  «v.getIdentifier()»;
+			«ENDFOR»
+					
 			#endif
 		'''
 	}
 
-	def String doubleTypeDef() {
+	def String doubleTypeDef(ForSyDeSystemGraph model) {
 
 		'''
-			«var doubleVertexSet=Generator.model.vertexSet.stream().filter([v|v.hasTrait(VertexTrait.TYPING_DATATYPES_DOUBLE)]).collect(Collectors.toSet())»
+			«var doubleVertexSet=model.vertexSet.stream().filter([v|Double.conforms(v)]).collect(Collectors.toSet())»
 			«FOR doubleVertex : doubleVertexSet SEPARATOR "" AFTER ""»
 				typedef double «doubleVertex.getIdentifier()»;
 				«var tmp=this.record.add(doubleVertex.getIdentifier())»
@@ -85,9 +90,9 @@ class DataTypeTemplateInc implements InitTemplate {
 		'''
 	}
 
-	def String floatTypeDef() {
+	def String floatTypeDef(ForSyDeSystemGraph model) {
 		'''
-			«var floatVertexSet=Generator.model.vertexSet.stream().filter([v|v.hasTrait(VertexTrait.TYPING_DATATYPES_FLOAT)]).collect(Collectors.toSet())»
+			«var floatVertexSet=model.vertexSet.stream().filter([v|Float.conforms(v)]).collect(Collectors.toSet())»
 			«FOR floatVertex : floatVertexSet SEPARATOR "" AFTER ""»
 				typedef float «floatVertex.getIdentifier()»;
 				«var tmp=record.add(floatVertex.getIdentifier())»
@@ -95,71 +100,69 @@ class DataTypeTemplateInc implements InitTemplate {
 		'''
 	}
 
-	def String intTypeDef() {
+	def String intTypeDef(ForSyDeSystemGraph model) {
 		'''
-			«var intVertexSet=Generator.model.vertexSet.stream().filter([v|v.hasTrait(VertexTrait.TYPING_DATATYPES_INTEGER)]).collect(Collectors.toSet())»
-			«FOR intVertex : intVertexSet SEPARATOR "" AFTER ""»
-				«IF (intVertex.getProperties().get("numberOfBits").unwrap() as Integer)==8»
-					typedef char «intVertex.getIdentifier()»;
+			«var intVertexViewerSet=model.vertexSet.stream()
+			.filter([v|forsyde.io.java.typed.viewers.typing.datatypes.Integer.conforms(v)])
+			.map([v|new IntegerViewer(v)])
+			.collect(Collectors.toSet())»
+			«FOR intVertexViewer : intVertexViewerSet SEPARATOR "" AFTER ""»
+				«IF (intVertexViewer.getNumberOfBits())==8»
+					typedef char «intVertexViewer.getIdentifier()»;
 				«ENDIF»
-				«IF (intVertex.getProperties().get("numberOfBits").unwrap() as Integer)==16»
-					typedef unsigned short «intVertex.getIdentifier()»;
+				«IF (intVertexViewer.getNumberOfBits())==16»
+					typedef unsigned short «intVertexViewer.getIdentifier()»;
 				«ENDIF»						
-				«IF (intVertex.getProperties().get("numberOfBits").unwrap() as Integer)==32»
-					typedef unsigned int «intVertex.getIdentifier()»;
+				«IF (intVertexViewer.getNumberOfBits())==32»
+					typedef unsigned int «intVertexViewer.getIdentifier()»;
 				«ENDIF»	
-				«IF (intVertex.getProperties().get("numberOfBits").unwrap() as Integer)==64»
-					typedef unsigned long «intVertex.getIdentifier()»;
+				«IF (intVertexViewer.getNumberOfBits())==64»
+					typedef unsigned long «intVertexViewer.getIdentifier()»;
 				«ENDIF»	
-				«var tmp=record.add(intVertex.getIdentifier())»		
+				«var tmp=record.add(intVertexViewer.getIdentifier())»		
 			«ENDFOR»		
 		'''
 	}
 
-	def String arrayTypeDef() {
-		var arrayVertexSet = Generator.model.vertexSet.stream().
-			filter([v|v.hasTrait(VertexTrait.TYPING_DATATYPES_ARRAY)]).collect(Collectors.toSet())
+	def String arrayTypeDef(ForSyDeSystemGraph model) {
+		var arrayViewerSet = model.vertexSet.stream()
+							.filter([v| Array.conforms(v) ])
+							.map([v|new ArrayViewer(v)])
+							.collect(Collectors.toSet())
 
 		'''	
-			«FOR arrayVertex : arrayVertexSet SEPARATOR "" AFTER ""»	
-				«help1(arrayVertex)»
+			«FOR array : arrayViewerSet SEPARATOR "" AFTER ""»	
+				«help1(model,array)»
 			«ENDFOR»			
 		'''
 	}
 
-	private def String help1(Vertex arrayVertex) {
+	private def String help1(ForSyDeSystemGraph model, ArrayViewer arr) {
+
 		'''
-			«var innerType=getInnerType(arrayVertex)»
-			«IF record.contains(innerType)&&!record.contains(arrayVertex.getIdentifier())»
-				«var maximumElems=getMaximumElems(arrayVertex)»
+			«var innerType=arr.getInnerTypePort(Generator.model).get().getIdentifier()»
+			«IF record.contains(innerType)&&!record.contains(arr.getIdentifier())»
+				«var maximumElems=getMaximumElems(arr.getViewedVertex())»
 				«IF maximumElems>0»
-					typedef «innerType» «arrayVertex.getIdentifier()»[«maximumElems»];
+					typedef «innerType» «arr.getIdentifier()»[«maximumElems»];
 				«ENDIF»
 				«IF maximumElems<0»
-					typedef «innerType» *«arrayVertex.getIdentifier()»;
+					typedef «innerType» *«arr.getIdentifier()»;
 				«ENDIF»	
-				«var tmp = this.record.add(arrayVertex.getIdentifier())»
-			«ELSEIF record.contains(innerType)&& record.contains(arrayVertex.getIdentifier()) »
+				«var tmp = this.record.add(arr.getIdentifier())»
+			«ELSEIF record.contains(innerType)&& record.contains(arr.getIdentifier())»
 			«ELSE»
-				«help1(Query.findVertexByName(Generator.model,innerType))»
-				«var maximumElems=getMaximumElems(arrayVertex)»
+				«help1( model,new ArrayViewer(model.queryVertex(innerType).get())) »
+				«var maximumElems=getMaximumElems(arr.getViewedVertex())»
 				«IF maximumElems>0»
-					typedef «innerType» «arrayVertex.getIdentifier()»[«maximumElems»];
+					typedef «innerType» «arr.getIdentifier()»[«maximumElems»];
 				«ENDIF»
 				«IF maximumElems<0»
-					typedef «innerType» *«arrayVertex.getIdentifier()»;
+					typedef «innerType» *«arr.getIdentifier()»;
 				«ENDIF»	
-				«var tmp = this.record.add(arrayVertex.getIdentifier())»
+				«var tmp = this.record.add(arr.getIdentifier())»
 			«ENDIF»							
 		'''
-	}
-
-	private def String getInnerType(Vertex arrayType) {
-		var innerType = Generator.model.outgoingEdgesOf(arrayType).stream().filter([ e |
-			e.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION)
-		]).filter([e|e.getSource() == arrayType.getIdentifier() && e.getSourcePort().get() == "innerType"]).findAny().
-			get().getTarget()
-		return innerType
 	}
 
 	private def getMaximumElems(Vertex typeVertex) {
@@ -170,5 +173,13 @@ class DataTypeTemplateInc implements InitTemplate {
 			maximumElems = (typeVertex.getProperties().get("production").unwrap() as Integer)
 		}
 		return maximumElems
+	}
+
+	def String findType(ForSyDeSystemGraph model,Vertex datablock) {
+	    var a =(new TypedDataBlockViewer(datablock)).getDataTypePort(model)
+	    if(!a.isPresent()){
+	    	return null
+	    }
+		return a.get().getIdentifier()
 	}
 }

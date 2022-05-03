@@ -1,22 +1,25 @@
 package template.baremetal;
 
-import com.google.common.base.Objects;
 import fileAnnotation.FileType;
 import fileAnnotation.FileTypeAnno;
-import forsyde.io.java.core.EdgeInfo;
-import forsyde.io.java.core.EdgeTrait;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexProperty;
 import forsyde.io.java.core.VertexTrait;
+import forsyde.io.java.typed.viewers.typing.TypedDataBlockViewer;
+import forsyde.io.java.typed.viewers.typing.datatypes.Array;
+import forsyde.io.java.typed.viewers.typing.datatypes.ArrayViewer;
+import forsyde.io.java.typed.viewers.typing.datatypes.DataType;
+import forsyde.io.java.typed.viewers.typing.datatypes.IntegerViewer;
 import generator.Generator;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.InitTemplate;
-import utils.Query;
 
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
@@ -34,6 +37,12 @@ public class DataTypeTemplateInc implements InitTemplate {
     String _xblockexpression = null;
     {
       ForSyDeSystemGraph model = Generator.model;
+      final Predicate<Vertex> _function = new Predicate<Vertex>() {
+        public boolean test(final Vertex v) {
+          return ((!(v.hasTrait(VertexTrait.MOC_SDF_SDFCHANNEL)).booleanValue()) && (v.hasTrait(VertexTrait.TYPING_TYPEDDATABLOCK)).booleanValue());
+        }
+      };
+      Set<Vertex> outset = model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("#ifndef DATATYPE_DEFINITION_");
       _builder.newLine();
@@ -52,7 +61,7 @@ public class DataTypeTemplateInc implements InitTemplate {
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
-      String _doubleTypeDef = this.doubleTypeDef();
+      String _doubleTypeDef = this.doubleTypeDef(model);
       _builder.append(_doubleTypeDef);
       _builder.newLineIfNotEmpty();
       _builder.newLine();
@@ -67,7 +76,7 @@ public class DataTypeTemplateInc implements InitTemplate {
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
-      String _floatTypeDef = this.floatTypeDef();
+      String _floatTypeDef = this.floatTypeDef(model);
       _builder.append(_floatTypeDef);
       _builder.newLineIfNotEmpty();
       _builder.newLine();
@@ -82,7 +91,7 @@ public class DataTypeTemplateInc implements InitTemplate {
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
-      String _intTypeDef = this.intTypeDef();
+      String _intTypeDef = this.intTypeDef(model);
       _builder.append(_intTypeDef);
       _builder.newLineIfNotEmpty();
       _builder.newLine();
@@ -97,11 +106,43 @@ public class DataTypeTemplateInc implements InitTemplate {
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
-      String _arrayTypeDef = this.arrayTypeDef();
+      String _arrayTypeDef = this.arrayTypeDef(model);
       _builder.append(_arrayTypeDef);
       _builder.newLineIfNotEmpty();
       _builder.newLine();
+      _builder.append("/*");
       _builder.newLine();
+      _builder.append("==============================================================");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("Outside Source and Sink Extern");
+      _builder.newLine();
+      _builder.append("==============================================================\t\t\t");
+      _builder.newLine();
+      _builder.append("*/");
+      _builder.newLine();
+      {
+        boolean _hasElements = false;
+        for(final Vertex v : outset) {
+          if (!_hasElements) {
+            _hasElements = true;
+          } else {
+            _builder.appendImmediate("", "");
+          }
+          _builder.append("extern ");
+          String _findType = this.findType(model, v);
+          _builder.append(_findType);
+          _builder.append("  ");
+          String _identifier = v.getIdentifier();
+          _builder.append(_identifier);
+          _builder.append(";");
+          _builder.newLineIfNotEmpty();
+        }
+        if (_hasElements) {
+          _builder.append("");
+        }
+      }
+      _builder.append("\t\t");
       _builder.newLine();
       _builder.append("#endif");
       _builder.newLine();
@@ -110,14 +151,14 @@ public class DataTypeTemplateInc implements InitTemplate {
     return _xblockexpression;
   }
   
-  public String doubleTypeDef() {
+  public String doubleTypeDef(final ForSyDeSystemGraph model) {
     StringConcatenation _builder = new StringConcatenation();
     final Predicate<Vertex> _function = new Predicate<Vertex>() {
       public boolean test(final Vertex v) {
-        return (v.hasTrait(VertexTrait.TYPING_DATATYPES_DOUBLE)).booleanValue();
+        return (forsyde.io.java.typed.viewers.typing.datatypes.Double.conforms(v)).booleanValue();
       }
     };
-    Set<Vertex> doubleVertexSet = Generator.model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
+    Set<Vertex> doubleVertexSet = model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
     _builder.newLineIfNotEmpty();
     {
       boolean _hasElements = false;
@@ -142,14 +183,14 @@ public class DataTypeTemplateInc implements InitTemplate {
     return _builder.toString();
   }
   
-  public String floatTypeDef() {
+  public String floatTypeDef(final ForSyDeSystemGraph model) {
     StringConcatenation _builder = new StringConcatenation();
     final Predicate<Vertex> _function = new Predicate<Vertex>() {
       public boolean test(final Vertex v) {
-        return (v.hasTrait(VertexTrait.TYPING_DATATYPES_FLOAT)).booleanValue();
+        return (forsyde.io.java.typed.viewers.typing.datatypes.Float.conforms(v)).booleanValue();
       }
     };
-    Set<Vertex> floatVertexSet = Generator.model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
+    Set<Vertex> floatVertexSet = model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
     _builder.newLineIfNotEmpty();
     {
       boolean _hasElements = false;
@@ -174,68 +215,73 @@ public class DataTypeTemplateInc implements InitTemplate {
     return _builder.toString();
   }
   
-  public String intTypeDef() {
+  public String intTypeDef(final ForSyDeSystemGraph model) {
     StringConcatenation _builder = new StringConcatenation();
     final Predicate<Vertex> _function = new Predicate<Vertex>() {
       public boolean test(final Vertex v) {
-        return (v.hasTrait(VertexTrait.TYPING_DATATYPES_INTEGER)).booleanValue();
+        return (forsyde.io.java.typed.viewers.typing.datatypes.Integer.conforms(v)).booleanValue();
       }
     };
-    Set<Vertex> intVertexSet = Generator.model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
+    final Function<Vertex, IntegerViewer> _function_1 = new Function<Vertex, IntegerViewer>() {
+      public IntegerViewer apply(final Vertex v) {
+        return new IntegerViewer(v);
+      }
+    };
+    Set<IntegerViewer> intVertexViewerSet = model.vertexSet().stream().filter(_function).<IntegerViewer>map(_function_1).collect(Collectors.<IntegerViewer>toSet());
     _builder.newLineIfNotEmpty();
     {
       boolean _hasElements = false;
-      for(final Vertex intVertex : intVertexSet) {
+      for(final IntegerViewer intVertexViewer : intVertexViewerSet) {
         if (!_hasElements) {
           _hasElements = true;
         } else {
           _builder.appendImmediate("", "");
         }
         {
-          Object _unwrap = intVertex.getProperties().get("numberOfBits").unwrap();
-          boolean _equals = ((((Integer) _unwrap)).intValue() == 8);
+          Integer _numberOfBits = intVertexViewer.getNumberOfBits();
+          boolean _equals = ((_numberOfBits).intValue() == 8);
           if (_equals) {
             _builder.append("typedef char ");
-            String _identifier = intVertex.getIdentifier();
+            String _identifier = intVertexViewer.getIdentifier();
             _builder.append(_identifier);
             _builder.append(";");
             _builder.newLineIfNotEmpty();
           }
         }
         {
-          Object _unwrap_1 = intVertex.getProperties().get("numberOfBits").unwrap();
-          boolean _equals_1 = ((((Integer) _unwrap_1)).intValue() == 16);
+          Integer _numberOfBits_1 = intVertexViewer.getNumberOfBits();
+          boolean _equals_1 = ((_numberOfBits_1).intValue() == 16);
           if (_equals_1) {
             _builder.append("typedef unsigned short ");
-            String _identifier_1 = intVertex.getIdentifier();
+            String _identifier_1 = intVertexViewer.getIdentifier();
             _builder.append(_identifier_1);
             _builder.append(";");
             _builder.newLineIfNotEmpty();
           }
         }
         {
-          Object _unwrap_2 = intVertex.getProperties().get("numberOfBits").unwrap();
-          boolean _equals_2 = ((((Integer) _unwrap_2)).intValue() == 32);
+          Integer _numberOfBits_2 = intVertexViewer.getNumberOfBits();
+          boolean _equals_2 = ((_numberOfBits_2).intValue() == 32);
           if (_equals_2) {
             _builder.append("typedef unsigned int ");
-            String _identifier_2 = intVertex.getIdentifier();
+            String _identifier_2 = intVertexViewer.getIdentifier();
             _builder.append(_identifier_2);
             _builder.append(";");
             _builder.newLineIfNotEmpty();
           }
         }
         {
-          Object _unwrap_3 = intVertex.getProperties().get("numberOfBits").unwrap();
-          boolean _equals_3 = ((((Integer) _unwrap_3)).intValue() == 64);
+          Integer _numberOfBits_3 = intVertexViewer.getNumberOfBits();
+          boolean _equals_3 = ((_numberOfBits_3).intValue() == 64);
           if (_equals_3) {
             _builder.append("typedef unsigned long ");
-            String _identifier_3 = intVertex.getIdentifier();
+            String _identifier_3 = intVertexViewer.getIdentifier();
             _builder.append(_identifier_3);
             _builder.append(";");
             _builder.newLineIfNotEmpty();
           }
         }
-        boolean tmp = this.record.add(intVertex.getIdentifier());
+        boolean tmp = this.record.add(intVertexViewer.getIdentifier());
         _builder.append("\t\t");
         _builder.newLineIfNotEmpty();
       }
@@ -246,25 +292,30 @@ public class DataTypeTemplateInc implements InitTemplate {
     return _builder.toString();
   }
   
-  public String arrayTypeDef() {
+  public String arrayTypeDef(final ForSyDeSystemGraph model) {
     String _xblockexpression = null;
     {
       final Predicate<Vertex> _function = new Predicate<Vertex>() {
         public boolean test(final Vertex v) {
-          return (v.hasTrait(VertexTrait.TYPING_DATATYPES_ARRAY)).booleanValue();
+          return (Array.conforms(v)).booleanValue();
         }
       };
-      Set<Vertex> arrayVertexSet = Generator.model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
+      final Function<Vertex, ArrayViewer> _function_1 = new Function<Vertex, ArrayViewer>() {
+        public ArrayViewer apply(final Vertex v) {
+          return new ArrayViewer(v);
+        }
+      };
+      Set<ArrayViewer> arrayViewerSet = model.vertexSet().stream().filter(_function).<ArrayViewer>map(_function_1).collect(Collectors.<ArrayViewer>toSet());
       StringConcatenation _builder = new StringConcatenation();
       {
         boolean _hasElements = false;
-        for(final Vertex arrayVertex : arrayVertexSet) {
+        for(final ArrayViewer array : arrayViewerSet) {
           if (!_hasElements) {
             _hasElements = true;
           } else {
             _builder.appendImmediate("", "");
           }
-          String _help1 = this.help1(arrayVertex);
+          String _help1 = this.help1(model, array);
           _builder.append(_help1);
           _builder.newLineIfNotEmpty();
         }
@@ -277,20 +328,20 @@ public class DataTypeTemplateInc implements InitTemplate {
     return _xblockexpression;
   }
   
-  private String help1(final Vertex arrayVertex) {
+  private String help1(final ForSyDeSystemGraph model, final ArrayViewer arr) {
     StringConcatenation _builder = new StringConcatenation();
-    String innerType = this.getInnerType(arrayVertex);
+    String innerType = arr.getInnerTypePort(Generator.model).get().getIdentifier();
     _builder.newLineIfNotEmpty();
     {
-      if ((this.record.contains(innerType) && (!this.record.contains(arrayVertex.getIdentifier())))) {
-        int maximumElems = this.getMaximumElems(arrayVertex);
+      if ((this.record.contains(innerType) && (!this.record.contains(arr.getIdentifier())))) {
+        int maximumElems = this.getMaximumElems(arr.getViewedVertex());
         _builder.newLineIfNotEmpty();
         {
           if ((maximumElems > 0)) {
             _builder.append("typedef ");
             _builder.append(innerType);
             _builder.append(" ");
-            String _identifier = arrayVertex.getIdentifier();
+            String _identifier = arr.getIdentifier();
             _builder.append(_identifier);
             _builder.append("[");
             _builder.append(maximumElems);
@@ -303,28 +354,30 @@ public class DataTypeTemplateInc implements InitTemplate {
             _builder.append("typedef ");
             _builder.append(innerType);
             _builder.append(" *");
-            String _identifier_1 = arrayVertex.getIdentifier();
+            String _identifier_1 = arr.getIdentifier();
             _builder.append(_identifier_1);
             _builder.append(";");
             _builder.newLineIfNotEmpty();
           }
         }
-        boolean tmp = this.record.add(arrayVertex.getIdentifier());
+        boolean tmp = this.record.add(arr.getIdentifier());
         _builder.newLineIfNotEmpty();
       } else {
-        if ((this.record.contains(innerType) && this.record.contains(arrayVertex.getIdentifier()))) {
+        if ((this.record.contains(innerType) && this.record.contains(arr.getIdentifier()))) {
         } else {
-          String _help1 = this.help1(Query.findVertexByName(Generator.model, innerType));
+          Vertex _get = model.queryVertex(innerType).get();
+          ArrayViewer _arrayViewer = new ArrayViewer(_get);
+          String _help1 = this.help1(model, _arrayViewer);
           _builder.append(_help1);
           _builder.newLineIfNotEmpty();
-          int maximumElems_1 = this.getMaximumElems(arrayVertex);
+          int maximumElems_1 = this.getMaximumElems(arr.getViewedVertex());
           _builder.newLineIfNotEmpty();
           {
             if ((maximumElems_1 > 0)) {
               _builder.append("typedef ");
               _builder.append(innerType);
               _builder.append(" ");
-              String _identifier_2 = arrayVertex.getIdentifier();
+              String _identifier_2 = arr.getIdentifier();
               _builder.append(_identifier_2);
               _builder.append("[");
               _builder.append(maximumElems_1);
@@ -337,33 +390,18 @@ public class DataTypeTemplateInc implements InitTemplate {
               _builder.append("typedef ");
               _builder.append(innerType);
               _builder.append(" *");
-              String _identifier_3 = arrayVertex.getIdentifier();
+              String _identifier_3 = arr.getIdentifier();
               _builder.append(_identifier_3);
               _builder.append(";");
               _builder.newLineIfNotEmpty();
             }
           }
-          boolean tmp_1 = this.record.add(arrayVertex.getIdentifier());
+          boolean tmp_1 = this.record.add(arr.getIdentifier());
           _builder.newLineIfNotEmpty();
         }
       }
     }
     return _builder.toString();
-  }
-  
-  private String getInnerType(final Vertex arrayType) {
-    final Predicate<EdgeInfo> _function = new Predicate<EdgeInfo>() {
-      public boolean test(final EdgeInfo e) {
-        return e.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION);
-      }
-    };
-    final Predicate<EdgeInfo> _function_1 = new Predicate<EdgeInfo>() {
-      public boolean test(final EdgeInfo e) {
-        return (Objects.equal(e.getSource(), arrayType.getIdentifier()) && Objects.equal(e.getSourcePort().get(), "innerType"));
-      }
-    };
-    String innerType = Generator.model.outgoingEdgesOf(arrayType).stream().filter(_function).filter(_function_1).findAny().get().getTarget();
-    return innerType;
   }
   
   private int getMaximumElems(final Vertex typeVertex) {
@@ -378,5 +416,15 @@ public class DataTypeTemplateInc implements InitTemplate {
       maximumElems = (((Integer) _unwrap_1)).intValue();
     }
     return maximumElems;
+  }
+  
+  public String findType(final ForSyDeSystemGraph model, final Vertex datablock) {
+    Optional<DataType> a = new TypedDataBlockViewer(datablock).getDataTypePort(model);
+    boolean _isPresent = a.isPresent();
+    boolean _not = (!_isPresent);
+    if (_not) {
+      return null;
+    }
+    return a.get().getIdentifier();
   }
 }

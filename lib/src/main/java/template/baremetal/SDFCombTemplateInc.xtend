@@ -10,16 +10,14 @@ import template.templateInterface.ActorTemplate
 import utils.Name
 import fileAnnotation.FileTypeAnno
 import fileAnnotation.FileType
+import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer
+import forsyde.io.java.typed.viewers.impl.Executable
 
 @FileTypeAnno(type=FileType.C_INCLUDE)
 class SDFCombTemplateInc implements ActorTemplate{
-	Set<Vertex> implActorSet
+	Set<Executable> a
 	override create(Vertex actor) {
-		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model
-			,actor, "combFunctions"
-			,VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE
-			, VertexPortDirection.OUTGOING
-			)
+		this.a=   (new SDFCombViewer(actor)).getCombFunctionsPort(Generator.model)
 		'''
 		«var name = actor.getIdentifier()»
 		«var tmp=name.toUpperCase()+"_H_"»

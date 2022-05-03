@@ -1,0 +1,53 @@
+systemgraph {
+
+    vertex DoubleType [typing::datatypes::Double] () {}
+    
+    vertex A [moc::sdf::SDFComb] (combFunctions, imgBlockX, gx) {
+        "production": {
+            "a": 1_i,
+        },
+        "firingSlots": [0_i]
+
+    }
+
+
+    vertex B [moc::sdf::SDFComb, decision::sdf::PASSedSDFComb] 
+    (combFunctions, b) {
+        "consumption": {
+            "b": 1_i,
+        },
+        "firingSlots": [1_i]
+    }
+
+
+
+        vertex aImpl
+    [impl::ANSICBlackBoxExecutable, typing::TypedOperation, impl::InstrumentedExecutable] 
+    (portTypes,a)
+    {
+        "inlinedCode": "
+            a=4.2;
+        ",
+        "outputPorts": ["a"]
+    }
+
+    edge [typing::datatypes::DataDefinition] from aImpl port a to DoubleType
+    edge [] from A port combFunctions to aImpl
+    edge [] from aImpl port a to A port a
+
+        vertex bImpl
+    [impl::ANSICBlackBoxExecutable, typing::TypedOperation, impl::InstrumentedExecutable] 
+    (portTypes,b)
+    {
+        "inlinedCode": "
+            b=b*3;
+        ",
+        "inputPorts": ["b"]
+    }
+    edge [typing::datatypes::DataDefinition] from bImpl port b to DoubleType
+
+    edge [] from B port combFunctions to bImpl
+    edge [] from B port b to bImpl port b
+
+
+}

@@ -14,8 +14,12 @@ import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
 import forsyde.io.java.core.VertexProperty;
 import forsyde.io.java.core.VertexTrait;
+import forsyde.io.java.core.VertexViewer;
+import forsyde.io.java.typed.viewers.impl.ANSICBlackBoxExecutableViewer;
+import forsyde.io.java.typed.viewers.impl.Executable;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer;
 import generator.Generator;
 
 import java.lang.Math;
@@ -24,54 +28,45 @@ public class Query {
 	public static Vertex findVertexByName(ForSyDeSystemGraph model, String name) {
 		return model.vertexSet().stream().filter(v -> v.getIdentifier().equals(name)).findAny().orElse(null);
 	}
-	
-	public static String findSDFChannelDataType(ForSyDeSystemGraph model,Vertex sdf) {
-		
-		EdgeInfo inputedge=model.edgeSet().stream()
-				.filter(e->e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
-				.filter(e->e.getSource().equals(sdf.getIdentifier()))
-				.findAny()
-				.orElse(null);
-		EdgeInfo outputedge=model.edgeSet().stream()
-				.filter(e->e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
-				.filter(e->e.getSource().equals(sdf.getIdentifier()))
-				.findAny()
-				.orElse(null);
-		
-		if(inputedge!=null) {
-			//input sdf channel
-			String actorname=inputedge.getTarget();
+
+	public static String findSDFChannelDataType(ForSyDeSystemGraph model, Vertex sdf) {
+
+		EdgeInfo inputedge = model.edgeSet().stream().filter(e -> e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
+				.filter(e -> e.getSource().equals(sdf.getIdentifier())).findAny().orElse(null);
+		EdgeInfo outputedge = model.edgeSet().stream().filter(e -> e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
+				.filter(e -> e.getSource().equals(sdf.getIdentifier())).findAny().orElse(null);
+
+		if (inputedge != null) {
+			// input sdf channel
+			String actorname = inputedge.getTarget();
 			String port = inputedge.getTargetPort().get();
-			Vertex actor=findVertexByName(model,actorname);
+			Vertex actor = findVertexByName(model, actorname);
 			var impls = Query.findCombFuntionVertex(model, actor);
-			
-			EdgeInfo info= model.outgoingEdgesOf(actor).stream()
-			.filter(e->impls.contains(e.getTarget()))
-			.filter(e->e.getTargetPort().isPresent())
-			.findAny().get();
-			
-			String implName=info.getTarget();
+
+			EdgeInfo info = model.outgoingEdgesOf(actor).stream().filter(e -> impls.contains(e.getTarget()))
+					.filter(e -> e.getTargetPort().isPresent()).findAny().get();
+
+			String implName = info.getTarget();
 			String implPort = info.getTargetPort().get();
-			return findImplPortDataType(model, findVertexByName(model,implName),implPort);
-			
-		}else {
-			//output sdf channel
-			String actorname=outputedge.getSource();
+			return findImplPortDataType(model, findVertexByName(model, implName), implPort);
+
+		} else {
+			// output sdf channel
+			String actorname = outputedge.getSource();
 			String port = outputedge.getSourcePort().get();
-			Vertex actor=findVertexByName(model,actorname);
+			Vertex actor = findVertexByName(model, actorname);
 			var impls = Query.findCombFuntionVertex(model, actor);
-			
-			EdgeInfo info= model.incomingEdgesOf(actor).stream()
-			.filter(e->impls.contains(e.getSource()))
-			.filter(e->e.getSourcePort().isPresent())
-			.findAny().get();
-			
-			String implName=info.getSource();
+
+			EdgeInfo info = model.incomingEdgesOf(actor).stream().filter(e -> impls.contains(e.getSource()))
+					.filter(e -> e.getSourcePort().isPresent()).findAny().get();
+
+			String implName = info.getSource();
 			String implPort = info.getSourcePort().get();
-			return findImplPortDataType(model, findVertexByName(model,implName),implPort);			
+			return findImplPortDataType(model, findVertexByName(model, implName), implPort);
 		}
-		
+
 	}
+
 	/**
 	 * 
 	 * @param sdf   is an input channel of actor
@@ -100,13 +95,19 @@ public class Query {
 	 */
 	public static String findActorPortConnectedToImplInputPort(ForSyDeSystemGraph model, Vertex actor, Vertex impl,
 			String implPort) {
-		var actorPort = model.edgeSet().stream().filter(e -> e.getSource().equals(actor.getIdentifier()))
-				.filter(e -> e.getTarget().equals(impl.getIdentifier())).filter(e -> e.getTargetPort().isPresent())
-				.filter(e -> e.getTargetPort().get().equals(implPort))
-				.findAny()
-				.get().getSourcePort().get();
-		return actorPort;
+		
+		try {
+			var actorPort = model.edgeSet().stream().filter(e -> e.getSource().equals(actor.getIdentifier()))
+					.filter(e -> e.getTarget().equals(impl.getIdentifier())).filter(e -> e.getTargetPort().isPresent())
+					.filter(e -> e.getTargetPort().get().equals(implPort)).findAny().get().getSourcePort().get();
+			return actorPort;
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
+
+	
 
 	/**
 	 * Assuming there is an edge from impl port implPort to actor port actorPort,
@@ -119,11 +120,15 @@ public class Query {
 	 */
 	public static String findActorPortConnectedToImplOutputPort(ForSyDeSystemGraph model, Vertex actor, Vertex impl,
 			String implPort) {
-		var actorPort = model.edgeSet().stream().filter(e -> e.getTarget().equals(actor.getIdentifier()))
-				.filter(e -> e.getSource().equals(impl.getIdentifier()))
-				// .filter(e->e.getTargetPort().isPresent())
-				.filter(e -> e.getSourcePort().get().equals(implPort)).findAny().get().getTargetPort().get();
-		return actorPort;
+		try {
+			var actorPort = model.edgeSet().stream().filter(e -> e.getTarget().equals(actor.getIdentifier()))
+					.filter(e -> e.getSource().equals(impl.getIdentifier()))
+					// .filter(e->e.getTargetPort().isPresent())
+					.filter(e -> e.getSourcePort().get().equals(implPort)).findAny().get().getTargetPort().get();
+			return actorPort;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -142,7 +147,7 @@ public class Query {
 			return op.get().getTarget();
 		}
 
-		return "Port Not Connected To Any Type";
+		return "Port Not Connected To Any Type---";
 	}
 
 	/**
@@ -194,15 +199,15 @@ public class Query {
 	 * @param actor
 	 * @return
 	 */
-	public static Set<Vertex> findInputSDFChannels(ForSyDeSystemGraph model,Vertex actor) {
+	public static Set<Vertex> findInputSDFChannels(ForSyDeSystemGraph model, Vertex actor) {
 		var inputSDFChannelNameSet = model.incomingEdgesOf(actor).stream()
 				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE)).map(e -> e.getSource())
 				.collect(Collectors.toSet());
 
 		Set<Vertex> inputSDFChannelSet = new HashSet<>();
 		for (String sdfname : inputSDFChannelNameSet) {
-			Vertex sdfchannel = model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname))
-					.findAny().get();
+			Vertex sdfchannel = model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname)).findAny()
+					.get();
 			inputSDFChannelSet.add(sdfchannel);
 		}
 		return inputSDFChannelSet;
@@ -214,45 +219,68 @@ public class Query {
 	 * @param actor
 	 * @return
 	 */
-	public static Set<Vertex> findOutputSDFChannels(ForSyDeSystemGraph model,Vertex actor) {
+	public static Set<Vertex> findOutputSDFChannels(ForSyDeSystemGraph model, Vertex actor) {
 		var outputSDFChannelNameSet = model.outgoingEdgesOf(actor).stream()
 				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE)).map(e -> e.getTarget())
 				.collect(Collectors.toSet());
 
 		Set<Vertex> outputSDFChannelSet = new HashSet<>();
 		for (String sdfname : outputSDFChannelNameSet) {
-			Vertex sdfchannel = model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname))
-					.findAny().get();
+			Vertex sdfchannel = model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname)).findAny()
+					.get();
 			outputSDFChannelSet.add(sdfchannel);
 		}
 		return outputSDFChannelSet;
 	}
-	
-	public static String findInputSDFChannelConnectedToActorPort(ForSyDeSystemGraph model, Vertex actor, String actorPort) {
+
+	public static String findInputSDFChannelConnectedToActorPort(ForSyDeSystemGraph model, Vertex actor,
+			String actorPort) {
 		var edge = model.incomingEdgesOf(actor).stream()
-				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
-				.filter(e->e.getTargetPort().get().equals(actorPort))
-				.findAny()
-				.orElse(null);
-		if(edge!=null) {
+				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE)
+						|| edgeinfo.hasTrait(EdgeTrait.IMPL_DATAMOVEMENT))
+				.filter(e -> e.getTargetPort().get().equals(actorPort)).findAny().orElse(null);
+		if (edge != null) {
 			return edge.getSource();
 		}
-		return actor.getIdentifier()+" port "+actorPort+" Not read from any sdf channel";	
-			
+		return actor.getIdentifier() + " port " + actorPort + " Not read from any sdf channel";
+
 	}
-	
-	public static String findOutputSDFChannelConnectedToActorPort(ForSyDeSystemGraph model, Vertex actor, String actorPort) {
+
+	public static EdgeInfo findInputSystemChannelConnectedToActorPort(ForSyDeSystemGraph model, Vertex actor,
+			String actorPort) {
+
+		try {
+			var edge = model.incomingEdgesOf(actor).stream()
+					.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.IMPL_DATAMOVEMENT))
+					.filter(e -> e.getTargetPort().get().equals(actorPort)).findAny().orElse(null);
+			return edge;
+		} catch (Exception e) {
+			return null;
+		}
+
+	}
+
+	public static EdgeInfo findOutputSystemChannelConnectedToActorPort(ForSyDeSystemGraph model, Vertex actor,
+			String actorPort) {
+		var edge = model.outgoingEdgesOf(actor).stream()
+				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.IMPL_DATAMOVEMENT))
+				.filter(e -> e.getSourcePort().get().equals(actorPort)).findAny().orElse(null);
+		return edge;
+
+	}
+
+	public static String findOutputSDFChannelConnectedToActorPort(ForSyDeSystemGraph model, Vertex actor,
+			String actorPort) {
 		var edge = model.outgoingEdgesOf(actor).stream()
 				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
-				.filter(e->e.getSourcePort().get().equals(actorPort))
-				.findAny()
-				.orElse(null);
-		if(edge!=null) {
+				.filter(e -> e.getSourcePort().get().equals(actorPort)).findAny().orElse(null);
+		if (edge != null) {
 			return edge.getTarget();
 		}
-		return actor.getIdentifier()+" port "+actorPort+" Not write to any sdf channel";	
-			
+		return actor.getIdentifier() + " port " + actorPort + " Not write to any sdf channel";
+
 	}
+
 	/**
 	 * 
 	 * @param v is a combFunction actor
@@ -358,22 +386,47 @@ public class Query {
 		}
 		return -1;
 	}
-	
-	public  static  String getInnerType(ForSyDeSystemGraph model,Vertex arrayType) {
-		var innerType = model.outgoingEdgesOf(arrayType).stream().filter( e ->
-			e.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION)
-		).filter(e->e.getSource().equals(arrayType.getIdentifier())  && e.getSourcePort().get().equals("innerType")).findAny().
-			get().getTarget();
+
+	public static String getInnerType(ForSyDeSystemGraph model, Vertex arrayType) {
+		var innerType = model.outgoingEdgesOf(arrayType).stream()
+				.filter(e -> e.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION))
+				.filter(e -> e.getSource().equals(arrayType.getIdentifier())
+						&& e.getSourcePort().get().equals("innerType"))
+				.findAny().get().getTarget();
 		return innerType;
 	}
 
-	public  static int  getMaximumElems(Vertex typeVertex) {
+	public static int getMaximumElems(Vertex typeVertex) {
 		var maximumElems = 0;
 		if (typeVertex.getProperties().get("maximumElems") != null) {
-			maximumElems = ((Integer)typeVertex.getProperties().get("maximumElems").unwrap() );
+			maximumElems = ((Integer) typeVertex.getProperties().get("maximumElems").unwrap());
 		} else {
-			maximumElems = ((Integer)typeVertex.getProperties().get("production").unwrap() );
+			maximumElems = ((Integer) typeVertex.getProperties().get("production").unwrap());
 		}
 		return maximumElems;
+	}
+
+	public static String isSystemChannel(ForSyDeSystemGraph model, Vertex impl, String implPort) {
+		String actorName = model.edgeSet().stream().filter(
+				e -> e.getTarget().equals(impl.getIdentifier()) && e.getSourcePort().get().equals("combFunctions"))
+				.findAny().get().getSource();
+
+		var actor = Query.findVertexByName(model, actorName);
+		var actorport1 = Query.findActorPortConnectedToImplInputPort(model, actor, impl, implPort);
+
+		if (actorport1 != null) {
+			var edgeinfo1 = Query.findInputSystemChannelConnectedToActorPort(model, actor, actorport1);
+			var edgeinfo2 = Query.findOutputSystemChannelConnectedToActorPort(model, actor, actorport1);
+			if (edgeinfo1 != null) {
+				var datablock1 = edgeinfo1.getSource();
+				return datablock1;
+			}
+			if (edgeinfo2 != null) {
+				var datablock2 = edgeinfo2.getTarget();
+				return datablock2;
+			}
+		}
+
+		return null;
 	}
 }

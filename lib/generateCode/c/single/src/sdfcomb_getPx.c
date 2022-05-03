@@ -19,7 +19,6 @@ inline void actor_getPx(){
 	Array6OfDoubleType gray; 
 	Array6OfDoubleType imgBlockY; 
 	Array6OfDoubleType imgBlockX; 
-	
 	/* Read From Input Port  */
 	for(int i=0;i<6;++i){
 		read_non_blocking(&fifo_GrayScaleToGetPx,&gray[i]);

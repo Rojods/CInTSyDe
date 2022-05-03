@@ -17,9 +17,10 @@ inline void actor_Gx(){
 	/* Initilize Memory      */
 	Array6OfDoubleType imgBlockX; 
 	DoubleType gx; 
-	
 	/* Read From Input Port  */
-	error imgBlockX;
+	for(int i=0;i<6;++i){
+		read_non_blocking(&fifo_gxsig,&imgBlockX[i]);
+	}
 	/* Inline Code           */
 	//in combFunction GxImpl
 	gx=gx-imgBlockX[0];
@@ -30,5 +31,5 @@ inline void actor_Gx(){
 	gx=gx+imgBlockX[5];
 
 	/* Write To Output Ports */
-	error gx;
+	write_non_blocking(&fifo_absxsig,&gx);
 }

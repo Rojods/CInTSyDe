@@ -78,8 +78,6 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append(_initMemory, "\t");
       _builder.newLineIfNotEmpty();
       _builder.append("\t");
-      _builder.newLine();
-      _builder.append("\t");
       _builder.append("/* Read From Input Port  */");
       _builder.newLine();
       _builder.append("\t");
@@ -191,14 +189,30 @@ public class SDFCombTemplateSrc implements ActorTemplate {
             boolean _contains = variableNameRecord.contains(inport);
             boolean _not = (!_contains);
             if (_not) {
-              String _ret = ret;
-              StringConcatenation _builder = new StringConcatenation();
-              _builder.append(datatype);
-              _builder.append(" ");
-              _builder.append(inport);
-              _builder.append("; ");
-              _builder.newLineIfNotEmpty();
-              ret = (_ret + _builder);
+              String _isSystemChannel = Query.isSystemChannel(model, actorimpl, inport);
+              boolean _tripleEquals = (_isSystemChannel == null);
+              if (_tripleEquals) {
+                String _ret = ret;
+                StringConcatenation _builder = new StringConcatenation();
+                _builder.append(datatype);
+                _builder.append(" ");
+                _builder.append(inport);
+                _builder.append("; ");
+                _builder.newLineIfNotEmpty();
+                ret = (_ret + _builder);
+              } else {
+                String _ret_1 = ret;
+                StringConcatenation _builder_1 = new StringConcatenation();
+                _builder_1.append(datatype);
+                _builder_1.append(" ");
+                _builder_1.append(inport);
+                _builder_1.append(" = ");
+                String _isSystemChannel_1 = Query.isSystemChannel(model, actorimpl, inport);
+                _builder_1.append(_isSystemChannel_1);
+                _builder_1.append("; ");
+                _builder_1.newLineIfNotEmpty();
+                ret = (_ret_1 + _builder_1);
+              }
               variableNameRecord.add(inport);
             }
           }
@@ -210,14 +224,30 @@ public class SDFCombTemplateSrc implements ActorTemplate {
             boolean _contains = variableNameRecord.contains(outport);
             boolean _not = (!_contains);
             if (_not) {
-              String _ret = ret;
-              StringConcatenation _builder = new StringConcatenation();
-              _builder.append(datatype);
-              _builder.append(" ");
-              _builder.append(outport);
-              _builder.append("; ");
-              _builder.newLineIfNotEmpty();
-              ret = (_ret + _builder);
+              String _isSystemChannel = Query.isSystemChannel(model, actorimpl, outport);
+              boolean _tripleEquals = (_isSystemChannel == null);
+              if (_tripleEquals) {
+                String _ret = ret;
+                StringConcatenation _builder = new StringConcatenation();
+                _builder.append(datatype);
+                _builder.append(" ");
+                _builder.append(outport);
+                _builder.append("; ");
+                _builder.newLineIfNotEmpty();
+                ret = (_ret + _builder);
+              } else {
+                String _ret_1 = ret;
+                StringConcatenation _builder_1 = new StringConcatenation();
+                _builder_1.append(datatype);
+                _builder_1.append(" ");
+                _builder_1.append(outport);
+                _builder_1.append(" = ");
+                String _isSystemChannel_1 = Query.isSystemChannel(model, actorimpl, outport);
+                _builder_1.append(_isSystemChannel_1);
+                _builder_1.append("; ");
+                _builder_1.newLineIfNotEmpty();
+                ret = (_ret_1 + _builder_1);
+              }
               variableNameRecord.add(outport);
             }
           }
@@ -237,56 +267,44 @@ public class SDFCombTemplateSrc implements ActorTemplate {
         Vertex actorimpl = Query.findVertexByName(model, impl);
         Set<String> inputPortSet = Query.findImplInputPortSet(actorimpl);
         for (final String inport : inputPortSet) {
-          boolean _contains = variableNameRecord.contains(inport);
-          boolean _not = (!_contains);
-          if (_not) {
+          if (((!variableNameRecord.contains(inport)) && (Query.isSystemChannel(model, actorimpl, inport) == null))) {
             String datatype = Query.findImplPortDataType(model, actorimpl, inport);
             String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, actorimpl, inport);
             String sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName);
-            try {
-              Integer consumption = SDFComb.enforce(actor).getConsumption().get(actorPortName);
-              if (((consumption).intValue() == 1)) {
-                String _ret = ret;
-                StringConcatenation _builder = new StringConcatenation();
-                _builder.append("read_non_blocking(&fifo_");
-                _builder.append(sdfchannelName);
-                _builder.append(",&");
-                _builder.append(inport);
-                _builder.append(");");
-                _builder.newLineIfNotEmpty();
-                ret = (_ret + _builder);
-              } else {
-                String _ret_1 = ret;
-                StringConcatenation _builder_1 = new StringConcatenation();
-                _builder_1.append("for(int i=0;i<");
-                _builder_1.append(consumption);
-                _builder_1.append(";++i){");
-                _builder_1.newLineIfNotEmpty();
-                _builder_1.append("\t");
-                _builder_1.append("read_non_blocking(&fifo_");
-                _builder_1.append(sdfchannelName, "\t");
-                _builder_1.append(",&");
-                _builder_1.append(inport, "\t");
-                _builder_1.append("[i]);");
-                _builder_1.newLineIfNotEmpty();
-                _builder_1.append("}");
-                _builder_1.newLine();
-                ret = (_ret_1 + _builder_1);
-              }
-              variableNameRecord.add(inport);
-            } catch (final Throwable _t) {
-              if (_t instanceof Exception) {
-                String _identifier = actor.getIdentifier();
-                String _plus = ("In actor " + _identifier);
-                String _plus_1 = (_plus + " port ");
-                String _plus_2 = (_plus_1 + inport);
-                String _plus_3 = (_plus_2 + " no comsumption");
-                InputOutput.<String>println(_plus_3);
-                return (("error " + inport) + ";");
-              } else {
-                throw Exceptions.sneakyThrow(_t);
-              }
+            String _identifier = actor.getIdentifier();
+            String _plus = (_identifier + " ");
+            String _plus_1 = (_plus + actorPortName);
+            InputOutput.<String>println(_plus_1);
+            Integer consumption = SDFComb.enforce(actor).getConsumption().get(actorPortName);
+            if (((consumption).intValue() == 1)) {
+              String _ret = ret;
+              StringConcatenation _builder = new StringConcatenation();
+              _builder.append("read_non_blocking(&fifo_");
+              _builder.append(sdfchannelName);
+              _builder.append(",&");
+              _builder.append(inport);
+              _builder.append(");");
+              _builder.newLineIfNotEmpty();
+              ret = (_ret + _builder);
+            } else {
+              String _ret_1 = ret;
+              StringConcatenation _builder_1 = new StringConcatenation();
+              _builder_1.append("for(int i=0;i<");
+              _builder_1.append(consumption);
+              _builder_1.append(";++i){");
+              _builder_1.newLineIfNotEmpty();
+              _builder_1.append("\t");
+              _builder_1.append("read_non_blocking(&fifo_");
+              _builder_1.append(sdfchannelName, "\t");
+              _builder_1.append(",&");
+              _builder_1.append(inport, "\t");
+              _builder_1.append("[i]);");
+              _builder_1.newLineIfNotEmpty();
+              _builder_1.append("}");
+              _builder_1.newLine();
+              ret = (_ret_1 + _builder_1);
             }
+            variableNameRecord.add(inport);
           }
         }
       }

@@ -21,14 +21,19 @@ inline void actor_Abs(){
 	Array2OfUInt16 dims; 
 	UInt16 offsetXIn; 
 	UInt16 offsetYIn; 
-	ArrayXOfArrayXOfDoubleType system_img_sink_address; 
+	ArrayXOfArrayXOfDoubleType system_img_sink_address = system_img_sink; 
 	DoubleType resy; 
 	DoubleType resx; 
 	UInt16 offsetYOut; 
 	UInt16 offsetXOut; 
-	
 	/* Read From Input Port  */
-	error system_img_sink_address;
+	for(int i=0;i<2;++i){
+		read_non_blocking(&fifo_GrayScaleToAbs,&dims[i]);
+	}
+	read_non_blocking(&fifo_AbsX,&offsetXIn);
+	read_non_blocking(&fifo_AbsY,&offsetYIn);
+	read_non_blocking(&fifo_absysig,&resy);
+	read_non_blocking(&fifo_absxsig,&resx);
 	/* Inline Code           */
 	//in combFunction AbsImpl
 	if(resx<0.0)resx=-resx;
