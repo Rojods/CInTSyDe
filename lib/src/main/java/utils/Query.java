@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -18,8 +19,10 @@ import forsyde.io.java.core.VertexViewer;
 import forsyde.io.java.typed.viewers.impl.ANSICBlackBoxExecutableViewer;
 import forsyde.io.java.typed.viewers.impl.Executable;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFChannelViewer;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer;
+import forsyde.io.java.typed.viewers.typing.TypedOperation;
 import generator.Generator;
 
 import java.lang.Math;
@@ -95,19 +98,18 @@ public class Query {
 	 */
 	public static String findActorPortConnectedToImplInputPort(ForSyDeSystemGraph model, Vertex actor, Vertex impl,
 			String implPort) {
-		
+
 		try {
-			var actorPort = model.edgeSet().stream().filter(e -> e.getSource().equals(actor.getIdentifier()))
-					.filter(e -> e.getTarget().equals(impl.getIdentifier())).filter(e -> e.getTargetPort().isPresent())
-					.filter(e -> e.getTargetPort().get().equals(implPort)).findAny().get().getSourcePort().get();
+			String actorPort = model.outgoingEdgesOf(actor).stream()
+					.filter(e -> e.getTarget().equals(impl.getIdentifier()))
+					.filter(e -> e.getTargetPort().isPresent() && e.getTargetPort().get().equals(implPort)).findAny()
+					.get().getSourcePort().get();
 			return actorPort;
 		} catch (Exception e) {
 			return null;
 		}
-		
-	}
 
-	
+	}
 
 	/**
 	 * Assuming there is an edge from impl port implPort to actor port actorPort,
@@ -121,10 +123,11 @@ public class Query {
 	public static String findActorPortConnectedToImplOutputPort(ForSyDeSystemGraph model, Vertex actor, Vertex impl,
 			String implPort) {
 		try {
-			var actorPort = model.edgeSet().stream().filter(e -> e.getTarget().equals(actor.getIdentifier()))
+
+			String actorPort = model.incomingEdgesOf(actor).stream()
 					.filter(e -> e.getSource().equals(impl.getIdentifier()))
-					// .filter(e->e.getTargetPort().isPresent())
-					.filter(e -> e.getSourcePort().get().equals(implPort)).findAny().get().getTargetPort().get();
+					.filter(e -> e.getSourcePort().isPresent() && e.getSourcePort().get().equals(implPort)).findAny()
+					.get().getTargetPort().get();
 			return actorPort;
 		} catch (Exception e) {
 			return null;
@@ -139,9 +142,9 @@ public class Query {
 	 * @return
 	 */
 	public static String findImplPortDataType(ForSyDeSystemGraph model, Vertex impl, String implPort) {
-		Optional<EdgeInfo> op = model.edgeSet().stream()
+
+		Optional<EdgeInfo> op = model.outgoingEdgesOf(impl).stream()
 				.filter(e -> e.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION))
-				.filter(e -> e.getSource().equals(impl.getIdentifier()))
 				.filter(e -> e.getSourcePort().get().equals(implPort)).findAny();
 		if (op.isPresent()) {
 			return op.get().getTarget();
@@ -150,35 +153,14 @@ public class Query {
 		return "Port Not Connected To Any Type---";
 	}
 
-	/**
-	 * find all the input port of impl
-	 * 
-	 * @param impl
-	 * @return
-	 */
-	public static Set<String> findImplInputPortSet(Vertex impl) {
-		Set<String> ret = new HashSet<>();
-		var properties = impl.getProperties();
-		if (properties.get("inputPorts") == null) {
-			return ret;
-		}
-		ret.addAll((ArrayList<String>) properties.get("inputPorts").unwrap());
+
+	public static List<String> findImplInputPorts(Vertex impl) {
+		var ret = TypedOperation.safeCast(impl).get().getInputPorts();
 		return ret;
 	}
 
-	/**
-	 * find all the output port of impl
-	 * 
-	 * @param impl
-	 * @return
-	 */
-	public static Set<String> findImplOutputPortSet(Vertex impl) {
-		Set<String> ret = new HashSet<>();
-		var properties = impl.getProperties();
-		if (properties.get("outputPorts") == null) {
-			return ret;
-		}
-		ret.addAll((ArrayList<String>) properties.get("outputPorts").unwrap());
+	public static List<String> findImplOutputPorts(Vertex impl) {
+		var ret = TypedOperation.safeCast(impl).get().getOutputPorts();
 		return ret;
 	}
 
@@ -194,22 +176,15 @@ public class Query {
 	}
 
 	/**
-	 * get sdf channels from which the actor read token
+	 * get sdf channels from which the actor read tokens
 	 * 
 	 * @param actor
 	 * @return
 	 */
 	public static Set<Vertex> findInputSDFChannels(ForSyDeSystemGraph model, Vertex actor) {
-		var inputSDFChannelNameSet = model.incomingEdgesOf(actor).stream()
-				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE)).map(e -> e.getSource())
+		var inputSDFChannelSet = model.vertexSet().stream().filter(v -> SDFChannel.conforms(v)).filter(v -> model
+				.hasConnection(new SDFChannelViewer(v), new SDFCombViewer(actor), EdgeTrait.MOC_SDF_SDFDATAEDGE))
 				.collect(Collectors.toSet());
-
-		Set<Vertex> inputSDFChannelSet = new HashSet<>();
-		for (String sdfname : inputSDFChannelNameSet) {
-			Vertex sdfchannel = model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname)).findAny()
-					.get();
-			inputSDFChannelSet.add(sdfchannel);
-		}
 		return inputSDFChannelSet;
 	}
 
@@ -220,16 +195,10 @@ public class Query {
 	 * @return
 	 */
 	public static Set<Vertex> findOutputSDFChannels(ForSyDeSystemGraph model, Vertex actor) {
-		var outputSDFChannelNameSet = model.outgoingEdgesOf(actor).stream()
-				.filter(edgeinfo -> edgeinfo.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE)).map(e -> e.getTarget())
+		var outputSDFChannelSet = model.vertexSet().stream().filter(v -> SDFChannel.conforms(v))
+				.filter(v -> model.hasConnection(SDFComb.safeCast(actor).get(), SDFChannel.safeCast(v).get(),
+						EdgeTrait.MOC_SDF_SDFDATAEDGE))
 				.collect(Collectors.toSet());
-
-		Set<Vertex> outputSDFChannelSet = new HashSet<>();
-		for (String sdfname : outputSDFChannelNameSet) {
-			Vertex sdfchannel = model.vertexSet().stream().filter(v -> v.getIdentifier().equals(sdfname)).findAny()
-					.get();
-			outputSDFChannelSet.add(sdfchannel);
-		}
 		return outputSDFChannelSet;
 	}
 
@@ -393,6 +362,7 @@ public class Query {
 				.filter(e -> e.getSource().equals(arrayType.getIdentifier())
 						&& e.getSourcePort().get().equals("innerType"))
 				.findAny().get().getTarget();
+
 		return innerType;
 	}
 
@@ -411,7 +381,7 @@ public class Query {
 				e -> e.getTarget().equals(impl.getIdentifier()) && e.getSourcePort().get().equals("combFunctions"))
 				.findAny().get().getSource();
 
-		var actor = Query.findVertexByName(model, actorName);
+		var actor = model.queryVertex(actorName).get();
 		var actorport1 = Query.findActorPortConnectedToImplInputPort(model, actor, impl, implPort);
 
 		if (actorport1 != null) {

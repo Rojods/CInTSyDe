@@ -6,11 +6,15 @@ import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
 import forsyde.io.java.core.VertexTrait;
+import forsyde.io.java.typed.viewers.impl.Executable;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
+import forsyde.io.java.typed.viewers.typing.TypedOperation;
 import generator.Generator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
@@ -74,14 +78,14 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append("/* Initilize Memory      */");
       _builder.newLine();
       _builder.append("\t");
-      String _initMemory = this.initMemory(actor);
+      String _initMemory = this.initMemory(model, actor);
       _builder.append(_initMemory, "\t");
       _builder.newLineIfNotEmpty();
       _builder.append("\t");
       _builder.append("/* Read From Input Port  */");
       _builder.newLine();
       _builder.append("\t");
-      String _read = this.read(actor);
+      String _read = this.read(model, actor);
       _builder.append(_read, "\t");
       _builder.newLineIfNotEmpty();
       _builder.append("\t");
@@ -111,6 +115,8 @@ public class SDFCombTemplateSrc implements ActorTemplate {
     {
       Set<Vertex> record = new HashSet<Vertex>();
       StringConcatenation _builder = new StringConcatenation();
+      _builder.append("/* Input FIFO */");
+      _builder.newLine();
       {
         boolean _hasElements = false;
         for(final Vertex sdf : this.inputSDFChannelSet) {
@@ -137,6 +143,7 @@ public class SDFCombTemplateSrc implements ActorTemplate {
           _builder.append("");
         }
       }
+      _builder.append("/* Output FIFO */");
       _builder.newLine();
       {
         boolean _hasElements_1 = false;
@@ -169,34 +176,30 @@ public class SDFCombTemplateSrc implements ActorTemplate {
     return _xblockexpression;
   }
   
-  public String initMemory(final Vertex actor) {
-    ForSyDeSystemGraph model = Generator.model;
+  public String initMemory(final ForSyDeSystemGraph model, final Vertex actor) {
     Set<String> impls = Query.findCombFuntionVertex(model, actor);
     Set<String> variableNameRecord = new HashSet<String>();
     String ret = "";
     for (final String impl : impls) {
       {
-        final Predicate<Vertex> _function = new Predicate<Vertex>() {
-          public boolean test(final Vertex v) {
-            return v.getIdentifier().equals(impl);
-          }
-        };
-        Vertex actorimpl = model.vertexSet().stream().filter(_function).findAny().orElse(null);
-        Set<String> inputPortSet = Query.findImplInputPortSet(actorimpl);
-        for (final String inport : inputPortSet) {
+        Vertex actorimpl = model.queryVertex(impl).get();
+        Set<String> ports = new HashSet<String>();
+        ports.addAll(Query.findImplInputPorts(actorimpl));
+        ports.addAll(Query.findImplOutputPorts(actorimpl));
+        for (final String port : ports) {
           {
-            String datatype = Query.findImplPortDataType(model, actorimpl, inport);
-            boolean _contains = variableNameRecord.contains(inport);
+            String datatype = Query.findImplPortDataType(model, actorimpl, port);
+            boolean _contains = variableNameRecord.contains(port);
             boolean _not = (!_contains);
             if (_not) {
-              String _isSystemChannel = Query.isSystemChannel(model, actorimpl, inport);
+              String _isSystemChannel = Query.isSystemChannel(model, actorimpl, port);
               boolean _tripleEquals = (_isSystemChannel == null);
               if (_tripleEquals) {
                 String _ret = ret;
                 StringConcatenation _builder = new StringConcatenation();
                 _builder.append(datatype);
                 _builder.append(" ");
-                _builder.append(inport);
+                _builder.append(port);
                 _builder.append("; ");
                 _builder.newLineIfNotEmpty();
                 ret = (_ret + _builder);
@@ -205,50 +208,15 @@ public class SDFCombTemplateSrc implements ActorTemplate {
                 StringConcatenation _builder_1 = new StringConcatenation();
                 _builder_1.append(datatype);
                 _builder_1.append(" ");
-                _builder_1.append(inport);
+                _builder_1.append(port);
                 _builder_1.append(" = ");
-                String _isSystemChannel_1 = Query.isSystemChannel(model, actorimpl, inport);
+                String _isSystemChannel_1 = Query.isSystemChannel(model, actorimpl, port);
                 _builder_1.append(_isSystemChannel_1);
                 _builder_1.append("; ");
                 _builder_1.newLineIfNotEmpty();
                 ret = (_ret_1 + _builder_1);
               }
-              variableNameRecord.add(inport);
-            }
-          }
-        }
-        Set<String> outputPortSet = Query.findImplOutputPortSet(actorimpl);
-        for (final String outport : outputPortSet) {
-          {
-            String datatype = Query.findImplPortDataType(model, actorimpl, outport);
-            boolean _contains = variableNameRecord.contains(outport);
-            boolean _not = (!_contains);
-            if (_not) {
-              String _isSystemChannel = Query.isSystemChannel(model, actorimpl, outport);
-              boolean _tripleEquals = (_isSystemChannel == null);
-              if (_tripleEquals) {
-                String _ret = ret;
-                StringConcatenation _builder = new StringConcatenation();
-                _builder.append(datatype);
-                _builder.append(" ");
-                _builder.append(outport);
-                _builder.append("; ");
-                _builder.newLineIfNotEmpty();
-                ret = (_ret + _builder);
-              } else {
-                String _ret_1 = ret;
-                StringConcatenation _builder_1 = new StringConcatenation();
-                _builder_1.append(datatype);
-                _builder_1.append(" ");
-                _builder_1.append(outport);
-                _builder_1.append(" = ");
-                String _isSystemChannel_1 = Query.isSystemChannel(model, actorimpl, outport);
-                _builder_1.append(_isSystemChannel_1);
-                _builder_1.append("; ");
-                _builder_1.newLineIfNotEmpty();
-                ret = (_ret_1 + _builder_1);
-              }
-              variableNameRecord.add(outport);
+              variableNameRecord.add(port);
             }
           }
         }
@@ -257,32 +225,31 @@ public class SDFCombTemplateSrc implements ActorTemplate {
     return ret;
   }
   
-  public String read(final Vertex actor) {
-    ForSyDeSystemGraph model = Generator.model;
-    Set<String> impls = Query.findCombFuntionVertex(model, actor);
+  public String read(final ForSyDeSystemGraph model, final Vertex actor) {
+    final Function<Executable, Vertex> _function = new Function<Executable, Vertex>() {
+      public Vertex apply(final Executable e) {
+        return e.getViewedVertex();
+      }
+    };
+    Set<Vertex> impls = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
     Set<String> variableNameRecord = new HashSet<String>();
     String ret = "";
-    for (final String impl : impls) {
+    for (final Vertex impl : impls) {
       {
-        Vertex actorimpl = Query.findVertexByName(model, impl);
-        Set<String> inputPortSet = Query.findImplInputPortSet(actorimpl);
-        for (final String inport : inputPortSet) {
-          if (((!variableNameRecord.contains(inport)) && (Query.isSystemChannel(model, actorimpl, inport) == null))) {
-            String datatype = Query.findImplPortDataType(model, actorimpl, inport);
-            String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, actorimpl, inport);
+        List<String> inputPorts = TypedOperation.safeCast(impl).get().getInputPorts();
+        for (final String port : inputPorts) {
+          if (((!variableNameRecord.contains(port)) && (Query.isSystemChannel(model, impl, port) == null))) {
+            String datatype = Query.findImplPortDataType(model, impl, port);
+            String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port);
             String sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName);
-            String _identifier = actor.getIdentifier();
-            String _plus = (_identifier + " ");
-            String _plus_1 = (_plus + actorPortName);
-            InputOutput.<String>println(_plus_1);
-            Integer consumption = SDFComb.enforce(actor).getConsumption().get(actorPortName);
+            Integer consumption = SDFComb.safeCast(actor).get().getConsumption().get(actorPortName);
             if (((consumption).intValue() == 1)) {
               String _ret = ret;
               StringConcatenation _builder = new StringConcatenation();
               _builder.append("read_non_blocking(&fifo_");
               _builder.append(sdfchannelName);
               _builder.append(",&");
-              _builder.append(inport);
+              _builder.append(port);
               _builder.append(");");
               _builder.newLineIfNotEmpty();
               ret = (_ret + _builder);
@@ -297,14 +264,14 @@ public class SDFCombTemplateSrc implements ActorTemplate {
               _builder_1.append("read_non_blocking(&fifo_");
               _builder_1.append(sdfchannelName, "\t");
               _builder_1.append(",&");
-              _builder_1.append(inport, "\t");
+              _builder_1.append(port, "\t");
               _builder_1.append("[i]);");
               _builder_1.newLineIfNotEmpty();
               _builder_1.append("}");
               _builder_1.newLine();
               ret = (_ret_1 + _builder_1);
             }
-            variableNameRecord.add(inport);
+            variableNameRecord.add(port);
           }
         }
       }
@@ -320,7 +287,7 @@ public class SDFCombTemplateSrc implements ActorTemplate {
     for (final String impl : impls) {
       {
         Vertex actorimpl = Query.findVertexByName(model, impl);
-        Set<String> outputPortSet = Query.findImplOutputPortSet(actorimpl);
+        List<String> outputPortSet = Query.findImplOutputPorts(actorimpl);
         for (final String outport : outputPortSet) {
           boolean _contains = variableNameRecord.contains(outport);
           boolean _not = (!_contains);
@@ -389,9 +356,10 @@ public class SDFCombTemplateSrc implements ActorTemplate {
         } else {
           _builder.appendImmediate("", "");
         }
-        _builder.append("//in combFunction ");
+        _builder.append("/* in combFunction ");
         String _identifier = impl.getIdentifier();
         _builder.append(_identifier);
+        _builder.append(" */");
         _builder.newLineIfNotEmpty();
         String _inlineCode = Query.getInlineCode(impl);
         _builder.append(_inlineCode);

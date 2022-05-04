@@ -5,8 +5,9 @@
 	Declare Extern Channal Variables
 ========================================
 */
+/* Input FIFO */
 extern fifo_GrayScaleToGetPx;
-
+/* Output FIFO */
 extern fifo_gysig;
 extern fifo_gxsig;
 /*
@@ -24,14 +25,14 @@ inline void actor_getPx(){
 		read_non_blocking(&fifo_GrayScaleToGetPx,&gray[i]);
 	}
 	/* Inline Code           */
-	//in combFunction getPxImpl1
+	/* in combFunction getPxImpl1 */
 	imgBlockX[0]=gray[0];
 	imgBlockX[1]=gray[1];
 	imgBlockX[2]=gray[2];
 	imgBlockX[3]=gray[3];
 	imgBlockX[4]=gray[4];
 	imgBlockX[5]=gray[5];
-	//in combFunction getPxImpl2
+	/* in combFunction getPxImpl2 */
 	imgBlockY[0]=gray[0];
 	imgBlockY[1]=gray[1];
 	imgBlockY[2]=gray[2];

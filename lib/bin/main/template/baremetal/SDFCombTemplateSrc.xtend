@@ -22,6 +22,7 @@ import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
 import forsyde.io.java.core.ForSyDeSystemGraph
 import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer
 import forsyde.io.java.typed.viewers.impl.Executable
+import forsyde.io.java.typed.viewers.typing.TypedOperation
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFCombTemplateSrc implements ActorTemplate {
@@ -53,9 +54,9 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			*/			
 			inline void actor_«name»(){
 				/* Initilize Memory      */
-				«initMemory(actor)»
+				«initMemory(model,actor)»
 				/* Read From Input Port  */
-				«read(actor)»
+				«read(model,actor)»
 				/* Inline Code           */
 				«getInlineCode()»
 			
@@ -68,13 +69,14 @@ class SDFCombTemplateSrc implements ActorTemplate {
 	def String extern() {
 		var Set<Vertex> record = new HashSet
 		'''
+			/* Input FIFO */
 			«FOR sdf : this.inputSDFChannelSet SEPARATOR "" AFTER ""»
 				«IF !record.contains(sdf)»
 					extern fifo_«sdf.getIdentifier()»;
 					«var tmp=record.add(sdf)»
 				«ENDIF»
 			«ENDFOR»
-			
+			/* Output FIFO */
 			«FOR sdf : this.outputSDFChannelSet SEPARATOR "" AFTER ""»
 				«IF !record.contains(sdf)»
 					extern fifo_«sdf.getIdentifier()»;
@@ -84,83 +86,135 @@ class SDFCombTemplateSrc implements ActorTemplate {
 		'''
 	}
 
-	def String initMemory(Vertex actor) {
-		var model = Generator.model
+	def String initMemory(ForSyDeSystemGraph model,Vertex actor) {
+		
 		var impls = Query.findCombFuntionVertex(model, actor)
 		var Set<String> variableNameRecord = new HashSet
 		var String ret = ""
 
 		for (String impl : impls) {
-			var actorimpl = model.vertexSet().stream().filter([v|v.getIdentifier().equals(impl)]).findAny().orElse(null)
-			var inputPortSet = Query.findImplInputPortSet(actorimpl)
-			for (String inport : inputPortSet) {
-				var datatype = Query.findImplPortDataType(model, actorimpl, inport)
-				if (!variableNameRecord.contains(inport)) {
-					if (Query.isSystemChannel(model, actorimpl, inport) === null) {
+			var actorimpl = model.queryVertex(impl).get()
+			var Set<String> ports = new HashSet
+			ports.addAll(Query.findImplInputPorts(actorimpl))
+			ports.addAll(Query.findImplOutputPorts(actorimpl))
+			for(String port:ports){
+				var datatype = Query.findImplPortDataType(model, actorimpl, port)
+				if (!variableNameRecord.contains(port)) {
+					if (Query.isSystemChannel(model, actorimpl, port) === null) {
 						ret += '''
-							«datatype» «inport»; 
+							«datatype» «port»; 
 						'''
 					} else {
 						ret += '''
-							«datatype» «inport» = «Query.isSystemChannel(model,actorimpl,inport)»; 
+							«datatype» «port» = «Query.isSystemChannel(model,actorimpl,port)»; 
 						'''
 					}
-					variableNameRecord.add(inport)
+					variableNameRecord.add(port)
 				}
 			}
-			var outputPortSet = Query.findImplOutputPortSet(actorimpl)
-			for (String outport : outputPortSet) {
-				var datatype = Query.findImplPortDataType(model, actorimpl, outport)
-				if (!variableNameRecord.contains(outport)) {
-					if (Query.isSystemChannel(model, actorimpl, outport) === null) {
-						ret += '''
-							«datatype» «outport»; 
-						'''
-					} else {
-						ret += '''
-							«datatype» «outport» = «Query.isSystemChannel(model, actorimpl, outport)»; 
-						'''
-					}
-
-					variableNameRecord.add(outport)
-				}
-			}
+//			var actorimpl = model.queryVertex(impl).get()
+//			var inputPortList =Query.findImplInputPorts(actorimpl)
+//			for (String inport : inputPortList) {
+//				var datatype = Query.findImplPortDataType(model, actorimpl, inport)
+//				if (!variableNameRecord.contains(inport)) {
+//					if (Query.isSystemChannel(model, actorimpl, inport) === null) {
+//						ret += '''
+//							«datatype» «inport»; 
+//						'''
+//					} else {
+//						ret += '''
+//							«datatype» «inport» = «Query.isSystemChannel(model,actorimpl,inport)»; 
+//						'''
+//					}
+//					variableNameRecord.add(inport)
+//				}
+//			}
+//			var outputPortList = TypedOperation.safeCast(actorimpl).get().getOutputPorts()
+//			for (String outport : outputPortList) {
+//				var datatype = Query.findImplPortDataType(model, actorimpl, outport)
+//				if (!variableNameRecord.contains(outport)) {
+//					if (Query.isSystemChannel(model, actorimpl, outport) === null) {
+//						ret += '''
+//							«datatype» «outport»; 
+//						'''
+//					} else {
+//						ret += '''
+//							«datatype» «outport» = «Query.isSystemChannel(model, actorimpl, outport)»; 
+//						'''
+//					}
+//
+//					variableNameRecord.add(outport)
+//				}
+//			}
 		}
 		return ret
 	}
 
-	def String read(Vertex actor) {
-		var model = Generator.model
-		var impls = Query.findCombFuntionVertex(model, actor)
+	def String read(ForSyDeSystemGraph model,Vertex actor) {
+		var Set<Vertex> impls = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream()
+							.map([e|e.getViewedVertex()])
+							.collect(Collectors.toSet())
 		var Set<String> variableNameRecord = new HashSet
 		var String ret = ""
-		for (String impl : impls) {
-			var actorimpl = Query.findVertexByName(model, impl)
-			var inputPortSet = Query.findImplInputPortSet(actorimpl)
-			for (String inport : inputPortSet) {
-				if (!variableNameRecord.contains(inport) && Query.isSystemChannel(model, actorimpl, inport) === null) {
-					var datatype = Query.findImplPortDataType(model, actorimpl, inport)
-					var actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, actorimpl, inport)
+		for(Vertex impl: impls){
+			
+			var inputPorts = TypedOperation.safeCast(impl).get().getInputPorts()
+			for(String port :inputPorts){
+				if(!variableNameRecord.contains(port) && Query.isSystemChannel(model,impl, port) === null){
+					var datatype = Query.findImplPortDataType(model, impl, port)
+					var actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port)
 					var sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName)
-					println(actor.getIdentifier()+" "+actorPortName)
-					var consumption = SDFComb.enforce(actor).getConsumption().get(actorPortName)
+					var consumption = SDFComb.safeCast(actor).get().getConsumption().get(actorPortName)
+					
 					if (consumption == 1) {
 						ret += '''
-							read_non_blocking(&fifo_«sdfchannelName»,&«inport»);
+							read_non_blocking(&fifo_«sdfchannelName»,&«port»);
 						'''
 					} else {
 						ret += '''
 							for(int i=0;i<«consumption»;++i){
-								read_non_blocking(&fifo_«sdfchannelName»,&«inport»[i]);
+								read_non_blocking(&fifo_«sdfchannelName»,&«port»[i]);
 							}
 						'''
 					}
-					variableNameRecord.add(inport)
-
+					variableNameRecord.add(port)
 				}
 			}
+				
+			
 		}
-		return ret
+		return ret;
+//		var impls = Query.findCombFuntionVertex(model, actor)
+//		var Set<String> variableNameRecord = new HashSet
+//		var String ret = ""
+//		for (String impl : impls) {
+//			var actorimpl = Query.findVertexByName(model, impl)
+//			var inputPortSet = Query.findImplInputPorts(actorimpl)
+//			for (String inport : inputPortSet) {
+//				if (!variableNameRecord.contains(inport) && Query.isSystemChannel(model, actorimpl, inport) === null) {
+//					var datatype = Query.findImplPortDataType(model, actorimpl, inport)
+//					var actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, actorimpl, inport)
+//					var sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName)
+//					println(actor.getIdentifier()+" "+actorPortName)
+//					var consumption = SDFComb.enforce(actor).getConsumption().get(actorPortName)
+//					if (consumption == 1) {
+//						ret += '''
+//							read_non_blocking(&fifo_«sdfchannelName»,&«inport»);
+//						'''
+//					} else {
+//						ret += '''
+//							for(int i=0;i<«consumption»;++i){
+//								read_non_blocking(&fifo_«sdfchannelName»,&«inport»[i]);
+//							}
+//						'''
+//					}
+//					variableNameRecord.add(inport)
+//
+//				}
+//			}
+//		}
+//		return ret
+
 	}
 
 	def String write(Vertex actor) {
@@ -170,7 +224,7 @@ class SDFCombTemplateSrc implements ActorTemplate {
 		var String ret = ""
 		for (String impl : impls) {
 			var actorimpl = Query.findVertexByName(model, impl)
-			var outputPortSet = Query.findImplOutputPortSet(actorimpl)
+			var outputPortSet = Query.findImplOutputPorts(actorimpl)
 			for (String outport : outputPortSet) {
 
 				if (!variableNameRecord.contains(outport)) {
@@ -206,7 +260,7 @@ class SDFCombTemplateSrc implements ActorTemplate {
 
 		'''
 			«FOR impl : implActorSet SEPARATOR "" AFTER ""»
-				//in combFunction «impl.getIdentifier()»
+				/* in combFunction «impl.getIdentifier()» */
 				«Query.getInlineCode(impl)»
 			«ENDFOR»		
 		'''

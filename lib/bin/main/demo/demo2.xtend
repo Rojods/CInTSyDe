@@ -17,8 +17,8 @@ import utils.Load
 
 class demo2 {
 	def static void main(String[] args) {
-		val path="forsyde-io\\complete-mapped-sobel-model.forsyde.xmi";
-		val path2="forsyde-io\\sobel-application.fiodl"
+		val path="forsyde-io\\test\\complete-mapped-sobel-model.forsyde.xmi";
+		val path2="forsyde-io\\test\\sobel-application.fiodl"
 		val root="generateCode\\c\\multi"
 		var model1 = Load.load(path)
 		var model2 = (new ForSyDeFiodlHandler()).loadModel(path2)	
