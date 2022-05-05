@@ -21,7 +21,7 @@ class Config implements InitTemplate {
 			#define CONFIG_H_
 			#define TESTING
 			#if defined(TESTING)
-			#include "main.h"
+			
 			#endif
 			
 			/*
@@ -30,7 +30,7 @@ class Config implements InitTemplate {
 			************************************************
 			*/
 			«FOR c:channels »
-			#define «c.getIdentifier().toUpperCase()»_BLOCKING 1
+			#define «c.getIdentifier().toUpperCase()»_BLOCKING 0
 			«ENDFOR»
 			#endif		
 		'''

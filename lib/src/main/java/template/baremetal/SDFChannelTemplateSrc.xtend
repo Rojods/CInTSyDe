@@ -39,12 +39,23 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 				«var viewer = new BoundedSDFChannelViewer(sdfchannel)»
 				«var maximumTokens =viewer.getMaximumTokens()»
 				volatile «type» buffer_«sdfname»[«maximumTokens+1»];
+				int channel_«sdfname»_size=«maximumTokens»;
+				/*
+					Because of circular fifo, the 
+					buffer_size=channel_size+1
+				*/
 				int buffer_«sdfname»_size = «maximumTokens+1»;
 				circular_fifo_«type» fifo_«sdfname»;
 				spinlock spinlock_«sdfname»={.flag=0};
 			«ELSE»
-				volatile «type» buffer_«sdfname»[«SDFChannel.safeCast(sdfchannel).get().getNumOfInitialTokens()+1»];
-				int buffer_«sdfname»_size = «SDFChannel.safeCast(sdfchannel).get().getNumOfInitialTokens()+1»;
+«««			in GrayScaleToAbs buffer size is 3 and GrayScaleToGetPx the buffer size should be 7
+				volatile «type» buffer_«sdfname»[2];
+				int channel_«sdfname»_size = 1;
+				/*
+					Because of circular fifo, the 
+					buffer_size=channel_size+1
+				*/
+				int buffer_«sdfname»_size = 2;
 				circular_fifo_«type» fifo_«sdfname»;
 				spinlock spinlock_«sdfname»={.flag=0};	
 			«ENDIF»

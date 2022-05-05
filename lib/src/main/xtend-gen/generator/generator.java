@@ -28,6 +28,12 @@ public class Generator {
   
   public static TreeMap<Integer, Vertex> uniprocessorSchedule;
   
+  public static int TESTING = 1;
+  
+  public static int PC = 1;
+  
+  public static int NUCLEO = 0;
+  
   private Set<ModuleInterface> modules = new HashSet<ModuleInterface>();
   
   public Generator(final ForSyDeSystemGraph model, final String root) {

@@ -1,0 +1,16 @@
+hotfix in fiodl file
+
+
+1. Some ports name in fiodl are not consistent with the port names in xmi file
+	change them to the same name. 
+	change the corresponding edge port. 
+	
+2. 
+In actor AbsImpl, there is no impl port connecting input port resx and resy in vertex Abs.
+   add the edge:
+     edge [] from Abs port resx to AbsImpl port resx
+     edge [] from Abs port resy to AbsImpl port resy 
+
+3.
+add decision::sdf::BoundedSDFChannel to  GrayScaleToGetPx and GrayScaleToAbs .
+add "maximumTokens" to  GrayScaleToGetPx and GrayScaleToAbs 

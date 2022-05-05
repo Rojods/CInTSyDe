@@ -20,6 +20,12 @@ class CircularFIFOTemplateInc implements InitTemplate {
 	Set<Vertex> typeVertexSet
 	new() {		
 		val model = Generator.model
+//				println("====================")
+//		model.edgeSet().stream()
+//					.filter([e|e.getSource()=="GrayScaleToGetPx"||e.getTarget()=="GrayScaleToGetPx"])
+//					.forEach([e|println(e)])
+//		
+//		println("====================")
 		typeVertexSet=model.vertexSet().stream()
 			.filter([v|SDFChannel.conforms(v)])
 			.map([v|Query.findSDFChannelDataType(model,v)])

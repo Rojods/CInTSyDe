@@ -14,6 +14,7 @@ class SubsystemTemplateSrcMulti  implements SubsystemTemplate{
 		this.s=schedule
 		var tile=schedule.tile
 		'''
+		#include "../inc/subsystem_«s.tile.getIdentifier()».h"
 		«FOR channel:schedule.channels SEPARATOR"" AFTER""»
 			«var channelName=Name.name(channel)»
 			«IF SDFChannel.conforms(channel)»
@@ -25,24 +26,33 @@ class SubsystemTemplateSrcMulti  implements SubsystemTemplate{
 			«ENDIF»
 		«ENDFOR»	
 		void subsystem_«tile.getIdentifier()»(){
-			«FOR channel:schedule.channels  SEPARATOR "" AFTER "" »
-				«var channelName=Name.name(channel)»
-				«IF SDFChannel.conforms(channel)»
-				init_circularFIFO_«channelName»(&channel_«channelName»,arr_«channelName»,buffersize_«channelName»);
-				«ENDIF»
-			«ENDFOR»			
+«««			«FOR channel:schedule.channels  SEPARATOR "" AFTER "" »
+«««				«var channelName=Name.name(channel)»
+«««				«IF SDFChannel.conforms(channel)»
+«««				init_circularFIFO_«channelName»(&channel_«channelName»,arr_«channelName»,buffersize_«channelName»);
+«««				«ENDIF»
+«««			«ENDFOR»			
 «««			«subsystemHelp.sdfDelayHelpA(channels)»
 			
-			while(1){
+//			while(1){
 				«FOR actor:schedule.slots SEPARATOR "" AFTER "\n"»
 				«IF actor!==null»
 				actor_«Name.name(actor)»();
 				«ENDIF»
 				«ENDFOR»		
 			
-			}	
+//			}	
 			
 		}	
+		
+		void init_«tile.getIdentifier()»(){
+			«FOR channel:schedule.channels  SEPARATOR "" AFTER "" »
+				«var channelName=Name.name(channel)»
+				«IF SDFChannel.conforms(channel)»
+				init_circularFIFO_«channelName»(&channel_«channelName»,arr_«channelName»,buffersize_«channelName»);
+				«ENDIF»
+			«ENDFOR»				
+		}
 		'''
 	}	
 

@@ -33,13 +33,7 @@ int read_non_blocking_DoubleType(circular_fifo_DoubleType *channel, DoubleType *
 	    			
 	   }else{
 	    	*data = channel->buffer[channel->front];
-	    	#if defined(TEST)
-	    	printf("buffer DoubleType: before read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
-	    	#endif
 	    	channel->front= (channel->front+1)%channel->size;
-	    	#if defined(TEST)
-	    	printf("buffer DoubleType: after read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
-	    	#endif
 	    	return 0;
 	    }
 }
@@ -117,13 +111,7 @@ int read_non_blocking_UInt16(circular_fifo_UInt16 *channel, UInt16 *data){
 	    			
 	   }else{
 	    	*data = channel->buffer[channel->front];
-	    	#if defined(TEST)
-	    	printf("buffer UInt16: before read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
-	    	#endif
 	    	channel->front= (channel->front+1)%channel->size;
-	    	#if defined(TEST)
-	    	printf("buffer UInt16: after read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
-	    	#endif
 	    	return 0;
 	    }
 }

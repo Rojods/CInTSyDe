@@ -18,6 +18,7 @@ import template.baremetal.SDFCombTemplateInc;
 import template.baremetal.SDFCombTemplateSrc;
 import template.baremetal.SpinLockTemplateInc;
 import template.baremetal.SpinLockTemplateSrc;
+import template.baremetal.multiprocessor.SubsystemTemplateIncMulti;
 import template.baremetal.multiprocessor.SubsystemTemplateSrcMulti;
 import utils.Load;
 
@@ -25,9 +26,9 @@ import utils.Load;
 public class demo2 {
   public static void main(final String[] args) {
     try {
-      final String path = "forsyde-io\\test\\complete-mapped-sobel-model.forsyde.xmi";
-      final String path2 = "forsyde-io\\test\\sobel-application.fiodl";
-      final String root = "generateCode\\c\\multi";
+      final String path = "forsyde-io/test/complete-mapped-sobel-model.forsyde.xmi";
+      final String path2 = "forsyde-io/test/sobel-application.fiodl";
+      final String root = "generateCode/c/multi";
       ForSyDeSystemGraph model1 = Load.load(path);
       ForSyDeSystemGraph model2 = new ForSyDeFiodlHandler().loadModel(path2);
       model2.mergeInPlace(model1);
@@ -45,6 +46,8 @@ public class demo2 {
       SubsystemMultiprocessorModule subsystem = new SubsystemMultiprocessorModule();
       SubsystemTemplateSrcMulti _subsystemTemplateSrcMulti = new SubsystemTemplateSrcMulti();
       subsystem.add(_subsystemTemplateSrcMulti);
+      SubsystemTemplateIncMulti _subsystemTemplateIncMulti = new SubsystemTemplateIncMulti();
+      subsystem.add(_subsystemTemplateIncMulti);
       gen.add(subsystem);
       InitProcessingModule initModule = new InitProcessingModule();
       DataTypeTemplateInc _dataTypeTemplateInc = new DataTypeTemplateInc();

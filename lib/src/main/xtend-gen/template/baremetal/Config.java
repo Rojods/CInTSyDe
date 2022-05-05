@@ -34,7 +34,6 @@ public class Config implements InitTemplate {
       _builder.newLine();
       _builder.append("#if defined(TESTING)");
       _builder.newLine();
-      _builder.append("#include \"main.h\"");
       _builder.newLine();
       _builder.append("#endif");
       _builder.newLine();
@@ -55,7 +54,7 @@ public class Config implements InitTemplate {
           _builder.append("#define ");
           String _upperCase = c.getIdentifier().toUpperCase();
           _builder.append(_upperCase);
-          _builder.append("_BLOCKING 1");
+          _builder.append("_BLOCKING 0");
           _builder.newLineIfNotEmpty();
         }
       }

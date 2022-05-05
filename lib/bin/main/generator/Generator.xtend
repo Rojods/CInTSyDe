@@ -21,6 +21,11 @@ class Generator {
 	public static var Set<Schedule> multiProcessorSchedules
 	public static var TreeMap<Integer, Vertex> uniprocessorSchedule
 
+
+	public static int TESTING=1
+	public static int PC=1
+	public static int NUCLEO=0
+
 	Set<ModuleInterface> modules = new HashSet
 
 	new(ForSyDeSystemGraph model, String root) {

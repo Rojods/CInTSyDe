@@ -36,12 +36,19 @@ public class Query {
 	}
 
 	public static String findSDFChannelDataType(ForSyDeSystemGraph model, Vertex sdf) {
-
+		System.out.println("1====================");
+		model.edgeSet().stream()
+					.filter(e->e.getSource()=="GrayScaleToGetPx"||e.getTarget()=="GrayScaleToGetPx")
+					.forEach(e->System.out.println(e));
+		
+					System.out.println("=2===================");
+		System.out.println(sdf.getIdentifier());
 		EdgeInfo inputedge = model.edgeSet().stream().filter(e -> e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
 				.filter(e -> e.getSource().equals(sdf.getIdentifier())).findAny().orElse(null);
 		EdgeInfo outputedge = model.edgeSet().stream().filter(e -> e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
 				.filter(e -> e.getSource().equals(sdf.getIdentifier())).findAny().orElse(null);
-
+		System.out.println(inputedge);
+		System.out.println(outputedge);
 		if (inputedge != null) {
 			// input sdf channel
 			String actorname = inputedge.getTarget();

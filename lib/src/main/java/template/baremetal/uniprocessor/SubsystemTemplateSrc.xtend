@@ -16,15 +16,13 @@ import utils.Query
 class SubsystemTemplateSrc implements SubsystemTemplate {
 
 	override String create(Schedule s) {
-		var model= Generator.model
-		var sdfcomb = model.vertexSet().stream()
-						.filter([v|SDFComb.conforms(v)])
-						.collect(Collectors.toSet())
+		var model = Generator.model
+		var sdfcomb = model.vertexSet().stream().filter([v|SDFComb.conforms(v)]).collect(Collectors.toSet())
 		'''
 			#include "../inc/subsystem_include_help.h"
 			#include "../inc/subsystem.h"
-			«FOR v :sdfcomb»
-			#include "../inc/sdfcomb_«v.getIdentifier()».h"
+			«FOR v : sdfcomb»
+				#include "../inc/sdfcomb_«v.getIdentifier()».h"
 			«ENDFOR»
 			/*
 			==============================================
@@ -41,16 +39,19 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 			int subsystem_single_uniprocessor(){
 				
 				/* Initilize Channels */
-				initChannels();
+//				initChannels();
 				
 				/*    SDFdelay        */
-				
-				while(1){
+//				int i=0;
+//				while(1){
 					«FOR set : Generator.uniprocessorSchedule.entrySet() SEPARATOR "" AFTER ""»
+					printf("%s\n","enter «set.getValue().getIdentifier()»");
+						«IF Generator.TESTING==1&&Generator.PC==1»
 						actor_«set.getValue().getIdentifier()»();
+						«ENDIF»
 					«ENDFOR»	
 					
-				}
+//				}
 			}
 			
 			void initChannels(){
@@ -59,19 +60,6 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 		'''
 	}
 
-//	def String externChannel(){
-//
-//		'''
-//		«FOR channel: Generator.sdfchannelSet»
-//		«var sdfname=channel.getIdentifier()»
-//		/* extern sdfchannel «sdfname»*/
-//		extern type buffer_«sdfname»[];
-//		extern int buffer_«sdfname»_size;
-//		extern circular_fifo_type fifo_«sdfname»;
-//		
-//		«ENDFOR»
-//		'''
-//	}
 	def String initChannels() {
 		'''
 			«FOR channel : Generator.sdfchannelSet»
@@ -82,10 +70,9 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 			«FOR channel : Generator.sdfchannelSet»
 				«var sdfchannel=SDFChannel.safeCast(channel).get()»
 				«IF sdfchannel.getNumOfInitialTokens()!==null&&sdfchannel.getNumOfInitialTokens()>0»
-				
 					«var b = (sdfchannel.getProperties().get("__initialTokenValues_ordering__").unwrap() as HashMap<String,Integer>) »
 					«FOR k:b.keySet()»
-					buffer_«sdfchannel.getIdentifier()»[«b.get(k)»]=«k»;
+						write_non_blocking_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«sdfchannel.getIdentifier()»,«k»);
 					«ENDFOR»
 				«ENDIF»
 			«ENDFOR»

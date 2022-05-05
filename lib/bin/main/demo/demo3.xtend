@@ -10,9 +10,9 @@ import template.rtos.*
  */
 class demo3 {
 	def static void main(String[] args) {
-		val path="forsyde-io\\test\\complete-mapped-sobel-model.forsyde.xmi";
-		val path2="forsyde-io\\test\\sobel-application.fiodl"
-		val root="generateCode\\c\\rtos"
+		val path="forsyde-io/test/complete-mapped-sobel-model.forsyde.xmi";
+		val path2="forsyde-io/test/sobel-application.fiodl"
+		val root="generateCode/c/rtos"
 		val roottest="D:\\Users\\LEGION\\Desktop\\Master Thesis\\code\\stm32-nucleo\\freertos_test1\\Core\\mycode"
 		var model1 = Load.load(path)
 		var model2 = (new ForSyDeFiodlHandler()).loadModel(path2)	
@@ -27,7 +27,7 @@ class demo3 {
 		var subsystem = new SubsystemUniprocessorModule
 		
 		/* init module */
-		initModule.add(new Config)
+		initModule.add(new ConfigRTOSInc)
 		initModule.add(new SoftTimerTemplateSrc)
 		initModule.add(new Channel)
 		initModule.add(new StartTaskTemplateSrcRTOS)

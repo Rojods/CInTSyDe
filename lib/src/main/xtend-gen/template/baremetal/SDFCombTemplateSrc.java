@@ -11,6 +11,8 @@ import forsyde.io.java.typed.viewers.impl.Executable;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
 import forsyde.io.java.typed.viewers.typing.TypedOperation;
 import generator.Generator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,48 +89,6 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append("(){");
       _builder.newLineIfNotEmpty();
       _builder.append("\t");
-      _builder.append("#if defined(TESTING)");
-      _builder.newLine();
-      {
-        boolean _equals = Objects.equal(name, "GrayScale");
-        if (_equals) {
-          _builder.append("\t");
-          _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);");
-          _builder.newLine();
-        } else {
-          boolean _equals_1 = Objects.equal(name, "getPx");
-          if (_equals_1) {
-            _builder.append("\t");
-            _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,1);");
-            _builder.newLine();
-          } else {
-            boolean _equals_2 = Objects.equal(name, "Gx");
-            if (_equals_2) {
-              _builder.append("\t");
-              _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,1);");
-              _builder.newLine();
-            } else {
-              boolean _equals_3 = Objects.equal(name, "Gy");
-              if (_equals_3) {
-                _builder.append("\t");
-                _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,1);");
-                _builder.newLine();
-              } else {
-                boolean _equals_4 = Objects.equal(name, "Abs");
-                if (_equals_4) {
-                  _builder.append("\t");
-                  _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);");
-                  _builder.newLine();
-                }
-              }
-            }
-          }
-        }
-      }
-      _builder.append("\t");
-      _builder.append("#endif");
-      _builder.newLine();
-      _builder.append("\t");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("/* Initilize Memory      */");
@@ -140,6 +100,16 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append("\t");
       _builder.append("/* Read From Input Port  */");
       _builder.newLine();
+      {
+        if (((Generator.TESTING == 1) && (Generator.PC == 1))) {
+          _builder.append("\t");
+          _builder.append("printf(\"%s\\n\",\"read\");");
+          _builder.newLine();
+        }
+      }
+      _builder.append("\t");
+      _builder.append("int ret=0;");
+      _builder.newLine();
       _builder.append("\t");
       String _read = this.read(model, actor);
       _builder.append(_read, "\t");
@@ -147,6 +117,13 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append("\t");
       _builder.append("/* Inline Code           */");
       _builder.newLine();
+      {
+        if (((Generator.TESTING == 1) && (Generator.PC == 1))) {
+          _builder.append("\t");
+          _builder.append("printf(\"%s\\n\",\"inline code\");");
+          _builder.newLine();
+        }
+      }
       _builder.append("\t");
       String _inlineCode = this.getInlineCode();
       _builder.append(_inlineCode, "\t");
@@ -155,45 +132,56 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append("\t");
       _builder.append("/* Write To Output Ports */");
       _builder.newLine();
+      {
+        if (((Generator.TESTING == 1) && (Generator.PC == 1))) {
+          _builder.append("\t");
+          _builder.append("printf(\"%s\\n\",\"write\");");
+          _builder.newLine();
+        }
+      }
       _builder.append("\t");
       String _write = this.write(actor);
       _builder.append(_write, "\t");
       _builder.newLineIfNotEmpty();
       {
-        boolean _equals_5 = Objects.equal(name, "GrayScale");
-        if (_equals_5) {
-          _builder.append("HAL_Delay(1000);");
-          _builder.newLine();
-          _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
-          _builder.newLine();
-        } else {
-          boolean _equals_6 = Objects.equal(name, "getPx");
-          if (_equals_6) {
-            _builder.append("HAL_Delay(1000);");
-            _builder.newLine();
-            _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,0);\t\t\t\t\t");
-            _builder.newLine();
-          } else {
-            boolean _equals_7 = Objects.equal(name, "Gx");
-            if (_equals_7) {
+        if (((Generator.TESTING == 1) && (Generator.NUCLEO == 1))) {
+          {
+            boolean _equals = Objects.equal(name, "GrayScale");
+            if (_equals) {
               _builder.append("HAL_Delay(1000);");
               _builder.newLine();
-              _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,0);\t");
+              _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
               _builder.newLine();
             } else {
-              boolean _equals_8 = Objects.equal(name, "Gy");
-              if (_equals_8) {
+              boolean _equals_1 = Objects.equal(name, "getPx");
+              if (_equals_1) {
                 _builder.append("HAL_Delay(1000);");
                 _builder.newLine();
-                _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,0);\t\t");
+                _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,0);\t\t\t\t\t");
                 _builder.newLine();
               } else {
-                boolean _equals_9 = Objects.equal(name, "Abs");
-                if (_equals_9) {
+                boolean _equals_2 = Objects.equal(name, "Gx");
+                if (_equals_2) {
                   _builder.append("HAL_Delay(1000);");
                   _builder.newLine();
-                  _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
+                  _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,0);\t");
                   _builder.newLine();
+                } else {
+                  boolean _equals_3 = Objects.equal(name, "Gy");
+                  if (_equals_3) {
+                    _builder.append("HAL_Delay(1000);");
+                    _builder.newLine();
+                    _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,0);\t\t");
+                    _builder.newLine();
+                  } else {
+                    boolean _equals_4 = Objects.equal(name, "Abs");
+                    if (_equals_4) {
+                      _builder.append("HAL_Delay(1000);");
+                      _builder.newLine();
+                      _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
+                      _builder.newLine();
+                    }
+                  }
                 }
               }
             }
@@ -364,16 +352,24 @@ public class SDFCombTemplateSrc implements ActorTemplate {
               _builder.append(_upperCase);
               _builder.append("_BLOCKING==0");
               _builder.newLineIfNotEmpty();
-              _builder.append("read_non_blocking_");
+              _builder.append("ret=read_non_blocking_");
               _builder.append(datatype);
               _builder.append("(&fifo_");
               _builder.append(sdfchannelName);
               _builder.append(",&");
               _builder.append(port);
-              _builder.append(",&spinlock_");
-              _builder.append(sdfchannelName);
               _builder.append(");");
               _builder.newLineIfNotEmpty();
+              _builder.append("if(ret==-1){");
+              _builder.newLine();
+              _builder.append("\t");
+              _builder.append("printf(\"fifo_");
+              _builder.append(sdfchannelName, "\t");
+              _builder.append(" read error\\n\");");
+              _builder.newLineIfNotEmpty();
+              _builder.append("}");
+              _builder.newLine();
+              _builder.newLine();
               _builder.append("#else");
               _builder.newLine();
               _builder.append("read_blocking_");
@@ -398,13 +394,15 @@ public class SDFCombTemplateSrc implements ActorTemplate {
               _builder_1.append(";++i){");
               _builder_1.newLineIfNotEmpty();
               _builder_1.append("\t");
+              _builder_1.newLine();
+              _builder_1.append("\t");
               _builder_1.append("#if ");
               String _upperCase_1 = sdfchannelName.toUpperCase();
               _builder_1.append(_upperCase_1, "\t");
               _builder_1.append("_BLOCKING==0");
               _builder_1.newLineIfNotEmpty();
               _builder_1.append("\t");
-              _builder_1.append("read_non_blocking_");
+              _builder_1.append("ret=read_non_blocking_");
               _builder_1.append(datatype, "\t");
               _builder_1.append("(&fifo_");
               _builder_1.append(sdfchannelName, "\t");
@@ -412,6 +410,17 @@ public class SDFCombTemplateSrc implements ActorTemplate {
               _builder_1.append(port, "\t");
               _builder_1.append("[i]);");
               _builder_1.newLineIfNotEmpty();
+              _builder_1.append("\t");
+              _builder_1.append("if(ret==-1){");
+              _builder_1.newLine();
+              _builder_1.append("\t\t");
+              _builder_1.append("printf(\"fifo_");
+              _builder_1.append(sdfchannelName, "\t\t");
+              _builder_1.append(" read error\\n\");");
+              _builder_1.newLineIfNotEmpty();
+              _builder_1.append("\t");
+              _builder_1.append("}");
+              _builder_1.newLine();
               _builder_1.append("\t");
               _builder_1.append("#else");
               _builder_1.newLine();
@@ -582,5 +591,31 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       }
     }
     return _builder.toString();
+  }
+  
+  public String actorParameter(final ForSyDeSystemGraph model, final Vertex actor) {
+    Set<String> _ports = actor.getPorts();
+    Set<String> portSet = new HashSet<String>(_ports);
+    portSet.remove("combFunctions");
+    portSet.remove("combinator");
+    List<String> portList = new ArrayList<String>(portSet);
+    Collections.<String>sort(portList);
+    String ret = "";
+    for (int i = 0; (i < portList.size()); i = (i + 1)) {
+      if ((i == 0)) {
+        String _ret = ret;
+        String _get = portList.get(i);
+        String _plus = ("   " + _get);
+        String _plus_1 = (_plus + "_port");
+        ret = (_ret + _plus_1);
+      } else {
+        String _ret_1 = ret;
+        String _get_1 = portList.get(i);
+        String _plus_2 = ("," + _get_1);
+        String _plus_3 = (_plus_2 + "_port");
+        ret = (_ret_1 + _plus_3);
+      }
+    }
+    return ret;
   }
 }

@@ -1,34 +1,66 @@
 /* Includes-------------------------- */
+#include "../inc/config.h"
 #include "../inc/datatype_definition.h"
+#include "../inc/circular_fifo_lib.h"
+#include "../inc/sdfcomb_GrayScale.h"
+
+
+
 /*
 ========================================
 	Declare Extern Channal Variables
 ========================================
 */
 /* Input FIFO */
-extern fifo_GrayScaleX;
-extern fifo_GrayScaleY;
+extern circular_fifo_UInt16 fifo_GrayScaleX;
+extern spinlock spinlock_GrayScaleX;
+extern circular_fifo_UInt16 fifo_GrayScaleY;
+extern spinlock spinlock_GrayScaleY;
 /* Output FIFO */
-extern fifo_GrayScaleToAbs;
-extern fifo_GrayScaleToGetPx;
+extern circular_fifo_UInt16 fifo_GrayScaleToAbs;
+extern spinlock spinlock_GrayScaleToAbs;
+extern circular_fifo_DoubleType fifo_GrayScaleToGetPx;
+extern spinlock spinlock_GrayScaleToGetPx;
 /*
 ========================================
 	Actor Function
 ========================================
 */			
-inline void actor_GrayScale(){
+void actor_GrayScale(){
+	
 	/* Initilize Memory      */
 	UInt16 offsetX; 
 	Array2OfUInt16 dimsOut; 
 	UInt16 offsetY; 
 	Array6OfDoubleType gray; 
-	ArrayXOfArrayXOfDoubleType system_img_source_address = system_img_source; 
-	UInt16 dimY = dimY; 
-	UInt16 dimX = dimX; 
+	ArrayXOfArrayXOfDoubleType system_img_source_address = system_img_source_global; 
+	UInt16 dimY = dimY_global; 
+	UInt16 dimX = dimX_global; 
 	/* Read From Input Port  */
-	read_non_blocking_UInt16(&fifo_GrayScaleX,&offsetX);
-	read_non_blocking_UInt16(&fifo_GrayScaleY,&offsetY);
+	printf("%s\n","read");
+	int ret=0;
+	#if GRAYSCALEX_BLOCKING==0
+	ret=read_non_blocking_UInt16(&fifo_GrayScaleX,&offsetX);
+	if(ret==-1){
+		printf("fifo_GrayScaleX read error\n");
+	}
+	
+	#else
+	read_blocking_UInt16(&fifo_GrayScaleX,&offsetX,&spinlock_GrayScaleX);
+	#endif
+	
+	#if GRAYSCALEY_BLOCKING==0
+	ret=read_non_blocking_UInt16(&fifo_GrayScaleY,&offsetY);
+	if(ret==-1){
+		printf("fifo_GrayScaleY read error\n");
+	}
+	
+	#else
+	read_blocking_UInt16(&fifo_GrayScaleY,&offsetY,&spinlock_GrayScaleY);
+	#endif
+	
 	/* Inline Code           */
+	printf("%s\n","inline code");
 	/* in combFunction GrayScaleImpl */
 	gray[0]=0.3125*system_img_source_address[offsetY+0][offsetX+0]+0.5625*system_img_source_address[offsetY+0][offsetX+1]+0.125*system_img_source_address[offsetY+0][offsetX+2];
 	gray[1]=0.3125*system_img_source_address[offsetY+0][offsetX+2]+0.5625*system_img_source_address[offsetY+0][offsetX+3]+0.125*system_img_source_address[offsetY+0][offsetX+4];
@@ -47,12 +79,33 @@ inline void actor_GrayScale(){
 	dimsOut[1]=dimY;
 
 	/* Write To Output Ports */
+	printf("%s\n","write");
 	for(int i=0;i<6;++i){
+		#if GRAYSCALETOGETPX_BLOCKING==0
 		write_non_blocking_DoubleType(&fifo_GrayScaleToGetPx,gray[i]);
+		#else
+		write_blocking_DoubleType(&fifo_GrayScaleToGetPx,gray[i],&spinlock_GrayScaleToGetPx);
+		#endif
 	}
+	
+	#if GRAYSCALEX_BLOCKING==0
 	write_non_blocking_UInt16(&fifo_GrayScaleX,offsetX);
+	#else
+	write_blocking_UInt16(&fifo_GrayScaleX,offsetX,&spinlock_GrayScaleX);
+	#endif
+							
+	#if GRAYSCALEY_BLOCKING==0
 	write_non_blocking_UInt16(&fifo_GrayScaleY,offsetY);
+	#else
+	write_blocking_UInt16(&fifo_GrayScaleY,offsetY,&spinlock_GrayScaleY);
+	#endif
+							
 	for(int i=0;i<2;++i){
+		#if GRAYSCALETOABS_BLOCKING==0
 		write_non_blocking_UInt16(&fifo_GrayScaleToAbs,dimsOut[i]);
+		#else
+		write_blocking_UInt16(&fifo_GrayScaleToAbs,dimsOut[i],&spinlock_GrayScaleToAbs);
+		#endif
 	}
+	
 }

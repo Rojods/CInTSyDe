@@ -24,6 +24,9 @@ import forsyde.io.java.core.ForSyDeSystemGraph
 import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer
 import forsyde.io.java.typed.viewers.impl.Executable
 import forsyde.io.java.typed.viewers.typing.TypedOperation
+import java.util.TreeSet
+import java.util.List
+import java.util.Collections
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFCombTemplateSrc implements ActorTemplate {
@@ -60,29 +63,40 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			========================================
 			*/			
 			void actor_«name»(){
-				#if defined(TESTING)
-				«IF name=="GrayScale"»
-				HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
-				«ELSEIF name=="getPx" »
-				HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,1);
-				«ELSEIF name=="Gx" »
-				HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,1);
-				«ELSEIF name=="Gy" »
-				HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,1);
-				«ELSEIF name=="Abs" »
-				HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
-				«ENDIF»
-				#endif
+«««				#if defined(TESTING)
+«««				«IF name=="GrayScale"»
+«««				HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
+«««				«ELSEIF name=="getPx" »
+«««				HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,1);
+«««				«ELSEIF name=="Gx" »
+«««				HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,1);
+«««				«ELSEIF name=="Gy" »
+«««				HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,1);
+«««				«ELSEIF name=="Abs" »
+«««				HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
+«««				«ENDIF»
+«««				#endif
 				
 				/* Initilize Memory      */
 				«initMemory(model,actor)»
 				/* Read From Input Port  */
+				«IF Generator.TESTING==1&&Generator.PC==1»
+				printf("%s\n","read");
+				«ENDIF»
+				int ret=0;
 				«read(model,actor)»
 				/* Inline Code           */
+				«IF Generator.TESTING==1&&Generator.PC==1»
+				printf("%s\n","inline code");
+				«ENDIF»
 				«getInlineCode()»
 			
 				/* Write To Output Ports */
+				«IF Generator.TESTING==1&&Generator.PC==1»
+				printf("%s\n","write");
+				«ENDIF»
 				«write(actor)»
+				«IF Generator.TESTING==1&&Generator.NUCLEO==1»
 			«IF name=="GrayScale"»
 			HAL_Delay(1000);
 			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);
@@ -99,6 +113,7 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			HAL_Delay(1000);
 			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);
 			«ENDIF»	
+			«ENDIF»
 			}
 		'''
 	}
@@ -177,7 +192,11 @@ class SDFCombTemplateSrc implements ActorTemplate {
 					if (consumption == 1) {
 						ret += '''
 							#if «sdfchannelName.toUpperCase()»_BLOCKING==0
-							read_non_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»,&spinlock_«sdfchannelName»);
+							ret=read_non_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»);
+							if(ret==-1){
+								printf("fifo_«sdfchannelName» read error\n");
+							}
+							
 							#else
 							read_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»,&spinlock_«sdfchannelName»);
 							#endif
@@ -186,8 +205,12 @@ class SDFCombTemplateSrc implements ActorTemplate {
 					} else {
 						ret += '''
 							for(int i=0;i<«consumption»;++i){
+								
 								#if «sdfchannelName.toUpperCase()»_BLOCKING==0
-								read_non_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»[i]);
+								ret=read_non_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»[i]);
+								if(ret==-1){
+									printf("fifo_«sdfchannelName» read error\n");
+								}
 								#else
 								read_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»[i],&spinlock_«sdfchannelName»);
 								#endif
@@ -263,6 +286,27 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			«ENDFOR»		
 		'''
 
+	}
+	
+	def String actorParameter(ForSyDeSystemGraph model  ,Vertex actor){
+		var Set<String> portSet =   new HashSet(actor.getPorts())
+		portSet.remove("combFunctions")
+		portSet.remove("combinator")
+		var List<String> portList = new ArrayList(portSet)
+		Collections.sort(portList)
+		
+		var String ret=""
+		for(var int i=0;i<portList.size();i=i+1){
+			if(i==0){
+				ret+="   "+portList.get(i)+"_port"
+			}else{
+				ret+=","+portList.get(i)+"_port"
+			}
+		}
+		
+		
+		return ret
+		
 	}
 
 
