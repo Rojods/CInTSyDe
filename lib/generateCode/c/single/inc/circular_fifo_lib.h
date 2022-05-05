@@ -12,22 +12,22 @@ SDFChannels
 #include "spinlock.h"			
 	/*
 	=============================================================
-				If Token type is Array6OfDoubleType 
+				If Token type is DoubleType 
 	=============================================================
 	*/
 	typedef struct 
 	{
-	    Array6OfDoubleType* buffer;
+	    DoubleType* buffer;
 	    size_t front;
 	    size_t rear;
 		size_t size;	    
-	}circular_fifo_Array6OfDoubleType;
+	}circular_fifo_DoubleType;
 	
-	void init_channel_Array6OfDoubleType(circular_fifo_Array6OfDoubleType *channel ,Array6OfDoubleType* buffer, size_t size);
-	int read_non_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* channel,Array6OfDoubleType* dst );
-	int read_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* ptr,Array6OfDoubleType* dst,spinlock *lock);
-	int write_non_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* ptr,Array6OfDoubleType* src );
-	int write_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* ptr,Array6OfDoubleType* src,spinlock *lock);	
+	void init_channel_DoubleType(circular_fifo_DoubleType *channel ,DoubleType* buffer, size_t size);
+	int read_non_blocking_DoubleType(circular_fifo_DoubleType* src,DoubleType* dst );
+	int read_blocking_DoubleType(circular_fifo_DoubleType* src,DoubleType* dst,spinlock *lock);
+	int write_non_blocking_DoubleType(circular_fifo_DoubleType* dst,DoubleType src );
+	int write_blocking_DoubleType(circular_fifo_DoubleType* dst,DoubleType src,spinlock *lock);	
 				
 	/*
 	=============================================================
@@ -43,9 +43,9 @@ SDFChannels
 	}circular_fifo_UInt16;
 	
 	void init_channel_UInt16(circular_fifo_UInt16 *channel ,UInt16* buffer, size_t size);
-	int read_non_blocking_UInt16(circular_fifo_UInt16* channel,UInt16* dst );
-	int read_blocking_UInt16(circular_fifo_UInt16* ptr,UInt16* dst,spinlock *lock);
-	int write_non_blocking_UInt16(circular_fifo_UInt16* ptr,UInt16* src );
-	int write_blocking_UInt16(circular_fifo_UInt16* ptr,UInt16* src,spinlock *lock);	
+	int read_non_blocking_UInt16(circular_fifo_UInt16* src,UInt16* dst );
+	int read_blocking_UInt16(circular_fifo_UInt16* src,UInt16* dst,spinlock *lock);
+	int write_non_blocking_UInt16(circular_fifo_UInt16* dst,UInt16 src );
+	int write_blocking_UInt16(circular_fifo_UInt16* dst,UInt16 src,spinlock *lock);	
 				
 #endif

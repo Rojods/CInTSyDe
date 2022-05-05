@@ -26,8 +26,8 @@ inline void actor_GrayScale(){
 	UInt16 dimY = dimY; 
 	UInt16 dimX = dimX; 
 	/* Read From Input Port  */
-	read_non_blocking(&fifo_GrayScaleX,&offsetX);
-	read_non_blocking(&fifo_GrayScaleY,&offsetY);
+	read_non_blocking_UInt16(&fifo_GrayScaleX,&offsetX);
+	read_non_blocking_UInt16(&fifo_GrayScaleY,&offsetY);
 	/* Inline Code           */
 	/* in combFunction GrayScaleImpl */
 	gray[0]=0.3125*system_img_source_address[offsetY+0][offsetX+0]+0.5625*system_img_source_address[offsetY+0][offsetX+1]+0.125*system_img_source_address[offsetY+0][offsetX+2];
@@ -36,19 +36,23 @@ inline void actor_GrayScale(){
 	gray[3]=0.3125*system_img_source_address[offsetY+1][offsetX+2]+0.5625*system_img_source_address[offsetY+1][offsetX+3]+0.125*system_img_source_address[offsetY+1][offsetX+4];
 	gray[4]=0.3125*system_img_source_address[offsetY+2][offsetX+0]+0.5625*system_img_source_address[offsetY+2][offsetX+1]+0.125*system_img_source_address[offsetY+2][offsetX+2];
 	gray[5]=0.3125*system_img_source_address[offsetY+2][offsetX+2]+0.5625*system_img_source_address[offsetY+2][offsetX+3]+0.125*system_img_source_address[offsetY+2][offsetX+4];
-	if(offsetX>=dimX-2){offsetY+=1;
+	if(offsetX>=dimX-2){
+	offsetY+=1;
 	offsetX=0;
-	}if(offsetY>=dimY-2){offsetY=0;
-	}dimsOut[0]=dimX;
+	}
+	if(offsetY>=dimY-2){
+	offsetY=0;
+	}
+	dimsOut[0]=dimX;
 	dimsOut[1]=dimY;
 
 	/* Write To Output Ports */
 	for(int i=0;i<6;++i){
-		write_non_blocking(&fifo_GrayScaleToGetPx,&gray[i]);
+		write_non_blocking_DoubleType(&fifo_GrayScaleToGetPx,gray[i]);
 	}
-	write_non_blocking(&fifo_GrayScaleX,&offsetX);
-	write_non_blocking(&fifo_GrayScaleY,&offsetY);
+	write_non_blocking_UInt16(&fifo_GrayScaleX,offsetX);
+	write_non_blocking_UInt16(&fifo_GrayScaleY,offsetY);
 	for(int i=0;i<2;++i){
-		write_non_blocking(&fifo_GrayScaleToAbs,&dimsOut[i]);
+		write_non_blocking_UInt16(&fifo_GrayScaleToAbs,dimsOut[i]);
 	}
 }

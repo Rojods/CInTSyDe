@@ -9,9 +9,10 @@ class SoftTimerTemplateSrc implements InitTemplate {
 	
 	override create() {
 		'''
+		#include "FreeRTOS.h"
 		#include "semphr.h"
 		#include "timers.h"	
-		#include "FreeRTOS.h"
+		#include "queue.h"
 		#include "../inc/config.h"
 		/*
 		********************************************

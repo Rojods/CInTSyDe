@@ -14,6 +14,11 @@ class ConfigRTOSInc implements InitTemplate {
 		'''	
 			#ifndef CONFIG_H_
 			#define CONFIG_H_
+			#define TESTING
+			#if defined(TESTING)
+			#include "main.h"
+			#endif
+			
 			/*
 			************************************************
 							Config

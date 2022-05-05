@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,8 @@ import forsyde.io.java.typed.viewers.moc.sdf.SDFChannelViewer;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer;
 import forsyde.io.java.typed.viewers.typing.TypedOperation;
+import forsyde.io.java.typed.viewers.typing.datatypes.Array;
+import forsyde.io.java.typed.viewers.typing.datatypes.ArrayViewer;
 import generator.Generator;
 
 import java.lang.Math;
@@ -46,12 +49,24 @@ public class Query {
 			Vertex actor = findVertexByName(model, actorname);
 			var impls = Query.findCombFuntionVertex(model, actor);
 
+			
 			EdgeInfo info = model.outgoingEdgesOf(actor).stream().filter(e -> impls.contains(e.getTarget()))
-					.filter(e -> e.getTargetPort().isPresent()).findAny().get();
+					.filter(e -> e.getSourcePort().get().equals(port)).findAny().get();
 
 			String implName = info.getTarget();
 			String implPort = info.getTargetPort().get();
-			return findImplPortDataType(model, findVertexByName(model, implName), implPort);
+			
+			var implDataType =findImplPortDataType(model, findVertexByName(model, implName), implPort);
+			Vertex datatypeVertex = findVertexByName(model, implDataType);
+			
+			//System.out.println(sdf.getIdentifier()+"  --> actor "+actorname+ "port "+port+" "  +implName+" "+implPort+"--> "+implDataType);
+			//return implDataType;
+			if(!Array.conforms(datatypeVertex)) {
+				return implDataType;
+			}else {
+				return  (new ArrayViewer( datatypeVertex)).getInnerTypePort(model).get().getIdentifier();
+			}
+
 
 		} else {
 			// output sdf channel
@@ -61,11 +76,21 @@ public class Query {
 			var impls = Query.findCombFuntionVertex(model, actor);
 
 			EdgeInfo info = model.incomingEdgesOf(actor).stream().filter(e -> impls.contains(e.getSource()))
-					.filter(e -> e.getSourcePort().isPresent()).findAny().get();
+					.filter(e -> e.getTargetPort().get().equals(port)).findAny().get();
 
 			String implName = info.getSource();
 			String implPort = info.getSourcePort().get();
-			return findImplPortDataType(model, findVertexByName(model, implName), implPort);
+			
+			
+			var implDataType =findImplPortDataType(model, findVertexByName(model, implName), implPort);
+			Vertex datatypeVertex = findVertexByName(model, implDataType);
+			//System.out.println(sdf.getIdentifier()+"  -->  "+implName+" "+implPort+"--> "+implDataType);
+			//return implDataType;
+			if(!Array.conforms(datatypeVertex)) {
+				return implDataType;
+			}else {
+				return  (new ArrayViewer( datatypeVertex)).getInnerTypePort(model).get().getIdentifier();
+			}
 		}
 
 	}
@@ -135,8 +160,8 @@ public class Query {
 	}
 
 	/**
-	 * find the datatype of implPort
-	 * 
+	 * find the datatype of implPort according to the edge instead of 
+	 * portToType property
 	 * @param impl
 	 * @param implPort
 	 * @return
@@ -269,6 +294,20 @@ public class Query {
 			start = index + 1;
 			b.insert(index + 1, "\n");
 		}
+		
+		start=0;
+		index=0;
+		while ((index = b.indexOf("}", start)) != -1) {
+			start = index + 1;
+			b.insert(index + 1, "\n");
+		}	
+		
+		start=0;
+		index=0;
+		while ((index = b.indexOf("{", start)) != -1) {
+			start = index + 1;
+			b.insert(index + 1, "\n");
+		}			
 		return b.toString();
 	}
 
@@ -353,7 +392,7 @@ public class Query {
 				return c;
 			}
 		}
-		return -1;
+		return 4000;
 	}
 
 	public static String getInnerType(ForSyDeSystemGraph model, Vertex arrayType) {

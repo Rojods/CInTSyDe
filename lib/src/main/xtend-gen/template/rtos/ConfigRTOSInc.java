@@ -16,6 +16,15 @@ public class ConfigRTOSInc implements InitTemplate {
     _builder.newLine();
     _builder.append("#define CONFIG_H_");
     _builder.newLine();
+    _builder.append("#define TESTING");
+    _builder.newLine();
+    _builder.append("#if defined(TESTING)");
+    _builder.newLine();
+    _builder.append("#include \"main.h\"");
+    _builder.newLine();
+    _builder.append("#endif");
+    _builder.newLine();
+    _builder.newLine();
     _builder.append("/*");
     _builder.newLine();
     _builder.append("************************************************");

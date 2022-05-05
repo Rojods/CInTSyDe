@@ -17,6 +17,9 @@ import utils.Query
 import forsyde.io.java.core.EdgeInfo
 import java.util.stream.Collectors
 import forsyde.io.java.core.EdgeTrait
+import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
+import forsyde.io.java.typed.viewers.typing.TypedOperation
+import forsyde.io.java.core.ForSyDeSystemGraph
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFCombTemplateSrcRTOS implements ActorTemplate {
@@ -24,6 +27,7 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 	Set<Vertex> inputSDFChannelSet
 	Set<Vertex> outputSDFChannelSet
 	override create(Vertex actor) {
+		var model = Generator.model
 		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions",
 			VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING)
 		var name = actor.getIdentifier()
@@ -33,6 +37,12 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 
 		'''
 			#include "../inc/config.h"
+			#include "../inc/datatype_definition.h"
+			#include "../inc/sdfcomb_«name».h"
+			#include "FreeRTOS.h"
+			#include "semphr.h"
+			#include "timers.h"	
+			#include "queue.h"
 			/*
 			==============================================
 				Define Task Stack
@@ -67,7 +77,6 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 			#if FREERTOS==1
 			SemaphoreHandle_t timer_sem_«name»;
 			TimerHandle_t timer_«name»;
-			static void timer_«name»_callback(TimerHandle_t xTimer);
 			#endif
 			/*
 			==============================================
@@ -76,16 +85,48 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 			*/
 			void task_«name»(void* pdata){
 				/* Initilize Memory           */
-				«initMemory()»
+				«initMemory(model,actor)»
 				while(1){
 					/* Read From»hannel      */
-					«read(actor)»
+					«read(model,actor)»
 					/* Inline Code            */
+					#if defined(TESTING)
+					«IF name=="GrayScale"»
+					HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
+					«ELSEIF name=="getPx" »
+					HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,1);
+					«ELSEIF name=="Gx" »
+					HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,1);
+					«ELSEIF name=="Gy" »
+					HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,1);
+					«ELSEIF name=="Abs" »
+					HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
+					«ENDIF»
+					#endif
 					«getInlineCode()»
+					
+					«IF name=="GrayScale"»
+					HAL_Delay(1000);
+					HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);
+					«ELSEIF name=="getPx" »
+					HAL_Delay(1000);
+					HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,0);					
+					«ELSEIF name=="Gx" »
+					HAL_Delay(1000);
+					HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,0);	
+					«ELSEIF name=="Gy" »
+					HAL_Delay(1000);
+					HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,0);		
+					«ELSEIF name=="Abs" »	
+					HAL_Delay(1000);
+					HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);
+					«ENDIF»					
+					
+					
 					/* Write To Channel       */
 					«write(actor)»
 					/* Pend Timer's Semaphore */	
-					xSemaphoreTake(task_sem_«name», portMAX_DELAY);	
+					xSemaphoreTake(timer_sem_«name», portMAX_DELAY);	
 				
 				}
 				
@@ -99,7 +140,7 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 			*/
 			#if FREERTOS==1
 			void timer_«name»_callback(TimerHandle_t xTimer){
-				xSemaphoreGive(task_sem_«name»);
+				xSemaphoreGive(timer_sem_«name»);
 			}
 			#endif
 		'''
@@ -108,31 +149,32 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 	/**
 	 * initMemory is copied from initMemory in SDFCombTemplateSrc class
 	 */
-	def String initMemory() {
+	def String initMemory(ForSyDeSystemGraph model,Vertex actor) {
+		
+		var impls = Query.findCombFuntionVertex(model, actor)
 		var Set<String> variableNameRecord = new HashSet
 		var String ret = ""
-		for (Vertex impl : implActorSet) {
-			var implPortSet = new HashSet<String>(impl.getPorts())
-			implPortSet.remove("portTypes")
 
-			var HashMap<String, String> portToTypeNameHashMap = new HashMap
-			var dataDefinitionEdgeInfoSet = Generator.model.outgoingEdgesOf(impl).stream().filter([ edgeInfo |
-				edgeInfo.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION)
-			]).collect(Collectors.toSet())
-			for (EdgeInfo e : dataDefinitionEdgeInfoSet) {
-				if (e.getSource() != "portTypes") {
-					portToTypeNameHashMap.put(e.getSourcePort().orElse(""), e.getTarget())
+		for (String impl : impls) {
+			var actorimpl = model.queryVertex(impl).get()
+			var Set<String> ports = new HashSet
+			ports.addAll(Query.findImplInputPorts(actorimpl))
+			ports.addAll(Query.findImplOutputPorts(actorimpl))
+			for(String port:ports){
+				var datatype = Query.findImplPortDataType(model, actorimpl, port)
+				if (!variableNameRecord.contains(port)) {
+					if (Query.isSystemChannel(model, actorimpl, port) === null) {
+						ret += '''
+							«datatype» «port»; 
+						'''
+					} else {
+						ret += '''
+							«datatype» «port» = «Query.isSystemChannel(model,actorimpl,port)»; 
+						'''
+					}
+					variableNameRecord.add(port)
 				}
 			}
-
-			ret += '''
-				«FOR port : implPortSet SEPARATOR "" AFTER ""»
-					«IF !variableNameRecord.contains(port)»
-						«portToTypeNameHashMap.get(port)»  «port»;
-						«var tmp=variableNameRecord.add(port)»
-					«ENDIF»
-				«ENDFOR»
-			'''
 		}
 		return ret
 	}
@@ -140,52 +182,94 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 	/**
 	 * copied and modified from method read in SDFCombTemplateSrc class
 	 */
-	def String read(Vertex vertex) {
-
-		
-		
-		var consumption = vertex.getProperties().get("consumption")
-		if (consumption !== null) {
-			var inputPortsHashMap = (consumption.unwrap() as HashMap<String, Integer>)
-			'''
-				«FOR port : inputPortsHashMap.keySet() SEPARATOR "" AFTER ""»
-					«IF inputPortsHashMap.get(port)==1»
-						read_nonblocking(«port»_channel);
-					«ELSE»
-						for(int i=0;i<«inputPortsHashMap.get(port)»;++i){
-							read_nonblocking(«port»_channel);
-						}
-					«ENDIF»
-				«ENDFOR»
-			'''
-		} else {
-			'''
-			'''
+	def String read(ForSyDeSystemGraph model,Vertex actor) {
+		var Set<Vertex> impls = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream()
+							.map([e|e.getViewedVertex()])
+							.collect(Collectors.toSet())
+		var Set<String> variableNameRecord = new HashSet
+		var String ret = ""
+		for(Vertex impl: impls){
+			
+			var inputPorts = TypedOperation.safeCast(impl).get().getInputPorts()
+			for(String port :inputPorts){
+				if(!variableNameRecord.contains(port) && Query.isSystemChannel(model,impl, port) === null){
+					//var datatype = Query.findImplPortDataType(model, impl, port)
+					var actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port)
+					var sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName)
+					var datatype = Query.findSDFChannelDataType(model,model.queryVertex(sdfchannelName).get())
+					//println(actor.getIdentifier()+" -->   "+actorPortName)
+					//println(actor)
+					var consumption = SDFComb.safeCast(actor).get().getConsumption().get(actorPortName)
+					
+					if (consumption == 1) {
+						ret += '''
+							#if FREERTOS==1
+							xQueueReceive(msg_queue_«sdfchannelName»,&«port»,portMAX_DELAY);
+							#endif
+						'''
+					} else {
+						ret += '''
+							for(int i=0;i<«consumption»;++i){
+								#if FREERTOS==1
+								xQueueReceive(msg_queue_«sdfchannelName»,&«port»[i],portMAX_DELAY);
+								#endif
+							}
+						'''
+					}
+					variableNameRecord.add(port)
+				}
+			}
+				
+			
 		}
+		return ret;
 	}
 
 	/**
 	 * copied and modified from method write in SDFCombTemplateSrc class
 	 */
-	def String write(Vertex vertex) {
-		var production = vertex.getProperties().get("production")
-		if (production !== null) {
-			var inputPortsHashMap = (production.unwrap() as HashMap<String, Integer>)
-			'''
-				«FOR port : inputPortsHashMap.keySet() SEPARATOR "" AFTER ""»
-					«IF inputPortsHashMap.get(port)==1»
-						write(«port»_channel);
-					«ELSE»
-						for(int i=0;i<«inputPortsHashMap.get(port)»;++i){
-							write(«port»_channel);
+	def String write(Vertex actor) {
+		var model = Generator.model
+		var impls = Query.findCombFuntionVertex(model, actor)
+		var Set<String> variableNameRecord = new HashSet
+		var String ret = ""
+		for (String impl : impls) {
+			var actorimpl = Query.findVertexByName(model, impl)
+			var outputPortSet = Query.findImplOutputPorts(actorimpl)
+			for (String outport : outputPortSet) {
+
+				if (!variableNameRecord.contains(outport)) {
+					//var datatype = Query.findImplPortDataType(model, actorimpl, outport)
+					var actorPortName = Query.findActorPortConnectedToImplOutputPort(model, actor, actorimpl, outport)
+					var sdfchannelName = Query.findOutputSDFChannelConnectedToActorPort(model, actor, actorPortName)
+					var datatype = Query.findSDFChannelDataType(model,model.queryVertex(sdfchannelName).get())
+					try {
+						var production = SDFComb.enforce(actor).getProduction().get(actorPortName)
+						if (production == 1) {
+							ret += '''
+								#if FREERTOS==1
+								xQueueSend(msg_queue_«sdfchannelName»,&«outport»,portMAX_DELAY);
+								#endif
+							'''
+						} else {
+							ret += '''
+								for(int i=0;i<«production»;++i){
+									#if FREERTOS==1
+									xQueueSend(msg_queue_«sdfchannelName»,«outport»+i,portMAX_DELAY);
+									#endif
+								}
+							'''
 						}
-					«ENDIF»
-				«ENDFOR»
-			'''
-		} else {
-			'''
-			'''
+						variableNameRecord.add(outport)
+					} catch (Exception e) {
+						println("In actor " + actor.getIdentifier() + " port " + outport + " no production")
+						return "error " + outport + ";"
+					}
+
+				}
+			}
 		}
+		return ret
 	}
 
 	/**

@@ -39,4 +39,13 @@ void initChannels(){
 	init_channel_type(&fifo_GrayScaleX,buffer_GrayScaleX,buffer_GrayScaleX_size);
 	init_channel_type(&fifo_absxsig,buffer_absxsig,buffer_absxsig_size);
 	init_channel_type(&fifo_GrayScaleY,buffer_GrayScaleY,buffer_GrayScaleY_size);
+	
+	
+		buffer_AbsY[0]=ZeroValue;
+	
+		buffer_AbsX[0]=ZeroValue;
+	
+		buffer_GrayScaleX[0]=ZeroValue;
+	
+		buffer_GrayScaleY[0]=ZeroValue;
 }

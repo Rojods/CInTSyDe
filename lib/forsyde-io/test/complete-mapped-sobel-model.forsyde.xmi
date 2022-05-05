@@ -27,15 +27,15 @@
         <traits>visualization::Visualizable</traits>
         <traits>moc::sdf::SDFComb</traits>
         <traits>decision::sdf::PASSedSDFComb</traits>
-        <ports>gx</ports>
+        <ports>copyX</ports>
         <ports>combinator</ports>
-        <ports>gy</ports>
+        <ports>copyY</ports>
         <ports>imgInput</ports>
         <propertiesValues xsi:type="forsyde.io.eclipse.systemgraph:StringMapVertexProperty">
             <values intValue="6" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
-            <indexes>gx</indexes>
+            <indexes>copyX</indexes>
             <values intValue="6" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
-            <indexes>gy</indexes>
+            <indexes>copyY</indexes>
         </propertiesValues>
         <propertiesNames>production</propertiesNames>
         <propertiesValues xsi:type="forsyde.io.eclipse.systemgraph:ArrayVertexProperty">
@@ -364,11 +364,11 @@
         <propertiesValues intValue="1" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
         <propertiesNames>apriori_importance</propertiesNames>
     </nodes>
-    <edges source="getPx" sourceport="gx" target="gxsig" targetport="producer">
+    <edges source="getPx" sourceport="copyX" target="gxsig" targetport="producer">
         <traits>moc::sdf::SDFDataEdge</traits>
         <traits>visualization::VisualConnection</traits>
     </edges>
-    <edges source="getPx" sourceport="gy" target="gysig" targetport="producer">
+    <edges source="getPx" sourceport="copyY" target="gysig" targetport="producer">
         <traits>moc::sdf::SDFDataEdge</traits>
         <traits>visualization::VisualConnection</traits>
     </edges>

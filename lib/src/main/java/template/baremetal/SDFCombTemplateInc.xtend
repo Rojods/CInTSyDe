@@ -23,7 +23,7 @@ class SDFCombTemplateInc implements ActorTemplate{
 		«var tmp=name.toUpperCase()+"_H_"»
 		#ifndef  «tmp»
 		#define «tmp»
-		#include "datatype_definition.h"
+		#include "../inc/datatype_definition.h"
 		void actor_«name»();
 		#endif
 		'''

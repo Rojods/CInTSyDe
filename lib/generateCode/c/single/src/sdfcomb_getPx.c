@@ -22,7 +22,7 @@ inline void actor_getPx(){
 	Array6OfDoubleType imgBlockX; 
 	/* Read From Input Port  */
 	for(int i=0;i<6;++i){
-		read_non_blocking(&fifo_GrayScaleToGetPx,&gray[i]);
+		read_non_blocking_DoubleType(&fifo_GrayScaleToGetPx,&gray[i]);
 	}
 	/* Inline Code           */
 	/* in combFunction getPxImpl1 */
@@ -42,9 +42,9 @@ inline void actor_getPx(){
 
 	/* Write To Output Ports */
 	for(int i=0;i<6;++i){
-		write_non_blocking(&fifo_getPx port copyY Not write to any sdf channel,&imgBlockY[i]);
+		write_non_blocking_DoubleType(&fifo_gysig,imgBlockY[i]);
 	}
 	for(int i=0;i<6;++i){
-		write_non_blocking(&fifo_getPx port copyX Not write to any sdf channel,&imgBlockX[i]);
+		write_non_blocking_DoubleType(&fifo_gxsig,imgBlockX[i]);
 	}
 }

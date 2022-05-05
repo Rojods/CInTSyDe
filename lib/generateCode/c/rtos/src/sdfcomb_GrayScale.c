@@ -1,4 +1,10 @@
 #include "../inc/config.h"
+#include "../inc/datatype_definition.h"
+#include "../inc/sdfcomb_GrayScale.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "timers.h"	
+#include "queue.h"
 /*
 ==============================================
 	Define Task Stack
@@ -29,7 +35,6 @@ extern QueueHandle_t msg_queue_GrayScaleToGetPx;
 #if FREERTOS==1
 SemaphoreHandle_t timer_sem_GrayScale;
 TimerHandle_t timer_GrayScale;
-static void timer_GrayScale_callback(TimerHandle_t xTimer);
 #endif
 /*
 ==============================================
@@ -38,17 +43,21 @@ static void timer_GrayScale_callback(TimerHandle_t xTimer);
 */
 void task_GrayScale(void* pdata){
 	/* Initilize Memory           */
-	UInt16  offsetX;
-	Array2OfUInt16  dimsOut;
-	Array6OfDoubleType  gray;
-	UInt16  offsetY;
-	ArrayXOfArrayXOfDoubleType  system_img_source_address;
-	UInt16  dimY;
-	UInt16  dimX;
+	UInt16 offsetX; 
+	Array2OfUInt16 dimsOut; 
+	UInt16 offsetY; 
+	Array6OfDoubleType gray; 
+	ArrayXOfArrayXOfDoubleType system_img_source_address = system_img_source; 
+	UInt16 dimY = dimY; 
+	UInt16 dimX = dimX; 
 	while(1){
 		/* Read From»hannel      */
-		read_nonblocking(offsetXIn_channel);
-		read_nonblocking(offsetYIn_channel);
+		#if FREERTOS==1
+		xQueueReceive(msg_queue_GrayScaleX,&offsetX,portMAX_DELAY);
+		#endif
+		#if FREERTOS==1
+		xQueueReceive(msg_queue_GrayScaleY,&offsetY,portMAX_DELAY);
+		#endif
 		/* Inline Code            */
 		//in combFunction GrayScaleImpl
 		gray[0]=0.3125*system_img_source_address[offsetY+0][offsetX+0]+0.5625*system_img_source_address[offsetY+0][offsetX+1]+0.125*system_img_source_address[offsetY+0][offsetX+2];
@@ -57,22 +66,34 @@ void task_GrayScale(void* pdata){
 		gray[3]=0.3125*system_img_source_address[offsetY+1][offsetX+2]+0.5625*system_img_source_address[offsetY+1][offsetX+3]+0.125*system_img_source_address[offsetY+1][offsetX+4];
 		gray[4]=0.3125*system_img_source_address[offsetY+2][offsetX+0]+0.5625*system_img_source_address[offsetY+2][offsetX+1]+0.125*system_img_source_address[offsetY+2][offsetX+2];
 		gray[5]=0.3125*system_img_source_address[offsetY+2][offsetX+2]+0.5625*system_img_source_address[offsetY+2][offsetX+3]+0.125*system_img_source_address[offsetY+2][offsetX+4];
-		if(offsetX>=dimX-2){offsetY+=1;
+		if(offsetX>=dimX-2){
+		offsetY+=1;
 		offsetX=0;
-		}if(offsetY>=dimY-2){offsetY=0;
-		}dimsOut[0]=dimX;
+		}
+		if(offsetY>=dimY-2){
+		offsetY=0;
+		}
+		dimsOut[0]=dimX;
 		dimsOut[1]=dimY;
 		/* Write To Channel       */
-		for(int i=0;i<2;++i){
-			write(dimsOut_channel);
-		}
 		for(int i=0;i<6;++i){
-			write(gray_channel);
+			#if FREERTOS==1
+			xQueueSend(msg_queue_GrayScaleToGetPx,gray+i,portMAX_DELAY);
+			#endif
 		}
-		write(offsetYOut_channel);
-		write(offsetXOut_channel);
+		#if FREERTOS==1
+		xQueueSend(msg_queue_GrayScaleX,&offsetX,portMAX_DELAY);
+		#endif
+		#if FREERTOS==1
+		xQueueSend(msg_queue_GrayScaleY,&offsetY,portMAX_DELAY);
+		#endif
+		for(int i=0;i<2;++i){
+			#if FREERTOS==1
+			xQueueSend(msg_queue_GrayScaleToAbs,dimsOut+i,portMAX_DELAY);
+			#endif
+		}
 		/* Pend Timer's Semaphore */	
-		xSemaphoreTake(task_sem_GrayScale, portMAX_DELAY);	
+		xSemaphoreTake(timer_sem_GrayScale, portMAX_DELAY);	
 	
 	}
 	
@@ -86,6 +107,6 @@ Soft Timer Callback Function
 */
 #if FREERTOS==1
 void timer_GrayScale_callback(TimerHandle_t xTimer){
-	xSemaphoreGive(task_sem_GrayScale);
+	xSemaphoreGive(timer_sem_GrayScale);
 }
 #endif

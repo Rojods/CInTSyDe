@@ -73,13 +73,7 @@ class CircularFIFOTemplateSrc implements InitTemplate {
 					    			
 					   }else{
 					    	*data = channel->buffer[channel->front];
-					    	#if defined(TEST)
-					    	printf("buffer «type»: before read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
-					    	#endif
 					    	channel->front= (channel->front+1)%channel->size;
-					    	#if defined(TEST)
-					    	printf("buffer «type»: after read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
-					    	#endif
 					    	return 0;
 					    }
 				}
@@ -158,13 +152,7 @@ class CircularFIFOTemplateSrc implements InitTemplate {
 					     	for(int i=0;i < «Query.getMaximumElems(typeVertex)»; ++i){
 					     		(*data)[i]=channel->buffer[channel->front][i];
 					     	}
-					    	#if defined(TEST)
-					    	printf("buffer «type»: before read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
-					    	#endif
 					    	channel->front= (channel->front+1)%channel->size;
-					    	#if defined(TEST)
-					    	printf("buffer «type»: after read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
-					    	#endif
 					    	return 0;
 					    }
 				}

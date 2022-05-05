@@ -13,11 +13,13 @@ import utils.Query
 class Channel implements InitTemplate{
 	
 	override create() {
+		var model=Generator.model
 		'''
+		#include "FreeRTOS.h"
 		#include "semphr.h"
 		#include "timers.h"	
-		#include "FreeRTOS.h"
 		#include "queue.h"
+		#include "../inc/datatype_definition.h"
 		«FOR sdfchannel:Generator.sdfchannelSet SEPARATOR "" AFTER""»
 		«var sdfname = sdfchannel.getIdentifier()»
 		/*
@@ -30,7 +32,7 @@ class Channel implements InitTemplate{
 		/* maximum number of tokens in message queue */
 		int queue_length_«sdfname» = «Query.getBufferSize(sdfchannel)»;
 		/* size of token */
-		long item_size_«sdfname» = «Query.getTokenSize(sdfchannel)»;
+		long item_size_«sdfname» = sizeof(«Query.findSDFChannelDataType(model,model.queryVertex(sdfname).get())»);
 		
 		«ENDFOR»
 		

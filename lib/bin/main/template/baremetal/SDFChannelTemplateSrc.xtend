@@ -18,6 +18,10 @@ import java.util.stream.Collectors
 import forsyde.io.java.core.EdgeInfo
 import forsyde.io.java.core.EdgeTrait
 import template.templateInterface.ChannelTemplate
+import forsyde.io.java.typed.viewers.decision.sdf.BoundedSDFChannel
+import forsyde.io.java.typed.viewers.decision.sdf.BoundedSDFChannelViewer
+import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
+
 /**
  * without distinguish if the sdfchannel is a state variable
  * 
@@ -26,29 +30,26 @@ import template.templateInterface.ChannelTemplate
 class SDFChannelTemplateSrc implements ChannelTemplate {
 
 	override create(Vertex sdfchannel) {
-		var type = Query.findSDFChannelDataType(Generator.model,sdfchannel)
+		var type = Query.findSDFChannelDataType(Generator.model, sdfchannel)
 		var properties = sdfchannel.getProperties()
 		'''	
 			«var sdfname=sdfchannel.getIdentifier()»
 			#include "../inc/circular_fifo_lib.h"
-«««			«IF VertexAcessor.getNamedPort(Generator.model,sdfchannel,"consumer",VertexTrait.MOC_SDF_SDFCOMB)!=VertexAcessor.getNamedPort(Generator.model,sdfchannel,"producer",VertexTrait.MOC_SDF_SDFCOMB)»
-			«IF sdfchannel.hasTrait("decision::sdf::BoundedSDFChannel")»
-				«var maximumTokens = properties.get("maximumTokens").unwrap() as Integer»
-				«type» buffer_«sdfname»[«maximumTokens+1»];
+			«IF BoundedSDFChannel.conforms(sdfchannel)»
+				«var viewer = new BoundedSDFChannelViewer(sdfchannel)»
+				«var maximumTokens =viewer.getMaximumTokens()»
+				volatile «type» buffer_«sdfname»[«maximumTokens+1»];
 				int buffer_«sdfname»_size = «maximumTokens+1»;
 				circular_fifo_«type» fifo_«sdfname»;
 				spinlock spinlock_«sdfname»={.flag=0};
 			«ELSE»
-				«type» buffer_«sdfname»[2];
-				int buffer_«sdfname»_size = 2;
+				volatile «type» buffer_«sdfname»[«SDFChannel.safeCast(sdfchannel).get().getNumOfInitialTokens()+1»];
+				int buffer_«sdfname»_size = «SDFChannel.safeCast(sdfchannel).get().getNumOfInitialTokens()+1»;
 				circular_fifo_«type» fifo_«sdfname»;
-				spinlock spinlock_«sdfname»={.flag=0};			
-«««			«ENDIF»
+				spinlock spinlock_«sdfname»={.flag=0};	
 			«ENDIF»
 			
 		'''
 	}
-
-
 
 }

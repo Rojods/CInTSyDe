@@ -37,7 +37,9 @@ class DataTypeTemplateInc implements InitTemplate {
 		'''
 			#ifndef DATATYPE_DEFINITION_
 			#define DATATYPE_DEFINITION_
+			#include "main.h"
 			#include <stdio.h>
+			#define TESTING
 			/*
 			==============================================================
 					TYPING_DATATYPES_DOUBLE

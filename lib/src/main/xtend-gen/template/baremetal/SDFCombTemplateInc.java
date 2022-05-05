@@ -31,7 +31,7 @@ public class SDFCombTemplateInc implements ActorTemplate {
       _builder.append("#define ");
       _builder.append(tmp);
       _builder.newLineIfNotEmpty();
-      _builder.append("#include \"datatype_definition.h\"");
+      _builder.append("#include \"../inc/datatype_definition.h\"");
       _builder.newLine();
       _builder.append("void actor_");
       _builder.append(name);

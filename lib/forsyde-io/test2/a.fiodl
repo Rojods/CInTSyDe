@@ -1,53 +1,23 @@
 systemgraph {
+    vertex UInt16 [typing::datatypes::Integer] () {
+        "numberOfBits": 16_i
+    }  
 
-    vertex DoubleType [typing::datatypes::Double] () {}
-    
-    vertex A [moc::sdf::SDFComb] (combFunctions, imgBlockX, gx) {
+
+
+    vertex GrayScale [moc::sdf::SDFComb,decision::sdf::PASSedSDFComb] 
+    (combFunctions, system_img_source, dimX, dimY, dimsOut, offsetXIn, offsetYIn, offsetXOut, offsetYOut, gray) {
+        "dataTakenPerExecution": {
+            "system_img_source": 384_l,
+            "dimX": 16_l,
+            "dimY": 16_l
+        },
         "production": {
-            "a": 1_i,
+            "a": 2_i
+        },
+        "consumption": {
+            "b": 1_i
         },
         "firingSlots": [0_i]
-
     }
-
-
-    vertex B [moc::sdf::SDFComb, decision::sdf::PASSedSDFComb] 
-    (combFunctions, b) {
-        "consumption": {
-            "b": 1_i,
-        },
-        "firingSlots": [1_i]
-    }
-
-
-
-        vertex aImpl
-    [impl::ANSICBlackBoxExecutable, typing::TypedOperation, impl::InstrumentedExecutable] 
-    (portTypes,a)
-    {
-        "inlinedCode": "
-            a=4.2;
-        ",
-        "outputPorts": ["a"]
-    }
-
-    edge [typing::datatypes::DataDefinition] from aImpl port a to DoubleType
-    edge [] from A port combFunctions to aImpl
-    edge [] from aImpl port a to A port a
-
-        vertex bImpl
-    [impl::ANSICBlackBoxExecutable, typing::TypedOperation, impl::InstrumentedExecutable] 
-    (portTypes,b)
-    {
-        "inlinedCode": "
-            b=b*3;
-        ",
-        "inputPorts": ["b"]
-    }
-    edge [typing::datatypes::DataDefinition] from bImpl port b to DoubleType
-
-    edge [] from B port combFunctions to bImpl
-    edge [] from B port b to bImpl port b
-
-
 }

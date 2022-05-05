@@ -26,7 +26,7 @@ public class SubsystemTemplateInc implements SubsystemTemplate {
     _builder.newLine();
     _builder.append("/* Function Prototype----------*/");
     _builder.newLine();
-    _builder.append("int subsystem();");
+    _builder.append("int subsystem_single_uniprocessor();");
     _builder.newLine();
     _builder.append("#endif");
     _builder.newLine();

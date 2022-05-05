@@ -1,4 +1,10 @@
 #include "../inc/config.h"
+#include "../inc/datatype_definition.h"
+#include "../inc/sdfcomb_getPx.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "timers.h"	
+#include "queue.h"
 /*
 ==============================================
 	Define Task Stack
@@ -28,7 +34,6 @@ extern QueueHandle_t msg_queue_gxsig;
 #if FREERTOS==1
 SemaphoreHandle_t timer_sem_getPx;
 TimerHandle_t timer_getPx;
-static void timer_getPx_callback(TimerHandle_t xTimer);
 #endif
 /*
 ==============================================
@@ -37,13 +42,15 @@ static void timer_getPx_callback(TimerHandle_t xTimer);
 */
 void task_getPx(void* pdata){
 	/* Initilize Memory           */
-	Array6OfDoubleType  gray;
-	Array6OfDoubleType  imgBlockX;
-	Array6OfDoubleType  imgBlockY;
+	Array6OfDoubleType gray; 
+	Array6OfDoubleType imgBlockY; 
+	Array6OfDoubleType imgBlockX; 
 	while(1){
 		/* Read From»hannel      */
 		for(int i=0;i<6;++i){
-			read_nonblocking(gray_channel);
+			#if FREERTOS==1
+			xQueueReceive(msg_queue_GrayScaleToGetPx,&gray[i],portMAX_DELAY);
+			#endif
 		}
 		/* Inline Code            */
 		//in combFunction getPxImpl1
@@ -62,19 +69,17 @@ void task_getPx(void* pdata){
 		imgBlockY[5]=gray[5];
 		/* Write To Channel       */
 		for(int i=0;i<6;++i){
-			write(gx_channel);
+			#if FREERTOS==1
+			xQueueSend(msg_queue_gysig,imgBlockY+i,portMAX_DELAY);
+			#endif
 		}
 		for(int i=0;i<6;++i){
-			write(gy_channel);
-		}
-		for(int i=0;i<6;++i){
-			write(copyY_channel);
-		}
-		for(int i=0;i<6;++i){
-			write(copyX_channel);
+			#if FREERTOS==1
+			xQueueSend(msg_queue_gxsig,imgBlockX+i,portMAX_DELAY);
+			#endif
 		}
 		/* Pend Timer's Semaphore */	
-		xSemaphoreTake(task_sem_getPx, portMAX_DELAY);	
+		xSemaphoreTake(timer_sem_getPx, portMAX_DELAY);	
 	
 	}
 	
@@ -88,6 +93,6 @@ Soft Timer Callback Function
 */
 #if FREERTOS==1
 void timer_getPx_callback(TimerHandle_t xTimer){
-	xSemaphoreGive(task_sem_getPx);
+	xSemaphoreGive(timer_sem_getPx);
 }
 #endif

@@ -1,4 +1,10 @@
 #include "../inc/config.h"
+#include "../inc/datatype_definition.h"
+#include "../inc/sdfcomb_Gy.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "timers.h"	
+#include "queue.h"
 /*
 ==============================================
 	Define Task Stack
@@ -27,7 +33,6 @@ extern QueueHandle_t msg_queue_absysig;
 #if FREERTOS==1
 SemaphoreHandle_t timer_sem_Gy;
 TimerHandle_t timer_Gy;
-static void timer_Gy_callback(TimerHandle_t xTimer);
 #endif
 /*
 ==============================================
@@ -36,15 +41,18 @@ static void timer_Gy_callback(TimerHandle_t xTimer);
 */
 void task_Gy(void* pdata){
 	/* Initilize Memory           */
-	DoubleType  gy;
-	Array6OfDoubleType  imgBlockY;
+	DoubleType gy; 
+	Array6OfDoubleType imgBlockY; 
 	while(1){
 		/* Read From»hannel      */
 		for(int i=0;i<6;++i){
-			read_nonblocking(gy_channel);
+			#if FREERTOS==1
+			xQueueReceive(msg_queue_gysig,&imgBlockY[i],portMAX_DELAY);
+			#endif
 		}
 		/* Inline Code            */
 		//in combFunction GyImpl
+		gy=0;
 		gy=gy+imgBlockY[0];
 		gy=gy+2.0*imgBlockY[1];
 		gy=gy+imgBlockY[2];
@@ -52,9 +60,11 @@ void task_Gy(void* pdata){
 		gy=gy-2.0*imgBlockY[4];
 		gy=gy-imgBlockY[5];
 		/* Write To Channel       */
-		write(resy_channel);
+		#if FREERTOS==1
+		xQueueSend(msg_queue_absysig,&gy,portMAX_DELAY);
+		#endif
 		/* Pend Timer's Semaphore */	
-		xSemaphoreTake(task_sem_Gy, portMAX_DELAY);	
+		xSemaphoreTake(timer_sem_Gy, portMAX_DELAY);	
 	
 	}
 	
@@ -68,6 +78,6 @@ Soft Timer Callback Function
 */
 #if FREERTOS==1
 void timer_Gy_callback(TimerHandle_t xTimer){
-	xSemaphoreGive(task_sem_Gy);
+	xSemaphoreGive(timer_sem_Gy);
 }
 #endif

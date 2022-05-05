@@ -10,15 +10,16 @@ import template.rtos.*
  */
 class demo3 {
 	def static void main(String[] args) {
-		val path="forsyde-io\\complete-mapped-sobel-model.forsyde.xmi";
-		val path2="forsyde-io\\sobel-application.fiodl"
+		val path="forsyde-io\\test\\complete-mapped-sobel-model.forsyde.xmi";
+		val path2="forsyde-io\\test\\sobel-application.fiodl"
 		val root="generateCode\\c\\rtos"
+		val roottest="D:\\Users\\LEGION\\Desktop\\Master Thesis\\code\\stm32-nucleo\\freertos_test1\\Core\\mycode"
 		var model1 = Load.load(path)
 		var model2 = (new ForSyDeFiodlHandler()).loadModel(path2)	
 		
 		model2.mergeInPlace(model1)
 		
-		var Generator gen = new Generator(model2,root)
+		var Generator gen = new Generator(model2,roottest)
 		
 		var initModule= new InitProcessingModule
 		var actorModule= new SDFCombProcessingModule
@@ -26,12 +27,16 @@ class demo3 {
 		var subsystem = new SubsystemUniprocessorModule
 		
 		/* init module */
-		initModule.add(new ConfigRTOSInc)
-		//initModule.add(new SoftTimerTemplateSrc)
+		initModule.add(new Config)
+		initModule.add(new SoftTimerTemplateSrc)
 		initModule.add(new Channel)
 		initModule.add(new StartTaskTemplateSrcRTOS)
+		initModule.add(new StartTaskInc)
+		initModule.add(new DataType)
+		initModule.add(new DataDefinitionSrc)
 		/* actor module */
 		actorModule.add(new SDFCombTemplateSrcRTOS)
+		actorModule.add(new SDFCombInc)
 		/* channel module */
 		
 		/* subsystem module */
@@ -55,6 +60,6 @@ class demo3 {
 		
 		gen.create()
 		
-		println("end!")		
+		println(" RTOS end!")		
 	}
 }

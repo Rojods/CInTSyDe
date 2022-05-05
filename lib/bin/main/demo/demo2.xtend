@@ -13,7 +13,7 @@ import template.baremetal.SpinLockTemplateInc
 import template.baremetal.SpinLockTemplateSrc
 import template.baremetal.multiprocessor.*
 import utils.Load
-
+import template.baremetal.DataDefinitionSrc
 
 class demo2 {
 	def static void main(String[] args) {
@@ -51,6 +51,7 @@ class demo2 {
 		
 		var initModule= new InitProcessingModule
 		initModule.add(new DataTypeTemplateInc)
+		initModule.add(new DataDefinitionSrc)
 		initModule.add(new CircularFIFOTemplateInc)
 		initModule.add(new CircularFIFOTemplateSrc)
 		initModule.add(new SpinLockTemplateInc)

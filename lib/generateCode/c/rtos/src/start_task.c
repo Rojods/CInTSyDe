@@ -1,48 +1,55 @@
 #include "../inc/config.h"
+#include "../inc/datatype_definition.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "timers.h"	
+#include "queue.h"
+#include "../inc/sdfcomb_Gx.h"
+#include "../inc/sdfcomb_Abs.h"
+#include "../inc/sdfcomb_GrayScale.h"
+#include "../inc/sdfcomb_Gy.h"
+#include "../inc/sdfcomb_getPx.h"
 /*
 =================================================
-	Define Task Stack
+	Define StartTask Stack
 =================================================
 */
-StackType_t task_StartTask_stk[TASK_STACKSIZE]; 
+StackType_t task_StartTask_stk[STARTTASK_STACKSIZE]; 
 StaticTask_t tcb_start;
 /*
 =================================================
-	Declare Extern Task Stack
+	Declare Extern Values
 =================================================
 */		
-/*
-=================================================
-	Declare Extern Message Queue
-=================================================
-*/	
-/*
-=================================================
-	Declare Extern Software Timer and Semaphore
-=================================================
-*/	
-void init_msg_queue();
-void init_soft_timer();
-void init_semaphore();
-void init_actor_task();		
-void timer_start(){
-	/* Initilize Message Queue     */
+extern int ZeroValue;
+extern int OneValue;
+
+
+static void init_msg_queue();
+static void init_soft_timer();
+static void init_semaphore();
+static void init_actor_task();
+static void timer_start();
+		
+void subsystem(){
+	/* Initialize Message Queue     */
 	init_msg_queue();
 	
-	/* Initilize Software Timer    */
+	/* Initialize Software Timer    */
 	init_soft_timer();
 	
-	/* Initilize Timer's Semaphore */
+	/* Initialize Timer's Semaphore */
 	init_semaphore();
 	
-	/* Initilize Actor Tasks       */
+	/* Initialize Actor Tasks       */
 	init_actor_task();
 	
 	/* Start Software Timer        */
 	timer_start();
 	
 	/* Delete start task           */
-	vTaskDelete(NULL); 
+	vTaskStartScheduler();
+	//vTaskDelete(NULL); 
 	
 }
 static void init_msg_queue(){
@@ -106,6 +113,11 @@ static void init_msg_queue(){
 	msg_queue_GrayScaleX=xQueueCreate(queue_length_GrayScaleX,item_size_GrayScaleX);
 	msg_queue_absxsig=xQueueCreate(queue_length_absxsig,item_size_absxsig);
 	msg_queue_GrayScaleY=xQueueCreate(queue_length_GrayScaleY,item_size_GrayScaleY);
+	
+xQueueSend(msg_queue_AbsY,&ZeroValue,portMAX_DELAY);
+xQueueSend(msg_queue_AbsX,&ZeroValue,portMAX_DELAY);
+xQueueSend(msg_queue_GrayScaleX,&ZeroValue,portMAX_DELAY);
+xQueueSend(msg_queue_GrayScaleY,&ZeroValue,portMAX_DELAY);
 }
 static void init_soft_timer(){
 	/* actor Gx*/
@@ -162,23 +174,23 @@ static void init_soft_timer(){
 static void init_semaphore(){
 	/* actor Gx*/
 	extern SemaphoreHandle_t timer_sem_Gx;
-	task_sem_Gx=xSemaphoreCreateBinary();
+	timer_sem_Gx=xSemaphoreCreateBinary();
 				
 	/* actor Abs*/
 	extern SemaphoreHandle_t timer_sem_Abs;
-	task_sem_Abs=xSemaphoreCreateBinary();
+	timer_sem_Abs=xSemaphoreCreateBinary();
 				
 	/* actor GrayScale*/
 	extern SemaphoreHandle_t timer_sem_GrayScale;
-	task_sem_GrayScale=xSemaphoreCreateBinary();
+	timer_sem_GrayScale=xSemaphoreCreateBinary();
 				
 	/* actor Gy*/
 	extern SemaphoreHandle_t timer_sem_Gy;
-	task_sem_Gy=xSemaphoreCreateBinary();
+	timer_sem_Gy=xSemaphoreCreateBinary();
 				
 	/* actor getPx*/
 	extern SemaphoreHandle_t timer_sem_getPx;
-	task_sem_getPx=xSemaphoreCreateBinary();
+	timer_sem_getPx=xSemaphoreCreateBinary();
 				
 }
 static void init_actor_task(){
@@ -244,10 +256,15 @@ static void init_actor_task(){
 								
 }
 static void timer_start(){
+	extern TimerHandle_t task_timer_Gx;
 	xTimerStart(task_timer_Gx, portMAX_DELAY);		
+	extern TimerHandle_t task_timer_Abs;
 	xTimerStart(task_timer_Abs, portMAX_DELAY);		
+	extern TimerHandle_t task_timer_GrayScale;
 	xTimerStart(task_timer_GrayScale, portMAX_DELAY);		
+	extern TimerHandle_t task_timer_Gy;
 	xTimerStart(task_timer_Gy, portMAX_DELAY);		
+	extern TimerHandle_t task_timer_getPx;
 	xTimerStart(task_timer_getPx, portMAX_DELAY);		
 }
 

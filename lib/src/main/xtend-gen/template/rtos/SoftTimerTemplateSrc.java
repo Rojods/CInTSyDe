@@ -12,11 +12,13 @@ import template.templateInterface.InitTemplate;
 public class SoftTimerTemplateSrc implements InitTemplate {
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
+    _builder.append("#include \"FreeRTOS.h\"");
+    _builder.newLine();
     _builder.append("#include \"semphr.h\"");
     _builder.newLine();
     _builder.append("#include \"timers.h\"\t");
     _builder.newLine();
-    _builder.append("#include \"FreeRTOS.h\"");
+    _builder.append("#include \"queue.h\"");
     _builder.newLine();
     _builder.append("#include \"../inc/config.h\"");
     _builder.newLine();

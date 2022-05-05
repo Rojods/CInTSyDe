@@ -48,7 +48,11 @@ public class DataTypeTemplateInc implements InitTemplate {
       _builder.newLine();
       _builder.append("#define DATATYPE_DEFINITION_");
       _builder.newLine();
+      _builder.append("#include \"main.h\"");
+      _builder.newLine();
       _builder.append("#include <stdio.h>");
+      _builder.newLine();
+      _builder.append("#define TESTING");
       _builder.newLine();
       _builder.append("/*");
       _builder.newLine();

@@ -11,6 +11,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import template.baremetal.CircularFIFOTemplateInc;
 import template.baremetal.CircularFIFOTemplateSrc;
+import template.baremetal.DataDefinitionSrc;
 import template.baremetal.DataTypeTemplateInc;
 import template.baremetal.SDFChannelTemplateSrc;
 import template.baremetal.SDFCombTemplateInc;
@@ -48,6 +49,8 @@ public class demo2 {
       InitProcessingModule initModule = new InitProcessingModule();
       DataTypeTemplateInc _dataTypeTemplateInc = new DataTypeTemplateInc();
       initModule.add(_dataTypeTemplateInc);
+      DataDefinitionSrc _dataDefinitionSrc = new DataDefinitionSrc();
+      initModule.add(_dataDefinitionSrc);
       CircularFIFOTemplateInc _circularFIFOTemplateInc = new CircularFIFOTemplateInc();
       initModule.add(_circularFIFOTemplateInc);
       CircularFIFOTemplateSrc _circularFIFOTemplateSrc = new CircularFIFOTemplateSrc();

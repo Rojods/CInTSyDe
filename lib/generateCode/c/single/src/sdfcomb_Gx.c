@@ -20,10 +20,11 @@ inline void actor_Gx(){
 	Array6OfDoubleType imgBlockX; 
 	/* Read From Input Port  */
 	for(int i=0;i<6;++i){
-		read_non_blocking(&fifo_gxsig,&imgBlockX[i]);
+		read_non_blocking_DoubleType(&fifo_gxsig,&imgBlockX[i]);
 	}
 	/* Inline Code           */
 	/* in combFunction GxImpl */
+	gx=0;
 	gx=gx-imgBlockX[0];
 	gx=gx+imgBlockX[1];
 	gx=gx-2.0*imgBlockX[2];
@@ -32,5 +33,5 @@ inline void actor_Gx(){
 	gx=gx+imgBlockX[5];
 
 	/* Write To Output Ports */
-	write_non_blocking(&fifo_absxsig,&gx);
+	write_non_blocking_DoubleType(&fifo_absxsig,gx);
 }

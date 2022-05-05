@@ -25,6 +25,7 @@ class CircularFIFOTemplateInc implements InitTemplate {
 			.map([v|Query.findSDFChannelDataType(model,v)])
 			.map([s|Query.findVertexByName(model,s)])
 			.collect(Collectors.toSet())
+			
 
 	}
 
@@ -70,10 +71,10 @@ class CircularFIFOTemplateInc implements InitTemplate {
 			}circular_fifo_«type»;
 			
 			void init_channel_«type»(circular_fifo_«type» *channel ,«type»* buffer, size_t size);
-			int read_non_blocking_«type»(circular_fifo_«type»* channel,«type»* dst );
-			int read_blocking_«type»(circular_fifo_«type»* ptr,«type»* dst,spinlock *lock);
-			int write_non_blocking_«type»(circular_fifo_«type»* ptr,«type»* src );
-			int write_blocking_«type»(circular_fifo_«type»* ptr,«type»* src,spinlock *lock);	
+			int read_non_blocking_«type»(circular_fifo_«type»* src,«type»* dst );
+			int read_blocking_«type»(circular_fifo_«type»* src,«type»* dst,spinlock *lock);
+			int write_non_blocking_«type»(circular_fifo_«type»* dst,«type» src );
+			int write_blocking_«type»(circular_fifo_«type»* dst,«type» src,spinlock *lock);	
 						
 «««		«ELSE»
 «««			«var maximumElems =getMaximumElems(v)»

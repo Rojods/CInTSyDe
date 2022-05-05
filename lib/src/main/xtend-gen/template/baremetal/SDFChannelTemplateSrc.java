@@ -4,6 +4,9 @@ import fileAnnotation.FileType;
 import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexProperty;
+import forsyde.io.java.typed.viewers.decision.sdf.BoundedSDFChannel;
+import forsyde.io.java.typed.viewers.decision.sdf.BoundedSDFChannelViewer;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel;
 import generator.Generator;
 import java.util.Map;
 import org.eclipse.xtend2.lib.StringConcatenation;
@@ -27,11 +30,13 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
       _builder.append("#include \"../inc/circular_fifo_lib.h\"");
       _builder.newLine();
       {
-        Boolean _hasTrait = sdfchannel.hasTrait("decision::sdf::BoundedSDFChannel");
-        if ((_hasTrait).booleanValue()) {
-          Object _unwrap = properties.get("maximumTokens").unwrap();
-          Integer maximumTokens = ((Integer) _unwrap);
+        Boolean _conforms = BoundedSDFChannel.conforms(sdfchannel);
+        if ((_conforms).booleanValue()) {
+          BoundedSDFChannelViewer viewer = new BoundedSDFChannelViewer(sdfchannel);
           _builder.newLineIfNotEmpty();
+          Integer maximumTokens = viewer.getMaximumTokens();
+          _builder.newLineIfNotEmpty();
+          _builder.append("volatile ");
           _builder.append(type);
           _builder.append(" buffer_");
           _builder.append(sdfname);
@@ -56,14 +61,23 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
           _builder.append("={.flag=0};");
           _builder.newLineIfNotEmpty();
         } else {
+          _builder.append("volatile ");
           _builder.append(type);
           _builder.append(" buffer_");
           _builder.append(sdfname);
-          _builder.append("[2];");
+          _builder.append("[");
+          Integer _numOfInitialTokens = SDFChannel.safeCast(sdfchannel).get().getNumOfInitialTokens();
+          int _plus = ((_numOfInitialTokens).intValue() + 1);
+          _builder.append(_plus);
+          _builder.append("];");
           _builder.newLineIfNotEmpty();
           _builder.append("int buffer_");
           _builder.append(sdfname);
-          _builder.append("_size = 2;");
+          _builder.append("_size = ");
+          Integer _numOfInitialTokens_1 = SDFChannel.safeCast(sdfchannel).get().getNumOfInitialTokens();
+          int _plus_1 = ((_numOfInitialTokens_1).intValue() + 1);
+          _builder.append(_plus_1);
+          _builder.append(";");
           _builder.newLineIfNotEmpty();
           _builder.append("circular_fifo_");
           _builder.append(type);
@@ -73,7 +87,7 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
           _builder.newLineIfNotEmpty();
           _builder.append("spinlock spinlock_");
           _builder.append(sdfname);
-          _builder.append("={.flag=0};\t\t\t");
+          _builder.append("={.flag=0};\t");
           _builder.newLineIfNotEmpty();
         }
       }

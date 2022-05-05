@@ -1,5 +1,6 @@
 package template.baremetal;
 
+import com.google.common.base.Objects;
 import fileAnnotation.FileType;
 import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.ForSyDeSystemGraph;
@@ -39,12 +40,23 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor);
       this.outputSDFChannelSet = Query.findOutputSDFChannels(model, actor);
       StringConcatenation _builder = new StringConcatenation();
+      String name = actor.getIdentifier();
+      _builder.newLineIfNotEmpty();
       _builder.append("/* Includes-------------------------- */");
+      _builder.newLine();
+      _builder.append("#include \"../inc/config.h\"");
       _builder.newLine();
       _builder.append("#include \"../inc/datatype_definition.h\"");
       _builder.newLine();
-      String name = actor.getIdentifier();
+      _builder.append("#include \"../inc/circular_fifo_lib.h\"");
+      _builder.newLine();
+      _builder.append("#include \"../inc/sdfcomb_");
+      _builder.append(name);
+      _builder.append(".h\"");
       _builder.newLineIfNotEmpty();
+      _builder.newLine();
+      _builder.newLine();
+      _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
       _builder.append("========================================");
@@ -70,10 +82,54 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.newLine();
       _builder.append("*/\t\t\t");
       _builder.newLine();
-      _builder.append("inline void actor_");
+      _builder.append("void actor_");
       _builder.append(name);
       _builder.append("(){");
       _builder.newLineIfNotEmpty();
+      _builder.append("\t");
+      _builder.append("#if defined(TESTING)");
+      _builder.newLine();
+      {
+        boolean _equals = Objects.equal(name, "GrayScale");
+        if (_equals) {
+          _builder.append("\t");
+          _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);");
+          _builder.newLine();
+        } else {
+          boolean _equals_1 = Objects.equal(name, "getPx");
+          if (_equals_1) {
+            _builder.append("\t");
+            _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,1);");
+            _builder.newLine();
+          } else {
+            boolean _equals_2 = Objects.equal(name, "Gx");
+            if (_equals_2) {
+              _builder.append("\t");
+              _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,1);");
+              _builder.newLine();
+            } else {
+              boolean _equals_3 = Objects.equal(name, "Gy");
+              if (_equals_3) {
+                _builder.append("\t");
+                _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,1);");
+                _builder.newLine();
+              } else {
+                boolean _equals_4 = Objects.equal(name, "Abs");
+                if (_equals_4) {
+                  _builder.append("\t");
+                  _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);");
+                  _builder.newLine();
+                }
+              }
+            }
+          }
+        }
+      }
+      _builder.append("\t");
+      _builder.append("#endif");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.newLine();
       _builder.append("\t");
       _builder.append("/* Initilize Memory      */");
       _builder.newLine();
@@ -103,6 +159,47 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       String _write = this.write(actor);
       _builder.append(_write, "\t");
       _builder.newLineIfNotEmpty();
+      {
+        boolean _equals_5 = Objects.equal(name, "GrayScale");
+        if (_equals_5) {
+          _builder.append("HAL_Delay(1000);");
+          _builder.newLine();
+          _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
+          _builder.newLine();
+        } else {
+          boolean _equals_6 = Objects.equal(name, "getPx");
+          if (_equals_6) {
+            _builder.append("HAL_Delay(1000);");
+            _builder.newLine();
+            _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,0);\t\t\t\t\t");
+            _builder.newLine();
+          } else {
+            boolean _equals_7 = Objects.equal(name, "Gx");
+            if (_equals_7) {
+              _builder.append("HAL_Delay(1000);");
+              _builder.newLine();
+              _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,0);\t");
+              _builder.newLine();
+            } else {
+              boolean _equals_8 = Objects.equal(name, "Gy");
+              if (_equals_8) {
+                _builder.append("HAL_Delay(1000);");
+                _builder.newLine();
+                _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,0);\t\t");
+                _builder.newLine();
+              } else {
+                boolean _equals_9 = Objects.equal(name, "Abs");
+                if (_equals_9) {
+                  _builder.append("HAL_Delay(1000);");
+                  _builder.newLine();
+                  _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
+                  _builder.newLine();
+                }
+              }
+            }
+          }
+        }
+      }
       _builder.append("}");
       _builder.newLine();
       _xblockexpression = _builder.toString();
@@ -129,9 +226,17 @@ public class SDFCombTemplateSrc implements ActorTemplate {
             boolean _contains = record.contains(sdf);
             boolean _not = (!_contains);
             if (_not) {
-              _builder.append("extern fifo_");
+              _builder.append("extern circular_fifo_");
+              String _findSDFChannelDataType = Query.findSDFChannelDataType(Generator.model, sdf);
+              _builder.append(_findSDFChannelDataType);
+              _builder.append(" fifo_");
               String _identifier = sdf.getIdentifier();
               _builder.append(_identifier);
+              _builder.append(";");
+              _builder.newLineIfNotEmpty();
+              _builder.append("extern spinlock spinlock_");
+              String _identifier_1 = sdf.getIdentifier();
+              _builder.append(_identifier_1);
               _builder.append(";");
               _builder.newLineIfNotEmpty();
               boolean tmp = record.add(sdf);
@@ -157,9 +262,17 @@ public class SDFCombTemplateSrc implements ActorTemplate {
             boolean _contains_1 = record.contains(sdf_1);
             boolean _not_1 = (!_contains_1);
             if (_not_1) {
-              _builder.append("extern fifo_");
-              String _identifier_1 = sdf_1.getIdentifier();
-              _builder.append(_identifier_1);
+              _builder.append("extern circular_fifo_");
+              String _findSDFChannelDataType_1 = Query.findSDFChannelDataType(Generator.model, sdf_1);
+              _builder.append(_findSDFChannelDataType_1);
+              _builder.append(" fifo_");
+              String _identifier_2 = sdf_1.getIdentifier();
+              _builder.append(_identifier_2);
+              _builder.append(";");
+              _builder.newLineIfNotEmpty();
+              _builder.append("extern spinlock spinlock_");
+              String _identifier_3 = sdf_1.getIdentifier();
+              _builder.append(_identifier_3);
               _builder.append(";");
               _builder.newLineIfNotEmpty();
               boolean tmp_1 = record.add(sdf_1);
@@ -239,19 +352,43 @@ public class SDFCombTemplateSrc implements ActorTemplate {
         List<String> inputPorts = TypedOperation.safeCast(impl).get().getInputPorts();
         for (final String port : inputPorts) {
           if (((!variableNameRecord.contains(port)) && (Query.isSystemChannel(model, impl, port) == null))) {
-            String datatype = Query.findImplPortDataType(model, impl, port);
             String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port);
             String sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName);
+            String datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get());
             Integer consumption = SDFComb.safeCast(actor).get().getConsumption().get(actorPortName);
             if (((consumption).intValue() == 1)) {
               String _ret = ret;
               StringConcatenation _builder = new StringConcatenation();
-              _builder.append("read_non_blocking(&fifo_");
+              _builder.append("#if ");
+              String _upperCase = sdfchannelName.toUpperCase();
+              _builder.append(_upperCase);
+              _builder.append("_BLOCKING==0");
+              _builder.newLineIfNotEmpty();
+              _builder.append("read_non_blocking_");
+              _builder.append(datatype);
+              _builder.append("(&fifo_");
               _builder.append(sdfchannelName);
               _builder.append(",&");
               _builder.append(port);
+              _builder.append(",&spinlock_");
+              _builder.append(sdfchannelName);
               _builder.append(");");
               _builder.newLineIfNotEmpty();
+              _builder.append("#else");
+              _builder.newLine();
+              _builder.append("read_blocking_");
+              _builder.append(datatype);
+              _builder.append("(&fifo_");
+              _builder.append(sdfchannelName);
+              _builder.append(",&");
+              _builder.append(port);
+              _builder.append(",&spinlock_");
+              _builder.append(sdfchannelName);
+              _builder.append(");");
+              _builder.newLineIfNotEmpty();
+              _builder.append("#endif");
+              _builder.newLine();
+              _builder.newLine();
               ret = (_ret + _builder);
             } else {
               String _ret_1 = ret;
@@ -261,13 +398,39 @@ public class SDFCombTemplateSrc implements ActorTemplate {
               _builder_1.append(";++i){");
               _builder_1.newLineIfNotEmpty();
               _builder_1.append("\t");
-              _builder_1.append("read_non_blocking(&fifo_");
+              _builder_1.append("#if ");
+              String _upperCase_1 = sdfchannelName.toUpperCase();
+              _builder_1.append(_upperCase_1, "\t");
+              _builder_1.append("_BLOCKING==0");
+              _builder_1.newLineIfNotEmpty();
+              _builder_1.append("\t");
+              _builder_1.append("read_non_blocking_");
+              _builder_1.append(datatype, "\t");
+              _builder_1.append("(&fifo_");
               _builder_1.append(sdfchannelName, "\t");
               _builder_1.append(",&");
               _builder_1.append(port, "\t");
               _builder_1.append("[i]);");
               _builder_1.newLineIfNotEmpty();
+              _builder_1.append("\t");
+              _builder_1.append("#else");
+              _builder_1.newLine();
+              _builder_1.append("\t");
+              _builder_1.append("read_blocking_");
+              _builder_1.append(datatype, "\t");
+              _builder_1.append("(&fifo_");
+              _builder_1.append(sdfchannelName, "\t");
+              _builder_1.append(",&");
+              _builder_1.append(port, "\t");
+              _builder_1.append("[i],&spinlock_");
+              _builder_1.append(sdfchannelName, "\t");
+              _builder_1.append(");");
+              _builder_1.newLineIfNotEmpty();
+              _builder_1.append("\t");
+              _builder_1.append("#endif");
+              _builder_1.newLine();
               _builder_1.append("}");
+              _builder_1.newLine();
               _builder_1.newLine();
               ret = (_ret_1 + _builder_1);
             }
@@ -292,20 +455,43 @@ public class SDFCombTemplateSrc implements ActorTemplate {
           boolean _contains = variableNameRecord.contains(outport);
           boolean _not = (!_contains);
           if (_not) {
-            String datatype = Query.findImplPortDataType(model, actorimpl, outport);
             String actorPortName = Query.findActorPortConnectedToImplOutputPort(model, actor, actorimpl, outport);
             String sdfchannelName = Query.findOutputSDFChannelConnectedToActorPort(model, actor, actorPortName);
+            String datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get());
             try {
               Integer production = SDFComb.enforce(actor).getProduction().get(actorPortName);
               if (((production).intValue() == 1)) {
                 String _ret = ret;
                 StringConcatenation _builder = new StringConcatenation();
-                _builder.append("write_non_blocking(&fifo_");
+                _builder.append("#if ");
+                String _upperCase = sdfchannelName.toUpperCase();
+                _builder.append(_upperCase);
+                _builder.append("_BLOCKING==0");
+                _builder.newLineIfNotEmpty();
+                _builder.append("write_non_blocking_");
+                _builder.append(datatype);
+                _builder.append("(&fifo_");
                 _builder.append(sdfchannelName);
-                _builder.append(",&");
+                _builder.append(",");
                 _builder.append(outport);
                 _builder.append(");");
                 _builder.newLineIfNotEmpty();
+                _builder.append("#else");
+                _builder.newLine();
+                _builder.append("write_blocking_");
+                _builder.append(datatype);
+                _builder.append("(&fifo_");
+                _builder.append(sdfchannelName);
+                _builder.append(",");
+                _builder.append(outport);
+                _builder.append(",&spinlock_");
+                _builder.append(sdfchannelName);
+                _builder.append(");");
+                _builder.newLineIfNotEmpty();
+                _builder.append("#endif");
+                _builder.newLine();
+                _builder.append("\t\t\t\t\t\t");
+                _builder.newLine();
                 ret = (_ret + _builder);
               } else {
                 String _ret_1 = ret;
@@ -315,13 +501,39 @@ public class SDFCombTemplateSrc implements ActorTemplate {
                 _builder_1.append(";++i){");
                 _builder_1.newLineIfNotEmpty();
                 _builder_1.append("\t");
-                _builder_1.append("write_non_blocking(&fifo_");
+                _builder_1.append("#if ");
+                String _upperCase_1 = sdfchannelName.toUpperCase();
+                _builder_1.append(_upperCase_1, "\t");
+                _builder_1.append("_BLOCKING==0");
+                _builder_1.newLineIfNotEmpty();
+                _builder_1.append("\t");
+                _builder_1.append("write_non_blocking_");
+                _builder_1.append(datatype, "\t");
+                _builder_1.append("(&fifo_");
                 _builder_1.append(sdfchannelName, "\t");
-                _builder_1.append(",&");
+                _builder_1.append(",");
                 _builder_1.append(outport, "\t");
                 _builder_1.append("[i]);");
                 _builder_1.newLineIfNotEmpty();
+                _builder_1.append("\t");
+                _builder_1.append("#else");
+                _builder_1.newLine();
+                _builder_1.append("\t");
+                _builder_1.append("write_blocking_");
+                _builder_1.append(datatype, "\t");
+                _builder_1.append("(&fifo_");
+                _builder_1.append(sdfchannelName, "\t");
+                _builder_1.append(",");
+                _builder_1.append(outport, "\t");
+                _builder_1.append("[i],&spinlock_");
+                _builder_1.append(sdfchannelName, "\t");
+                _builder_1.append(");");
+                _builder_1.newLineIfNotEmpty();
+                _builder_1.append("\t");
+                _builder_1.append("#endif");
+                _builder_1.newLine();
                 _builder_1.append("}");
+                _builder_1.newLine();
                 _builder_1.newLine();
                 ret = (_ret_1 + _builder_1);
               }
@@ -370,31 +582,5 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       }
     }
     return _builder.toString();
-  }
-  
-  private String getExternSDFChannel(final Vertex actor) {
-    String _xblockexpression = null;
-    {
-      Set<Vertex> SDFChannelSet = Query.findInputSDFChannels(Generator.model, actor);
-      SDFChannelSet.addAll(Query.findOutputSDFChannels(Generator.model, actor));
-      StringConcatenation _builder = new StringConcatenation();
-      {
-        boolean _hasElements = false;
-        for(final Vertex sdfchannel : SDFChannelSet) {
-          if (!_hasElements) {
-            _hasElements = true;
-          } else {
-            _builder.appendImmediate("", "");
-          }
-          _builder.append("\t");
-          _builder.newLine();
-        }
-        if (_hasElements) {
-          _builder.append("");
-        }
-      }
-      _xblockexpression = _builder.toString();
-    }
-    return _xblockexpression;
   }
 }

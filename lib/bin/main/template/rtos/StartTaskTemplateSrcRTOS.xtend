@@ -1,59 +1,76 @@
 package template.rtos
 
-import template.templateInterface.InitTemplate
-import fileAnnotation.*
+import fileAnnotation.FileType
+import fileAnnotation.FileTypeAnno
+import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
+import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
+import forsyde.io.java.typed.viewers.values.IntegerValue
 import generator.Generator
+import java.util.HashMap
+import java.util.stream.Collectors
+import template.templateInterface.InitTemplate
 import utils.Query
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class StartTaskTemplateSrcRTOS implements InitTemplate {
 	override String create() {
+		var model= Generator.model
+		var integerValues = model.vertexSet().stream()
+		.filter([v|IntegerValue.conforms(v)])
+		.map([v|IntegerValue.safeCast(v).get()])
+		.collect(Collectors.toSet())
 		'''
 			#include "../inc/config.h"
+			#include "../inc/datatype_definition.h"
+			#include "FreeRTOS.h"
+			#include "semphr.h"
+			#include "timers.h"	
+			#include "queue.h"
+			«FOR actor:model.vertexSet().stream().filter([v|SDFComb.conforms(v)]).collect(Collectors.toSet())»
+			#include "../inc/sdfcomb_«actor.getIdentifier()».h"
+			«ENDFOR»
 			/*
 			=================================================
-				Define Task Stack
+				Define StartTask Stack
 			=================================================
 			*/
-			StackType_t task_StartTask_stk[TASK_STACKSIZE]; 
+			StackType_t task_StartTask_stk[STARTTASK_STACKSIZE]; 
 			StaticTask_t tcb_start;
 			/*
 			=================================================
-				Declare Extern Task Stack
+				Declare Extern Values
 			=================================================
 			*/		
-			/*
-			=================================================
-				Declare Extern Message Queue
-			=================================================
-			*/	
-			/*
-			=================================================
-				Declare Extern Software Timer and Semaphore
-			=================================================
-			*/	
-			void init_msg_queue();
-			void init_soft_timer();
-			void init_semaphore();
-			void init_actor_task();		
-			void timer_start(){
-				/* Initilize Message Queue     */
+			«FOR value:integerValues »
+			extern int «value.getIdentifier()»;
+			«ENDFOR»			
+			
+			
+			static void init_msg_queue();
+			static void init_soft_timer();
+			static void init_semaphore();
+			static void init_actor_task();
+			static void timer_start();
+					
+			void subsystem(){
+				/* Initialize Message Queue     */
 				init_msg_queue();
 				
-				/* Initilize Software Timer    */
+				/* Initialize Software Timer    */
 				init_soft_timer();
 				
-				/* Initilize Timer's Semaphore */
+				/* Initialize Timer's Semaphore */
 				init_semaphore();
 				
-				/* Initilize Actor Tasks       */
+				/* Initialize Actor Tasks       */
 				init_actor_task();
 				
 				/* Start Software Timer        */
 				timer_start();
 				
 				/* Delete start task           */
-				vTaskDelete(NULL); 
+				vTaskStartScheduler();
+				//vTaskDelete(NULL); 
 				
 			}
 			static void init_msg_queue(){
@@ -68,7 +85,17 @@ class StartTaskTemplateSrcRTOS implements InitTemplate {
 				«FOR sdfchannel : Generator.sdfchannelSet SEPARATOR "" AFTER ""»
 					«var sdfname = sdfchannel.getIdentifier()»
 					msg_queue_«sdfname»=xQueueCreate(queue_length_«sdfname»,item_size_«sdfname»);
-				«ENDFOR»		
+				«ENDFOR»
+				
+			«FOR channel : Generator.sdfchannelSet»
+				«var sdfchannel=SDFChannel.safeCast(channel).get()»
+				«IF sdfchannel.getNumOfInitialTokens()!==null&&sdfchannel.getNumOfInitialTokens()>0»
+					«var b = (sdfchannel.getProperties().get("__initialTokenValues_ordering__").unwrap() as HashMap<String,Integer>) »					
+					«FOR k:b.keySet()»
+					xQueueSend(msg_queue_«sdfchannel.getIdentifier()»,&«k»,portMAX_DELAY);
+					«ENDFOR»
+				«ENDIF»
+			«ENDFOR»						
 			}
 			static void init_soft_timer(){
 			«FOR actor : Generator.sdfcombSet SEPARATOR "" AFTER ""»
@@ -90,7 +117,7 @@ class StartTaskTemplateSrcRTOS implements InitTemplate {
 				«var name = actor.getIdentifier()»
 					/* actor «name»*/
 					extern SemaphoreHandle_t timer_sem_«name»;
-					task_sem_«name»=xSemaphoreCreateBinary();
+					timer_sem_«name»=xSemaphoreCreateBinary();
 								
 			«ENDFOR»				
 			}
@@ -114,6 +141,7 @@ class StartTaskTemplateSrcRTOS implements InitTemplate {
 			static void timer_start(){
 				«FOR actor : Generator.sdfcombSet SEPARATOR "" AFTER ""»
 					«var name=actor.getIdentifier()»
+					extern TimerHandle_t task_timer_«name»;
 					xTimerStart(task_timer_«name», portMAX_DELAY);		
 				«ENDFOR»				
 			}

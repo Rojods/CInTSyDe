@@ -1,7 +1,7 @@
 /*
 *******************************************************
 	This file contains the function definition for 
-	token types: Array6OfDoubleType, UInt16
+	token types: DoubleType, UInt16
 	For each token type, there are five functions:
 	init_channel_typeName(...)
 	read_non_blocking_typeName(...)
@@ -16,36 +16,34 @@
 
 /*
 =============================================================
-				Array6OfDoubleType Channel Definition
+				DoubleType Channel Definition
 =============================================================
 */				
-void init_channel_Array6OfDoubleType(circular_fifo_Array6OfDoubleType *channel ,Array6OfDoubleType* buffer, size_t size){
+void init_channel_DoubleType(circular_fifo_DoubleType *channel ,DoubleType* buffer, size_t size){
     channel->buffer = buffer;
     channel->size=size;
     channel->front = 0;
     channel->rear = 0;			
 }
 			
-int read_non_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType *channel, Array6OfDoubleType *data){
+int read_non_blocking_DoubleType(circular_fifo_DoubleType *channel, DoubleType *data){
 	if(channel->front==channel->rear){
 	    	//empty 
 	    	return -1;
 	    			
 	   }else{
-	     	for(int i=0;i < 6; ++i){
-	     		(*data)[i]=channel->buffer[channel->front][i];
-	     	}
+	    	*data = channel->buffer[channel->front];
 	    	#if defined(TEST)
-	    	printf("buffer Array6OfDoubleType: before read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
+	    	printf("buffer DoubleType: before read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
 	    	#endif
 	    	channel->front= (channel->front+1)%channel->size;
 	    	#if defined(TEST)
-	    	printf("buffer Array6OfDoubleType: after read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
+	    	printf("buffer DoubleType: after read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
 	    	#endif
 	    	return 0;
 	    }
 }
-int read_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* channel,Array6OfDoubleType* data,spinlock* lock){
+int read_blocking_DoubleType(circular_fifo_DoubleType* channel,DoubleType* data,spinlock* lock){
 	spinlock_get(lock);
 	if(channel->front==channel->rear){
 	    	//empty 
@@ -53,18 +51,16 @@ int read_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* channel,A
 	    	return -1;
 	    			
 	   }else{
-	     	for(int i=0;i < 6; ++i){
-	     		(*data)[i]=channel->buffer[channel->front][i];
-	     	}
-	    	//printf("buffer Array6OfDoubleType: before read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
+	    	*data = channel->buffer[channel->front];
+	    	//printf("buffer DoubleType: before read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
 	    	channel->front= (channel->front+1)%channel->size;
-	    	//printf("buffer Array6OfDoubleType: after read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
+	    	//printf("buffer DoubleType: after read, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
 	    	spinlock_release(lock);
 	    	return 0;
 	    }
 }				
 			
-int write_non_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* channel, Array6OfDoubleType value){
+int write_non_blocking_DoubleType(circular_fifo_DoubleType* channel, DoubleType value){
     /*if the buffer is full*/
     if((channel->rear+1)%channel->size == channel->front){
         //full!
@@ -72,19 +68,16 @@ int write_non_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* chan
         //printf("buffer full error\n!");
         return -1;
      }else{
-     	for(int i=0;i < 6; ++i){
-     		channel->buffer[channel->rear][i] = value[i];
-     	}
-        
-       //printf("buffer Array6OfDoubleType:before write, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
+        channel->buffer[channel->rear] = value;
+       //printf("buffer DoubleType:before write, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
         channel->rear= (channel->rear+1)%channel->size;
-        //printf("buffer Array6OfDoubleType:after write, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
+        //printf("buffer DoubleType:after write, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
         return 0;
     }			
 
 }	
 			
-int write_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* channel, Array6OfDoubleType value,spinlock* lock){
+int write_blocking_DoubleType(circular_fifo_DoubleType* channel, DoubleType value,spinlock* lock){
 	spinlock_get(lock);
 	
 	   /*if the buffer is full*/
@@ -95,12 +88,10 @@ int write_blocking_Array6OfDoubleType(circular_fifo_Array6OfDoubleType* channel,
 	       spinlock_release(lock);
 	       return -1;
 	    }else{
-	     	for(int i=0;i < 6; ++i){
-	     		channel->buffer[channel->rear][i] = value[i];
-	     	}
-	      //printf("buffer Array6OfDoubleType:before write, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
+	       channel->buffer[channel->rear] = value;
+	      //printf("buffer DoubleType:before write, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
 	       channel->rear= (channel->rear+1)%channel->size;
-	       //printf("buffer Array6OfDoubleType:after write, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
+	       //printf("buffer DoubleType:after write, front: %d, rear %d size:%d\n",channel->front,channel->rear,channel->size);
 	       spinlock_release(lock);
 	       return 0;
 	   }				

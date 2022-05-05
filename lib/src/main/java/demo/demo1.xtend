@@ -2,6 +2,7 @@ package demo
 
 import forsyde.io.java.drivers.ForSyDeFiodlHandler
 
+
 import generator.Generator
 import generator.InitProcessingModule
 import generator.SDFChannelProcessingModule
@@ -20,18 +21,21 @@ import template.baremetal.uniprocessor.SubsystemTemplateSrc
 import utils.Load
 import generator.SDFCombProcessingModule
 import generator.SubsystemUniprocessorModule
+import template.baremetal.DataDefinitionSrc
+import template.baremetal.Config
 
 class demo1 {
 	def static void main(String[] args) {
 		val path="forsyde-io\\test\\complete-mapped-sobel-model.forsyde.xmi";
 		val path2="forsyde-io\\test\\sobel-application.fiodl"
 		val root="generateCode\\c\\single"
+		val root2 = "D:\\Users\\LEGION\\Desktop\\Master Thesis\\code\\stm32-nucleo\\uniprocessor_test1\\Core\\mycode"
 		var model1 = Load.load(path)
 		var model2 = (new ForSyDeFiodlHandler()).loadModel(path2)	
 		
 		model2.mergeInPlace(model1)
 		
-		var Generator gen = new Generator(model2,root)
+		var Generator gen = new Generator(model2,root2)
 		
 		
 		var sdfchannelModule = new SDFChannelProcessingModule
@@ -58,10 +62,14 @@ class demo1 {
 		
 		var initModule= new InitProcessingModule
 		initModule.add(new DataTypeTemplateInc)
+		initModule.add(new DataDefinitionSrc)
+		
 		initModule.add(new CircularFIFOTemplateInc)
 		initModule.add(new CircularFIFOTemplateSrc)
 		initModule.add(new SpinLockTemplateInc)
 		initModule.add(new SpinLockTemplateSrc)
+		
+		initModule.add(new Config)
 		
 		
 		

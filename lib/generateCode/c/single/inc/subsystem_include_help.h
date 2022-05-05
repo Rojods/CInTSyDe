@@ -30,24 +30,24 @@ extern int buffer_AbsX_size;
 extern circular_fifo_UInt16 fifo_AbsX;
 
 /* extern sdfchannel GrayScaleToGetPx*/
-extern Array6OfDoubleType buffer_GrayScaleToGetPx[];
+extern DoubleType buffer_GrayScaleToGetPx[];
 extern int buffer_GrayScaleToGetPx_size;
-extern circular_fifo_Array6OfDoubleType fifo_GrayScaleToGetPx;
+extern circular_fifo_DoubleType fifo_GrayScaleToGetPx;
 
 /* extern sdfchannel gysig*/
-extern Array6OfDoubleType buffer_gysig[];
+extern DoubleType buffer_gysig[];
 extern int buffer_gysig_size;
-extern circular_fifo_Array6OfDoubleType fifo_gysig;
+extern circular_fifo_DoubleType fifo_gysig;
 
 /* extern sdfchannel gxsig*/
-extern Array6OfDoubleType buffer_gxsig[];
+extern DoubleType buffer_gxsig[];
 extern int buffer_gxsig_size;
-extern circular_fifo_Array6OfDoubleType fifo_gxsig;
+extern circular_fifo_DoubleType fifo_gxsig;
 
 /* extern sdfchannel absysig*/
-extern UInt16 buffer_absysig[];
+extern DoubleType buffer_absysig[];
 extern int buffer_absysig_size;
-extern circular_fifo_UInt16 fifo_absysig;
+extern circular_fifo_DoubleType fifo_absysig;
 
 /* extern sdfchannel GrayScaleX*/
 extern UInt16 buffer_GrayScaleX[];
@@ -55,9 +55,9 @@ extern int buffer_GrayScaleX_size;
 extern circular_fifo_UInt16 fifo_GrayScaleX;
 
 /* extern sdfchannel absxsig*/
-extern UInt16 buffer_absxsig[];
+extern DoubleType buffer_absxsig[];
 extern int buffer_absxsig_size;
-extern circular_fifo_UInt16 fifo_absxsig;
+extern circular_fifo_DoubleType fifo_absxsig;
 
 /* extern sdfchannel GrayScaleY*/
 extern UInt16 buffer_GrayScaleY[];

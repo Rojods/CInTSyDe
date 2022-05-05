@@ -3,7 +3,9 @@ systemgraph {
     vertex ZeroValue [values::IntegerValue] () {
         "intValue": 0_i
     }
-
+    vertex OneValue [values::IntegerValue] () {
+        "intValue": 1_i
+    }
     vertex ArrayXOfArrayXOfDoubleType [typing::datatypes::Array] (innerType) {
         "maximumElems": -1_i
     }
@@ -275,6 +277,7 @@ systemgraph {
     (portTypes, imgBlockX, gx)
     {
         "inlinedCode": "
+            gx = 0;
             gx = gx - imgBlockX[0];
             gx = gx + imgBlockX[1];
             gx = gx - 2.0*imgBlockX[2];
@@ -314,6 +317,7 @@ systemgraph {
     (portTypes, imgBlockY, gy)
     {
         "inlinedCode": "
+            gy = 0;
             gy = gy + imgBlockY[0];
             gy = gy + 2.0*imgBlockY[1];
             gy = gy + imgBlockY[2];
@@ -390,7 +394,7 @@ systemgraph {
 
     vertex AbsImpl
     [impl::ANSICBlackBoxExecutable, typing::TypedOperation, impl::InstrumentedExecutable] 
-    (portTypes, system_img_sink_address, resx, resy, offsetXIn, offsetXOut, offsetYIn, offsetYOut, dims)
+    (portTypes, system_img_sink_address, resx, resy, offsetX, offsetY,  dims)
     {
         "inlinedCode": "
             if (resx < 0.0)
@@ -406,8 +410,8 @@ systemgraph {
             }
             system_img_sink_address[offsetX][offsetY] = resx + resy;
         ",
-        "inputPorts": ["system_img_sink_address", "resx", "resy", "dims", "offsetXIn", "offsetYIn"],
-        "outputPorts": ["offsetXOut", "offsetYOut"],
+        "inputPorts": ["system_img_sink_address", "resx", "resy", "dims", "offsetX", "offsetY"],
+        "outputPorts": ["offsetX", "offsetY"],
         "operationRequirements": {
             "default": {
                 "assign": 5_i,
@@ -424,22 +428,23 @@ systemgraph {
     edge [typing::datatypes::DataDefinition] from AbsImpl port portTypes to UInt16
     edge [typing::datatypes::DataDefinition] from AbsImpl port system_img_sink_address to ArrayXOfArrayXOfDoubleType
     edge [typing::datatypes::DataDefinition] from AbsImpl port dims to Array2OfUInt16
-    edge [typing::datatypes::DataDefinition] from AbsImpl port offsetXIn to UInt16
-    edge [typing::datatypes::DataDefinition] from AbsImpl port offsetYIn to UInt16
-    edge [typing::datatypes::DataDefinition] from AbsImpl port offsetXOut to UInt16
-    edge [typing::datatypes::DataDefinition] from AbsImpl port offsetYOut to UInt16
+    edge [typing::datatypes::DataDefinition] from AbsImpl port offsetX to UInt16
+    edge [typing::datatypes::DataDefinition] from AbsImpl port offsetY to UInt16
     edge [typing::datatypes::DataDefinition] from AbsImpl port resx to DoubleType
     edge [typing::datatypes::DataDefinition] from AbsImpl port resy to DoubleType
 
     edge [] from Abs port combFunctions to AbsImpl
-    edge [] from Abs port offsetXIn to AbsImpl port offsetXIn
-    edge [] from AbsImpl port offsetXOut to AbsImpl port offsetXOut
+
+  
     edge [] from Abs port system_img_sink to AbsImpl port system_img_sink_address
     edge [] from Abs port dimsIn to AbsImpl port dims
-    edge [] from AbsImpl port offsetXIn to Abs port offsetXIn
-    edge [] from AbsImpl port offsetXOut to Abs port offsetXOut
-    edge [] from Abs port offsetYIn to AbsImpl port offsetYIn
-    edge [] from AbsImpl port offsetYOut to Abs port offsetYOut
+
+    edge [] from Abs port offsetXIn to AbsImpl port offsetX
+    edge [] from AbsImpl port offsetX to Abs port offsetXOut
+
+    edge [] from Abs port offsetYIn to AbsImpl port offsetY
+
+    edge [] from AbsImpl port offsetY to Abs port offsetYOut
     
     edge [] from Abs port resx to AbsImpl port resx
      edge [] from Abs port resy to AbsImpl port resy

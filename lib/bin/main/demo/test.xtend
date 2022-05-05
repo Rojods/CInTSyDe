@@ -10,11 +10,14 @@ import java.util.HashMap
 import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
 import forsyde.io.java.drivers.ForSyDeModelHandler
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
+import forsyde.io.java.typed.viewers.values.Value
+import forsyde.io.java.typed.viewers.typing.datatypes.IntegerViewer
+import forsyde.io.java.typed.viewers.values.IntegerValue
 
 class test {
 	def static void main(String[] args) {
-		val path="forsyde-io\\complete-mapped-sobel-model.forsyde.xmi";
-		val path2="forsyde-io\\sobel-application.fiodl"
+		val path="forsyde-io\\test\\complete-mapped-sobel-model.forsyde.xmi";
+		val path2="forsyde-io\\test\\sobel-application.fiodl"
 		val root="generateCode\\c\\single"
 
 		//var model = (new ForSyDeModelHandler()).loadModel(path)
@@ -23,18 +26,15 @@ class test {
 		var model2 = Load.load(path2);	
 		
 		model1.mergeInPlace(model2)
-		model1.vertexSet().stream().filter([v|SDFComb::conforms(v)])
-									.forEach([v|println(v)])
-									
-									
-		var a = model1.vertexSet().stream().filter([v|SDFChannel::conforms(v)])
-			.filter([v|v.getIdentifier()=="GrayScaleY"])
-			.findAny().get()
 		
-//		var b = a.getProperties().get("__initialTokenValues_ordering__").unwrap()
-//
-//		var c = 1
+		var model=model1
+		
+		var a = model.queryVertex("GrayScaleY").get()
+		var sdf=SDFChannel.safeCast(a).get()
+		var b = (sdf.getProperties().get("__initialTokenValues_ordering__").unwrap() as HashMap<String,Integer>)
+		var c = b.keySet()
 		
 		
+		println(b)
 	}
 }
