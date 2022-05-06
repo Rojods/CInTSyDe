@@ -1,6 +1,7 @@
 package template.baremetal
 
 import fileAnnotation.FileType
+
 import fileAnnotation.FileTypeAnno
 import forsyde.io.java.core.Vertex
 import forsyde.io.java.core.VertexAcessor

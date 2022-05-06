@@ -1,0 +1,27 @@
+enter GrayScale
+read
+inline code
+write
+enter getPx
+read
+inline code
+write
+enter Gx
+read
+inline code
+write
+enter Gy
+read
+inline code
+write
+enter Abs
+read
+inline code
+0  0
+write
+
+27.000000, 0.000000, 0.000000, 0.000000, 0.000000, 
+0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 
+0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 
+0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 
+0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 

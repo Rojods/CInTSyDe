@@ -36,11 +36,13 @@ public class SDFCombTemplateSrc implements ActorTemplate {
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
-      ForSyDeSystemGraph model = Generator.model;
+      final ForSyDeSystemGraph model = Generator.model;
       this.implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions", 
         VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexAcessor.VertexPortDirection.OUTGOING);
       this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor);
       this.outputSDFChannelSet = Query.findOutputSDFChannels(model, actor);
+      Set<Vertex> datablock = null;
+      datablock = Query.findAllExternalDataBlocks(model, SDFComb.safeCast(actor).get());
       StringConcatenation _builder = new StringConcatenation();
       String name = actor.getIdentifier();
       _builder.newLineIfNotEmpty();
@@ -56,6 +58,7 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append(name);
       _builder.append(".h\"");
       _builder.newLineIfNotEmpty();
+      _builder.append("#include \"../inc/extern_datablock.h\"");
       _builder.newLine();
       _builder.newLine();
       _builder.newLine();
@@ -88,45 +91,69 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append(name);
       _builder.append("(){");
       _builder.newLineIfNotEmpty();
-      _builder.append("\t");
+      _builder.append("\t\t\t\t");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("/* Initilize Memory      */");
+      _builder.append("/* Initilize Memory */");
       _builder.newLine();
       _builder.append("\t");
       String _initMemory = this.initMemory(model, actor);
       _builder.append(_initMemory, "\t");
       _builder.newLineIfNotEmpty();
-      _builder.append("\t");
       _builder.append("/* Read From Input Port  */");
       _builder.newLine();
       {
         if (((Generator.TESTING == 1) && (Generator.PC == 1))) {
-          _builder.append("\t");
           _builder.append("printf(\"%s\\n\",\"read\");");
           _builder.newLine();
         }
       }
-      _builder.append("\t");
       _builder.append("int ret=0;");
       _builder.newLine();
-      _builder.append("\t");
       String _read = this.read(model, actor);
-      _builder.append(_read, "\t");
+      _builder.append(_read);
       _builder.newLineIfNotEmpty();
-      _builder.append("\t");
+      _builder.newLine();
+      {
+        int _size = datablock.size();
+        boolean _notEquals = (_size != 0);
+        if (_notEquals) {
+          _builder.append("/* Get lock of outside system channel */");
+          _builder.newLine();
+          {
+            for(final Vertex data : datablock) {
+              _builder.append("#if ");
+              String _upperCase = data.getIdentifier().toUpperCase();
+              _builder.append(_upperCase);
+              _builder.append("_BLOCKING==1");
+              _builder.newLineIfNotEmpty();
+              _builder.append("extern spinlock spinlock_");
+              String _identifier = data.getIdentifier();
+              _builder.append(_identifier);
+              _builder.append(";");
+              _builder.newLineIfNotEmpty();
+              _builder.append("spinlock_get(&spinlock_");
+              String _identifier_1 = data.getIdentifier();
+              _builder.append(_identifier_1);
+              _builder.append(");");
+              _builder.newLineIfNotEmpty();
+              _builder.append("#endif");
+              _builder.newLine();
+            }
+          }
+        }
+      }
+      _builder.newLine();
       _builder.append("/* Inline Code           */");
       _builder.newLine();
       {
         if (((Generator.TESTING == 1) && (Generator.PC == 1))) {
-          _builder.append("\t");
           _builder.append("printf(\"%s\\n\",\"inline code\");");
           _builder.newLine();
         }
       }
-      _builder.append("\t");
       String _inlineCode = this.getInlineCode();
-      _builder.append(_inlineCode, "\t");
+      _builder.append(_inlineCode);
       _builder.newLineIfNotEmpty();
       _builder.newLine();
       _builder.append("\t");
@@ -144,40 +171,69 @@ public class SDFCombTemplateSrc implements ActorTemplate {
       _builder.append(_write, "\t");
       _builder.newLineIfNotEmpty();
       {
+        for(final Vertex data_1 : datablock) {
+          _builder.append("\t");
+          _builder.append("#if ");
+          String _upperCase_1 = data_1.getIdentifier().toUpperCase();
+          _builder.append(_upperCase_1, "\t");
+          _builder.append("_BLOCKING==1");
+          _builder.newLineIfNotEmpty();
+          _builder.append("\t");
+          _builder.append("spinlock_release(&spinlock_");
+          String _identifier_2 = data_1.getIdentifier();
+          _builder.append(_identifier_2, "\t");
+          _builder.append(");");
+          _builder.newLineIfNotEmpty();
+          _builder.append("\t");
+          _builder.append("#endif");
+          _builder.newLine();
+        }
+      }
+      {
         if (((Generator.TESTING == 1) && (Generator.NUCLEO == 1))) {
           {
             boolean _equals = Objects.equal(name, "GrayScale");
             if (_equals) {
+              _builder.append("\t");
               _builder.append("HAL_Delay(1000);");
               _builder.newLine();
+              _builder.append("\t");
               _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
               _builder.newLine();
             } else {
               boolean _equals_1 = Objects.equal(name, "getPx");
               if (_equals_1) {
+                _builder.append("\t");
                 _builder.append("HAL_Delay(1000);");
                 _builder.newLine();
+                _builder.append("\t");
                 _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,0);\t\t\t\t\t");
                 _builder.newLine();
               } else {
                 boolean _equals_2 = Objects.equal(name, "Gx");
                 if (_equals_2) {
+                  _builder.append("\t");
                   _builder.append("HAL_Delay(1000);");
                   _builder.newLine();
+                  _builder.append("\t");
                   _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,0);\t");
                   _builder.newLine();
                 } else {
                   boolean _equals_3 = Objects.equal(name, "Gy");
                   if (_equals_3) {
+                    _builder.append("\t");
                     _builder.append("HAL_Delay(1000);");
                     _builder.newLine();
+                    _builder.append("\t");
                     _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,0);\t\t");
                     _builder.newLine();
                   } else {
                     boolean _equals_4 = Objects.equal(name, "Abs");
                     if (_equals_4) {
+                      _builder.append("\t");
                       _builder.append("HAL_Delay(1000);");
                       _builder.newLine();
+                      _builder.append("\t");
                       _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
                       _builder.newLine();
                     }

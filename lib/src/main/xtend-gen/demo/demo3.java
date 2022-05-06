@@ -13,6 +13,8 @@ import template.rtos.Channel;
 import template.rtos.ConfigRTOSInc;
 import template.rtos.DataDefinitionSrc;
 import template.rtos.DataType;
+import template.rtos.ExternalDataBlockInc;
+import template.rtos.ExternalDataBlockSrc;
 import template.rtos.SDFCombInc;
 import template.rtos.SDFCombTemplateSrcRTOS;
 import template.rtos.SoftTimerTemplateSrc;
@@ -27,14 +29,13 @@ import utils.Load;
 public class demo3 {
   public static void main(final String[] args) {
     try {
-      final String path = "forsyde-io/test/complete-mapped-sobel-model.forsyde.xmi";
-      final String path2 = "forsyde-io/test/sobel-application.fiodl";
+      final String path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
+      final String path2 = "forsyde-io/modified1/sobel-application.fiodl";
       final String root = "generateCode/c/rtos";
-      final String roottest = "D:\\Users\\LEGION\\Desktop\\Master Thesis\\code\\stm32-nucleo\\freertos_test1\\Core\\mycode";
       ForSyDeSystemGraph model1 = Load.load(path);
       ForSyDeSystemGraph model2 = new ForSyDeFiodlHandler().loadModel(path2);
       model2.mergeInPlace(model1);
-      Generator gen = new Generator(model2, roottest);
+      Generator gen = new Generator(model2, root);
       InitProcessingModule initModule = new InitProcessingModule();
       SDFCombProcessingModule actorModule = new SDFCombProcessingModule();
       SDFChannelProcessingModule sdfchannelModule = new SDFChannelProcessingModule();
@@ -53,6 +54,10 @@ public class demo3 {
       initModule.add(_dataType);
       DataDefinitionSrc _dataDefinitionSrc = new DataDefinitionSrc();
       initModule.add(_dataDefinitionSrc);
+      ExternalDataBlockInc _externalDataBlockInc = new ExternalDataBlockInc();
+      initModule.add(_externalDataBlockInc);
+      ExternalDataBlockSrc _externalDataBlockSrc = new ExternalDataBlockSrc();
+      initModule.add(_externalDataBlockSrc);
       SDFCombTemplateSrcRTOS _sDFCombTemplateSrcRTOS = new SDFCombTemplateSrcRTOS();
       actorModule.add(_sDFCombTemplateSrcRTOS);
       SDFCombInc _sDFCombInc = new SDFCombInc();

@@ -25,7 +25,6 @@
 				/*    SDFdelay        */
 //				int i=0;
 //				while(1){
-//					printf("in loop %d===============\n",i);
 					printf("%s\n","enter GrayScale");
 						actor_GrayScale();
 					printf("%s\n","enter getPx");
@@ -52,8 +51,8 @@
 				init_channel_DoubleType(&fifo_absxsig,buffer_absxsig,buffer_absxsig_size);
 				init_channel_UInt16(&fifo_GrayScaleY,buffer_GrayScaleY,buffer_GrayScaleY_size);
 				
-				write_non_blocking_UInt16(&fifo_AbsY,0);
-				write_non_blocking_UInt16(&fifo_AbsX,0);
-				write_non_blocking_UInt16(&fifo_GrayScaleX,0);
-				write_non_blocking_UInt16(&fifo_GrayScaleY,0);
+				write_non_blocking_UInt16(&fifo_AbsY,ZeroValue);
+				write_non_blocking_UInt16(&fifo_AbsX,ZeroValue);
+				write_non_blocking_UInt16(&fifo_GrayScaleX,ZeroValue);
+				write_non_blocking_UInt16(&fifo_GrayScaleY,ZeroValue);
 			}

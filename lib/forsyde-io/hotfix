@@ -14,3 +14,17 @@ In actor AbsImpl, there is no impl port connecting input port resx and resy in v
 3.
 add decision::sdf::BoundedSDFChannel to  GrayScaleToGetPx and GrayScaleToAbs .
 add "maximumTokens" to  GrayScaleToGetPx and GrayScaleToAbs 
+
+
+4. 
+ The external data block (channels connected to the outside system)  
+ and the local variable in the inline code  cannot have
+ the same name.
+ 
+ For example, 
+ in vertex A[SDFComb], 
+ "inline code":"
+ 	int x
+ "
+ there is a variable called "a", as a result, the external data block
+ cannot be named as "x".

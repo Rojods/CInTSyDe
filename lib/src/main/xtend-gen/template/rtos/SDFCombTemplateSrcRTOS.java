@@ -40,62 +40,85 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       String name = actor.getIdentifier();
       this.inputSDFChannelSet = Query.findInputSDFChannels(Generator.model, actor);
       this.outputSDFChannelSet = Query.findOutputSDFChannels(Generator.model, actor);
+      Set<Vertex> datablock = null;
+      datablock = Query.findAllExternalDataBlocks(model, SDFComb.safeCast(actor).get());
       StringConcatenation _builder = new StringConcatenation();
+      _builder.append("\t");
       _builder.append("#include \"../inc/config.h\"");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("#include \"../inc/datatype_definition.h\"");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("#include \"../inc/sdfcomb_");
-      _builder.append(name);
+      _builder.append(name, "\t");
       _builder.append(".h\"");
       _builder.newLineIfNotEmpty();
+      _builder.append("\t");
       _builder.append("#include \"FreeRTOS.h\"");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("#include \"semphr.h\"");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("#include \"timers.h\"\t");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("#include \"queue.h\"");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("/*");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("==============================================");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("Define Task Stack");
       _builder.newLine();
-      _builder.append("==============================================");
-      _builder.newLine();
-      _builder.append("*/");
-      _builder.newLine();
-      _builder.append("#if FREERTOS==1");
-      _builder.newLine();
-      _builder.append("StackType_t task_");
-      _builder.append(name);
-      _builder.append("_stk[");
-      String _upperCase = name.toUpperCase();
-      _builder.append(_upperCase);
-      _builder.append("_STACKSIZE];");
-      _builder.newLineIfNotEmpty();
-      _builder.append("StaticTask_t tcb_");
-      _builder.append(name);
-      _builder.append(";");
-      _builder.newLineIfNotEmpty();
-      _builder.append("#endif");
-      _builder.newLine();
-      _builder.append("/*");
-      _builder.newLine();
+      _builder.append("\t");
       _builder.append("==============================================");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("Declare Extern Message Queue Handler");
-      _builder.newLine();
-      _builder.append("==============================================");
-      _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
+      _builder.append("\t");
+      _builder.append("#if FREERTOS==1");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("StackType_t task_");
+      _builder.append(name, "\t");
+      _builder.append("_stk[");
+      String _upperCase = name.toUpperCase();
+      _builder.append(_upperCase, "\t");
+      _builder.append("_STACKSIZE];");
+      _builder.newLineIfNotEmpty();
+      _builder.append("\t");
+      _builder.append("StaticTask_t tcb_");
+      _builder.append(name, "\t");
+      _builder.append(";");
+      _builder.newLineIfNotEmpty();
+      _builder.append("\t");
+      _builder.append("#endif");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("Declare Extern Message Queue Handler");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("*/");
+      _builder.newLine();
+      _builder.append("\t");
       _builder.append("/* Input Message Queue */");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("#if FREERTOS==1");
       _builder.newLine();
       {
@@ -104,18 +127,20 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
           if (!_hasElements) {
             _hasElements = true;
           } else {
-            _builder.appendImmediate("", "");
+            _builder.appendImmediate("", "\t");
           }
+          _builder.append("\t");
           _builder.append("extern QueueHandle_t msg_queue_");
           String _identifier = sdfchannel.getIdentifier();
-          _builder.append(_identifier);
+          _builder.append(_identifier, "\t");
           _builder.append(";");
           _builder.newLineIfNotEmpty();
         }
         if (_hasElements) {
-          _builder.append("");
+          _builder.append("", "\t");
         }
       }
+      _builder.append("\t");
       _builder.append("/* Output Message Quueue */");
       _builder.newLine();
       {
@@ -124,115 +149,135 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
           if (!_hasElements_1) {
             _hasElements_1 = true;
           } else {
-            _builder.appendImmediate("", "");
+            _builder.appendImmediate("", "\t");
           }
           {
             boolean _contains = this.inputSDFChannelSet.contains(sdfchannel_1);
             boolean _not = (!_contains);
             if (_not) {
+              _builder.append("\t");
               _builder.append("extern QueueHandle_t msg_queue_");
               String _identifier_1 = sdfchannel_1.getIdentifier();
-              _builder.append(_identifier_1);
+              _builder.append(_identifier_1, "\t");
               _builder.append(";");
               _builder.newLineIfNotEmpty();
             }
           }
         }
         if (_hasElements_1) {
-          _builder.append("");
+          _builder.append("", "\t");
         }
       }
+      _builder.append("\t");
       _builder.append("#endif");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("/*");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("==============================================");
       _builder.newLine();
-      _builder.append("\t");
+      _builder.append("\t\t");
       _builder.append("Define Soft Timer and Soft Timer Semaphore");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("==============================================");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("*/");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("#if FREERTOS==1");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("SemaphoreHandle_t timer_sem_");
-      _builder.append(name);
+      _builder.append(name, "\t");
       _builder.append(";");
       _builder.newLineIfNotEmpty();
+      _builder.append("\t");
       _builder.append("TimerHandle_t timer_");
-      _builder.append(name);
+      _builder.append(name, "\t");
       _builder.append(";");
       _builder.newLineIfNotEmpty();
+      _builder.append("\t");
       _builder.append("#endif");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("/*");
       _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================");
+      _builder.newLine();
+      _builder.append("\t\t ");
+      _builder.append("Task Function");
+      _builder.newLine();
+      _builder.append("\t");
       _builder.append("==============================================");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("Define Task Function");
-      _builder.newLine();
-      _builder.append("==============================================");
-      _builder.newLine();
       _builder.append("*/");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("void task_");
-      _builder.append(name);
+      _builder.append(name, "\t");
       _builder.append("(void* pdata){");
       _builder.newLineIfNotEmpty();
-      _builder.append("\t");
+      _builder.append("\t\t");
       _builder.append("/* Initilize Memory           */");
       _builder.newLine();
-      _builder.append("\t");
+      _builder.append("\t\t");
       String _initMemory = this.initMemory(model, actor);
-      _builder.append(_initMemory, "\t");
+      _builder.append(_initMemory, "\t\t");
       _builder.newLineIfNotEmpty();
-      _builder.append("\t");
+      _builder.append("\t\t");
       _builder.append("while(1){");
       _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("/* Read From»hannel      */");
+      _builder.append("\t");
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================");
       _builder.newLine();
       _builder.append("\t\t");
+      _builder.append("Read From SDF Channels");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================\t");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("*/");
+      _builder.newLine();
+      _builder.append("\t\t\t");
       String _read = this.read(model, actor);
-      _builder.append(_read, "\t\t");
+      _builder.append(_read, "\t\t\t");
       _builder.newLineIfNotEmpty();
-      _builder.append("\t\t");
-      _builder.append("/* Inline Code            */");
       _builder.newLine();
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.append("#if defined(TESTING)");
       _builder.newLine();
       {
         boolean _equals = Objects.equal(name, "GrayScale");
         if (_equals) {
-          _builder.append("\t\t");
           _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);");
           _builder.newLine();
         } else {
           boolean _equals_1 = Objects.equal(name, "getPx");
           if (_equals_1) {
-            _builder.append("\t\t");
             _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,1);");
             _builder.newLine();
           } else {
             boolean _equals_2 = Objects.equal(name, "Gx");
             if (_equals_2) {
-              _builder.append("\t\t");
               _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,1);");
               _builder.newLine();
             } else {
               boolean _equals_3 = Objects.equal(name, "Gy");
               if (_equals_3) {
-                _builder.append("\t\t");
                 _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,1);");
                 _builder.newLine();
               } else {
                 boolean _equals_4 = Objects.equal(name, "Abs");
                 if (_equals_4) {
-                  _builder.append("\t\t");
                   _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);");
                   _builder.newLine();
                 }
@@ -241,58 +286,121 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
           }
         }
       }
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.append("#endif");
       _builder.newLine();
+      _builder.append("\t");
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================");
+      _builder.newLine();
       _builder.append("\t\t");
+      _builder.append("Get External Datablock\'s locks");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================\t");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("*/\t\t\t\t\t");
+      _builder.newLine();
+      {
+        int _size = datablock.size();
+        boolean _notEquals = (_size != 0);
+        if (_notEquals) {
+          {
+            for(final Vertex data : datablock) {
+              _builder.append("\t\t\t");
+              _builder.append("#if ");
+              String _upperCase_1 = data.getIdentifier().toUpperCase();
+              _builder.append(_upperCase_1, "\t\t\t");
+              _builder.append("_BLOCKING==1");
+              _builder.newLineIfNotEmpty();
+              _builder.append("\t\t\t");
+              _builder.append("extern SemaphoreHandle_t datablock_sem_");
+              String _identifier_2 = data.getIdentifier();
+              _builder.append(_identifier_2, "\t\t\t");
+              _builder.append(";");
+              _builder.newLineIfNotEmpty();
+              _builder.append("\t\t\t");
+              _builder.append("xSemaphoreTake(datablock_sem_");
+              String _identifier_3 = data.getIdentifier();
+              _builder.append(_identifier_3, "\t\t\t");
+              _builder.append(", portMAX_DELAY);");
+              _builder.newLineIfNotEmpty();
+              _builder.append("\t\t\t");
+              _builder.append("#endif");
+              _builder.newLine();
+            }
+          }
+        }
+      }
+      _builder.append("\t\t\t");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("Inline Code");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================\t");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("*/");
+      _builder.newLine();
+      _builder.append("\t\t\t");
       String _inlineCode = this.getInlineCode();
-      _builder.append(_inlineCode, "\t\t");
+      _builder.append(_inlineCode, "\t\t\t");
       _builder.newLineIfNotEmpty();
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.newLine();
       {
         boolean _equals_5 = Objects.equal(name, "GrayScale");
         if (_equals_5) {
-          _builder.append("\t\t");
+          _builder.append("\t\t\t");
           _builder.append("HAL_Delay(1000);");
           _builder.newLine();
-          _builder.append("\t\t");
+          _builder.append("\t\t\t");
           _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
           _builder.newLine();
         } else {
           boolean _equals_6 = Objects.equal(name, "getPx");
           if (_equals_6) {
-            _builder.append("\t\t");
+            _builder.append("\t\t\t");
             _builder.append("HAL_Delay(1000);");
             _builder.newLine();
-            _builder.append("\t\t");
+            _builder.append("\t\t\t");
             _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,0);\t\t\t\t\t");
             _builder.newLine();
           } else {
             boolean _equals_7 = Objects.equal(name, "Gx");
             if (_equals_7) {
-              _builder.append("\t\t");
+              _builder.append("\t\t\t");
               _builder.append("HAL_Delay(1000);");
               _builder.newLine();
-              _builder.append("\t\t");
+              _builder.append("\t\t\t");
               _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,0);\t");
               _builder.newLine();
             } else {
               boolean _equals_8 = Objects.equal(name, "Gy");
               if (_equals_8) {
-                _builder.append("\t\t");
+                _builder.append("\t\t\t");
                 _builder.append("HAL_Delay(1000);");
                 _builder.newLine();
-                _builder.append("\t\t");
+                _builder.append("\t\t\t");
                 _builder.append("HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,0);\t\t");
                 _builder.newLine();
               } else {
                 boolean _equals_9 = Objects.equal(name, "Abs");
                 if (_equals_9) {
-                  _builder.append("\t\t");
+                  _builder.append("\t\t\t");
                   _builder.append("HAL_Delay(1000);");
                   _builder.newLine();
-                  _builder.append("\t\t");
+                  _builder.append("\t\t\t");
                   _builder.append("HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,0);");
                   _builder.newLine();
                 }
@@ -301,60 +409,131 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
           }
         }
       }
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.newLine();
-      _builder.append("\t\t");
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("/* Write To Channel       */");
-      _builder.newLine();
-      _builder.append("\t\t");
-      String _write = this.write(actor);
-      _builder.append(_write, "\t\t");
-      _builder.newLineIfNotEmpty();
-      _builder.append("\t\t");
-      _builder.append("/* Pend Timer\'s Semaphore */\t");
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("xSemaphoreTake(timer_sem_");
-      _builder.append(name, "\t\t");
-      _builder.append(", portMAX_DELAY);\t");
-      _builder.newLineIfNotEmpty();
-      _builder.append("\t");
+      _builder.append("\t\t\t");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("}");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.newLine();
-      _builder.append("}");
-      _builder.newLine();
-      _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
-      _builder.append("=============================================");
+      _builder.append("\t");
+      _builder.append("==============================================");
       _builder.newLine();
-      _builder.append("Soft Timer Callback Function");
+      _builder.append("\t\t");
+      _builder.append("Write To SDF Channels");
       _builder.newLine();
-      _builder.append("=============================================");
+      _builder.append("\t");
+      _builder.append("==============================================\t");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("*/");
       _builder.newLine();
-      _builder.append("#if FREERTOS==1");
+      _builder.append("\t\t\t");
+      String _write = this.write(actor);
+      _builder.append(_write, "\t\t\t");
+      _builder.newLineIfNotEmpty();
+      _builder.append("\t\t\t");
       _builder.newLine();
-      _builder.append("void timer_");
-      _builder.append(name);
-      _builder.append("_callback(TimerHandle_t xTimer){");
-      _builder.newLineIfNotEmpty();
       _builder.append("\t");
-      _builder.append("xSemaphoreGive(timer_sem_");
-      _builder.append(name, "\t");
-      _builder.append(");");
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("Release External Datablock\'s locks");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================\t");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("*/\t");
+      _builder.newLine();
+      {
+        for(final Vertex data_1 : datablock) {
+          _builder.append("\t\t\t");
+          _builder.append("#if ");
+          String _upperCase_2 = data_1.getIdentifier().toUpperCase();
+          _builder.append(_upperCase_2, "\t\t\t");
+          _builder.append("_BLOCKING==1");
+          _builder.newLineIfNotEmpty();
+          _builder.append("\t\t\t");
+          _builder.append("xSemaphoreGive(datablock_sem_");
+          String _identifier_4 = data_1.getIdentifier();
+          _builder.append(_identifier_4, "\t\t\t");
+          _builder.append(");");
+          _builder.newLineIfNotEmpty();
+          _builder.append("\t\t\t");
+          _builder.append("#endif");
+          _builder.newLine();
+        }
+      }
+      _builder.append("\t");
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.append("Pend Timer\'s Semaphore");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("==============================================\t");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("*/\t");
+      _builder.newLine();
+      _builder.append("\t\t\t");
+      _builder.append("xSemaphoreTake(timer_sem_");
+      _builder.append(name, "\t\t\t");
+      _builder.append(", portMAX_DELAY);\t");
       _builder.newLineIfNotEmpty();
+      _builder.append("\t\t");
+      _builder.newLine();
+      _builder.append("\t\t");
       _builder.append("}");
       _builder.newLine();
+      _builder.append("\t\t");
+      _builder.newLine();
+      _builder.append("\t\t");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("/*");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("=============================================");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("Soft Timer Callback Function");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("=============================================");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("*/");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("#if FREERTOS==1");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("void timer_");
+      _builder.append(name, "\t");
+      _builder.append("_callback(TimerHandle_t xTimer){");
+      _builder.newLineIfNotEmpty();
+      _builder.append("\t\t");
+      _builder.append("xSemaphoreGive(timer_sem_");
+      _builder.append(name, "\t\t");
+      _builder.append(");");
+      _builder.newLineIfNotEmpty();
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("\t");
       _builder.append("#endif");
       _builder.newLine();
       _xblockexpression = _builder.toString();

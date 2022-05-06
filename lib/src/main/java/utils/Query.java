@@ -18,6 +18,7 @@ import forsyde.io.java.core.VertexProperty;
 import forsyde.io.java.core.VertexTrait;
 import forsyde.io.java.core.VertexViewer;
 import forsyde.io.java.typed.viewers.impl.ANSICBlackBoxExecutableViewer;
+import forsyde.io.java.typed.viewers.impl.DataBlock;
 import forsyde.io.java.typed.viewers.impl.Executable;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannelViewer;
@@ -31,24 +32,31 @@ import generator.Generator;
 import java.lang.Math;
 
 public class Query {
+	
+	public static Set<Vertex> findAllExternalDataBlocks(ForSyDeSystemGraph model){
+		return model.vertexSet().stream().filter(v->DataBlock.conforms(v)&& !SDFChannel.conforms(v))
+				.collect(Collectors.toSet());
+	}
+	
+	public static Set<Vertex> findAllExternalDataBlocks(ForSyDeSystemGraph model,SDFComb actor){
+		return model.vertexSet().stream().filter(v->DataBlock.conforms(v)&& !SDFChannel.conforms(v))
+		.filter( data ->
+			model.hasConnection(SDFComb.safeCast(actor).get(), DataBlock.safeCast(data).get())
+			||
+			model.hasConnection( DataBlock.safeCast(data).get(),SDFComb.safeCast(actor).get())
+		).collect(Collectors.toSet());		
+	}
+
 	public static Vertex findVertexByName(ForSyDeSystemGraph model, String name) {
 		return model.vertexSet().stream().filter(v -> v.getIdentifier().equals(name)).findAny().orElse(null);
 	}
 
 	public static String findSDFChannelDataType(ForSyDeSystemGraph model, Vertex sdf) {
-		System.out.println("1====================");
-		model.edgeSet().stream()
-					.filter(e->e.getSource()=="GrayScaleToGetPx"||e.getTarget()=="GrayScaleToGetPx")
-					.forEach(e->System.out.println(e));
-		
-					System.out.println("=2===================");
-		System.out.println(sdf.getIdentifier());
 		EdgeInfo inputedge = model.edgeSet().stream().filter(e -> e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
 				.filter(e -> e.getSource().equals(sdf.getIdentifier())).findAny().orElse(null);
 		EdgeInfo outputedge = model.edgeSet().stream().filter(e -> e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
 				.filter(e -> e.getSource().equals(sdf.getIdentifier())).findAny().orElse(null);
-		System.out.println(inputedge);
-		System.out.println(outputedge);
+
 		if (inputedge != null) {
 			// input sdf channel
 			String actorname = inputedge.getTarget();
@@ -56,24 +64,20 @@ public class Query {
 			Vertex actor = findVertexByName(model, actorname);
 			var impls = Query.findCombFuntionVertex(model, actor);
 
-			
 			EdgeInfo info = model.outgoingEdgesOf(actor).stream().filter(e -> impls.contains(e.getTarget()))
 					.filter(e -> e.getSourcePort().get().equals(port)).findAny().get();
 
 			String implName = info.getTarget();
 			String implPort = info.getTargetPort().get();
-			
-			var implDataType =findImplPortDataType(model, findVertexByName(model, implName), implPort);
-			Vertex datatypeVertex = findVertexByName(model, implDataType);
-			
-			//System.out.println(sdf.getIdentifier()+"  --> actor "+actorname+ "port "+port+" "  +implName+" "+implPort+"--> "+implDataType);
-			//return implDataType;
-			if(!Array.conforms(datatypeVertex)) {
-				return implDataType;
-			}else {
-				return  (new ArrayViewer( datatypeVertex)).getInnerTypePort(model).get().getIdentifier();
-			}
 
+			var implDataType = findImplPortDataType(model, findVertexByName(model, implName), implPort);
+			Vertex datatypeVertex = findVertexByName(model, implDataType);
+
+			if (!Array.conforms(datatypeVertex)) {
+				return implDataType;
+			} else {
+				return (new ArrayViewer(datatypeVertex)).getInnerTypePort(model).get().getIdentifier();
+			}
 
 		} else {
 			// output sdf channel
@@ -87,16 +91,16 @@ public class Query {
 
 			String implName = info.getSource();
 			String implPort = info.getSourcePort().get();
-			
-			
-			var implDataType =findImplPortDataType(model, findVertexByName(model, implName), implPort);
+
+			var implDataType = findImplPortDataType(model, findVertexByName(model, implName), implPort);
 			Vertex datatypeVertex = findVertexByName(model, implDataType);
-			//System.out.println(sdf.getIdentifier()+"  -->  "+implName+" "+implPort+"--> "+implDataType);
-			//return implDataType;
-			if(!Array.conforms(datatypeVertex)) {
+			// System.out.println(sdf.getIdentifier()+" --> "+implName+" "+implPort+"-->
+			// "+implDataType);
+			// return implDataType;
+			if (!Array.conforms(datatypeVertex)) {
 				return implDataType;
-			}else {
-				return  (new ArrayViewer( datatypeVertex)).getInnerTypePort(model).get().getIdentifier();
+			} else {
+				return (new ArrayViewer(datatypeVertex)).getInnerTypePort(model).get().getIdentifier();
 			}
 		}
 
@@ -167,8 +171,9 @@ public class Query {
 	}
 
 	/**
-	 * find the datatype of implPort according to the edge instead of 
-	 * portToType property
+	 * find the datatype of implPort according to the edge instead of portToType
+	 * property
+	 * 
 	 * @param impl
 	 * @param implPort
 	 * @return
@@ -184,7 +189,6 @@ public class Query {
 
 		return "Port Not Connected To Any Type---";
 	}
-
 
 	public static List<String> findImplInputPorts(Vertex impl) {
 		var ret = TypedOperation.safeCast(impl).get().getInputPorts();
@@ -301,20 +305,20 @@ public class Query {
 			start = index + 1;
 			b.insert(index + 1, "\n");
 		}
-		
-		start=0;
-		index=0;
+
+		start = 0;
+		index = 0;
 		while ((index = b.indexOf("}", start)) != -1) {
 			start = index + 1;
 			b.insert(index + 1, "\n");
-		}	
-		
-		start=0;
-		index=0;
+		}
+
+		start = 0;
+		index = 0;
 		while ((index = b.indexOf("{", start)) != -1) {
 			start = index + 1;
 			b.insert(index + 1, "\n");
-		}			
+		}
 		return b.toString();
 	}
 

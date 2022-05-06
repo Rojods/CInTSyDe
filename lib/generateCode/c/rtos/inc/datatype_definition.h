@@ -40,9 +40,9 @@ typedef UInt16 Array2OfUInt16[2];
 		Outside Source and Sink Extern
 ==============================================================			
 */
-extern UInt16  dimX;
-extern ArrayXOfArrayXOfDoubleType  system_img_sink;
-extern ArrayXOfArrayXOfDoubleType  system_img_source;
-extern UInt16  dimY;
+extern ArrayXOfArrayXOfDoubleType  system_img_source_global;
+extern ArrayXOfArrayXOfDoubleType  system_img_sink_global;
+extern UInt16  dimX_global;
+extern UInt16  dimY_global;
 		
 #endif

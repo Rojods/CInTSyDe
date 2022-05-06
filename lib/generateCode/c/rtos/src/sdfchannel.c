@@ -11,7 +11,7 @@ SDFChannel GrayScaleToAbs Message Queue
 /* msg queue */
 QueueHandle_t msg_queue_GrayScaleToAbs;
 /* maximum number of tokens in message queue */
-int queue_length_GrayScaleToAbs = 1;
+int queue_length_GrayScaleToAbs = 2;
 /* size of token */
 long item_size_GrayScaleToAbs = sizeof(UInt16);
 
@@ -47,7 +47,7 @@ SDFChannel GrayScaleToGetPx Message Queue
 /* msg queue */
 QueueHandle_t msg_queue_GrayScaleToGetPx;
 /* maximum number of tokens in message queue */
-int queue_length_GrayScaleToGetPx = 1;
+int queue_length_GrayScaleToGetPx = 6;
 /* size of token */
 long item_size_GrayScaleToGetPx = sizeof(DoubleType);
 

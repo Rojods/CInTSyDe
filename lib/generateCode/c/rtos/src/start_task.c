@@ -144,7 +144,7 @@ static void init_soft_timer(){
 	extern TimerHandle_t task_timer_GrayScale;
 	task_timer_GrayScale=xTimerCreate(
 											"timer_GrayScale"
-											, pdMS_TO_TICKS(-1)
+											, pdMS_TO_TICKS(4000)
 											, pdTRUE
 											,0
 											,timer_GrayScale_callback

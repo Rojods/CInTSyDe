@@ -24,6 +24,8 @@ import generator.SubsystemUniprocessorModule
 import template.baremetal.DataDefinitionSrc
 import template.baremetal.Config
 import java.util.stream.Collectors
+import template.baremetal.ExternalDataBlockInc
+import template.baremetal.ExternalDataBlockSrc
 
 class demo1 {
 	def static void main(String[] args) {
@@ -72,7 +74,8 @@ class demo1 {
 		initModule.add(new SpinLockTemplateSrc)
 		
 		initModule.add(new Config)
-		
+		initModule.add(new ExternalDataBlockInc)
+		initModule.add(new ExternalDataBlockSrc)
 		
 		
 		
