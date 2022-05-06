@@ -68,14 +68,14 @@ class DataTypeTemplateInc implements InitTemplate {
 			*/
 			«arrayTypeDef(model)»
 			
-			/*
-			==============================================================
-					Outside Source and Sink Extern
-			==============================================================			
-			*/
-			«FOR v : outset SEPARATOR "" AFTER ""»
-				extern «findType(model,v)»  «v.getIdentifier()»;
-			«ENDFOR»
+«««			/*
+«««			==============================================================
+«««					Outside Source and Sink Extern
+«««			==============================================================			
+«««			*/
+«««			«FOR v : outset SEPARATOR "" AFTER ""»
+«««				extern «findType(model,v)»  «v.getIdentifier()»;
+«««			«ENDFOR»
 					
 			#endif
 		'''

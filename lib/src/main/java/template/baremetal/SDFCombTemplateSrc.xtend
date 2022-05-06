@@ -29,6 +29,7 @@ import java.util.Collections
 import forsyde.io.java.typed.viewers.moc.MoCElem
 import forsyde.io.java.typed.viewers.impl.DataBlock
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
+import forsyde.io.java.typed.viewers.typing.TypedDataBlockViewer
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFCombTemplateSrc implements ActorTemplate {
@@ -38,9 +39,10 @@ class SDFCombTemplateSrc implements ActorTemplate {
 
 	override create(Vertex actor) {
 		val model = Generator.model
-		// implActorSet = (new SDFCombViewer(actor)).getCombFunctionsPort(Generator.model)
+
 		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions",
 			VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING)
+			
 		this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor)
 		this.outputSDFChannelSet = Query.findOutputSDFChannels(model, actor)
 		var Set<Vertex> datablock
@@ -52,7 +54,7 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			#include "../inc/datatype_definition.h"
 			#include "../inc/circular_fifo_lib.h"
 			#include "../inc/sdfcomb_«name».h"
-			#include "../inc/extern_datablock.h"
+			
 			
 			
 			/*
@@ -61,6 +63,15 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			========================================
 			*/
 			«extern()»
+			/*
+			========================================
+				Declare Extern Global Variables
+			========================================
+			*/			
+			«FOR d :datablock»
+			extern «findType(model,d)» «d.getIdentifier()»;
+			«ENDFOR»
+			
 			/*
 			========================================
 				Actor Function
@@ -81,7 +92,8 @@ class SDFCombTemplateSrc implements ActorTemplate {
 «««				«ENDIF»
 «««				#endif
 				
-				/* Initilize Memory */
+				/* Initilize Memo
+y */
 				«initMemory(model,actor)»
 			/* Read From Input Port  */
 			«IF Generator.TESTING==1&&Generator.PC==1»
@@ -90,15 +102,15 @@ class SDFCombTemplateSrc implements ActorTemplate {
 			int ret=0;
 			«read(model,actor)»
 			
-			«IF datablock.size()!=0»
-				/* Get lock of outside system channel */
-				«FOR data:datablock»
-					#if «data.getIdentifier().toUpperCase()»_BLOCKING==1
-					extern spinlock spinlock_«data.getIdentifier()»;
-					spinlock_get(&spinlock_«data.getIdentifier()»);
-					#endif
-				«ENDFOR»
-			«ENDIF»
+			«««			«IF datablock.size()!=0»
+«««				/* Get lock of outside system channel */
+«««				«FOR data:datablock»
+«««					#if «data.getIdentifier().toUpperCase()»_BLOCKING==1
+«««					extern spinlock spinlock_«data.getIdentifier()»;
+«««					spinlock_get(&spinlock_«data.getIdentifier()»);
+«««					#endif
+«««				«ENDFOR»
+«««			«ENDIF»
 			
 			/* Inline Code           */
 			«IF Generator.TESTING==1&&Generator.PC==1»
@@ -111,11 +123,11 @@ class SDFCombTemplateSrc implements ActorTemplate {
 					printf("%s\n","write");
 				«ENDIF»
 				«write(actor)»
-				«FOR data : datablock»
-					#if «data.getIdentifier().toUpperCase()»_BLOCKING==1
-					spinlock_release(&spinlock_«data.getIdentifier()»);
-					#endif
-				«ENDFOR»
+			«««				«FOR data : datablock»
+«««					#if «data.getIdentifier().toUpperCase()»_BLOCKING==1
+«««					spinlock_release(&spinlock_«data.getIdentifier()»);
+«««					#endif
+«««				«ENDFOR»
 				«IF Generator.TESTING==1&&Generator.NUCLEO==1»
 				«IF name=="GrayScale"»
 					HAL_Delay(1000);
@@ -326,5 +338,11 @@ class SDFCombTemplateSrc implements ActorTemplate {
 		return ret
 
 	}
-
+	private def String findType(ForSyDeSystemGraph model,Vertex datablock) {
+	    var a =(new TypedDataBlockViewer(datablock)).getDataTypePort(model)
+	    if(!a.isPresent()){
+	    	return null
+	    }
+		return a.get().getIdentifier()
+	}
 }

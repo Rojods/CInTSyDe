@@ -113,38 +113,6 @@ public class DataTypeTemplateInc implements InitTemplate {
       _builder.append(_arrayTypeDef);
       _builder.newLineIfNotEmpty();
       _builder.newLine();
-      _builder.append("/*");
-      _builder.newLine();
-      _builder.append("==============================================================");
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("Outside Source and Sink Extern");
-      _builder.newLine();
-      _builder.append("==============================================================\t\t\t");
-      _builder.newLine();
-      _builder.append("*/");
-      _builder.newLine();
-      {
-        boolean _hasElements = false;
-        for(final Vertex v : outset) {
-          if (!_hasElements) {
-            _hasElements = true;
-          } else {
-            _builder.appendImmediate("", "");
-          }
-          _builder.append("extern ");
-          String _findType = this.findType(model, v);
-          _builder.append(_findType);
-          _builder.append("  ");
-          String _identifier = v.getIdentifier();
-          _builder.append(_identifier);
-          _builder.append(";");
-          _builder.newLineIfNotEmpty();
-        }
-        if (_hasElements) {
-          _builder.append("");
-        }
-      }
       _builder.append("\t\t");
       _builder.newLine();
       _builder.append("#endif");

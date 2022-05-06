@@ -14,6 +14,8 @@ public class SpinLockTemplateInc implements InitTemplate {
     _builder.newLine();
     _builder.append("#define SPINLOCK_H_");
     _builder.newLine();
+    _builder.append("#define ARM");
+    _builder.newLine();
     _builder.newLine();
     _builder.append("typedef struct{");
     _builder.newLine();

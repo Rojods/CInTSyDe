@@ -430,7 +430,13 @@ public class Query {
 		String actorName = model.edgeSet().stream().filter(
 				e -> e.getTarget().equals(impl.getIdentifier()) && e.getSourcePort().get().equals("combFunctions"))
 				.findAny().get().getSource();
-
+		
+//		model.vertexSet().stream()
+//				.filter(v->model.hasConnection(SDFComb.safeCast(v).get(), Executable.safeCast(impl).get())
+//						||
+//						model.hasConnection(Executable.safeCast(impl).get(),SDFComb.safeCast(v).get())
+//						).findAny();
+		
 		var actor = model.queryVertex(actorName).get();
 		var actorport1 = Query.findActorPortConnectedToImplInputPort(model, actor, impl, implPort);
 

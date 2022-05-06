@@ -3,7 +3,7 @@
 #include "../inc/datatype_definition.h"
 #include "../inc/circular_fifo_lib.h"
 #include "../inc/sdfcomb_Abs.h"
-#include "../inc/extern_datablock.h"
+
 
 
 /*
@@ -25,12 +25,21 @@ extern spinlock spinlock_absxsig;
 /* Output FIFO */
 /*
 ========================================
+	Declare Extern Global Variables
+========================================
+*/			
+extern ArrayXOfArrayXOfDoubleType system_img_sink_global;
+extern Array1000OfArrayOfDouble outputImage;
+
+/*
+========================================
 	Actor Function
 ========================================
 */			
 void actor_Abs(){
 				
-	/* Initilize Memory */
+	/* Initilize Memo
+y */
 	UInt16 offsetX; 
 	UInt16 offsetY; 
 	Array2OfUInt16 dims; 
@@ -93,16 +102,7 @@ read_blocking_UInt16(&fifo_AbsY,&offsetY,&spinlock_AbsY);
 #endif
 
 
-/* Get lock of outside system channel */
-#if SYSTEM_IMG_SINK_GLOBAL_BLOCKING==1
-extern spinlock spinlock_system_img_sink_global;
-spinlock_get(&spinlock_system_img_sink_global);
-#endif
-#if OUTPUTIMAGE_BLOCKING==1
-extern spinlock spinlock_outputImage;
-spinlock_get(&spinlock_outputImage);
-#endif
-
+			
 /* Inline Code           */
 printf("%s\n","inline code");
 /* in combFunction AbsImpl */
@@ -131,10 +131,4 @@ system_img_sink_address[offsetX][offsetY]=resx+resy;
 	write_blocking_UInt16(&fifo_AbsY,offsetY,&spinlock_AbsY);
 	#endif
 							
-	#if SYSTEM_IMG_SINK_GLOBAL_BLOCKING==1
-	spinlock_release(&spinlock_system_img_sink_global);
-	#endif
-	#if OUTPUTIMAGE_BLOCKING==1
-	spinlock_release(&spinlock_outputImage);
-	#endif
 }

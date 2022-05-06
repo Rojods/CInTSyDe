@@ -1,0 +1,14 @@
+systemgraph {
+   vertex A
+   [decision::sdf::PASSedSDFComb,moc::sdf::SDFComb]
+   (a,combFunctions)
+   {"production": {"a": 1_i},"firingSlots": 0_i}
+   vertex B
+   [decision::sdf::PASSedSDFComb,moc::sdf::SDFComb]
+   (a,combFunctions)
+   {"production": {"a": 1_i},"firingSlots": 0_i}
+   vertex sig
+   [decision::sdf::BoundedSDFChannel,impl::TokenizableDataBlock,moc::sdf::SDFChannel]
+   (consumer,producer)
+   {"maximumTokens": 1_i}
+}
