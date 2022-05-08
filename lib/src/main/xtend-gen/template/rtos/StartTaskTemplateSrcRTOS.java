@@ -112,7 +112,7 @@ public class StartTaskTemplateSrcRTOS implements InitTemplate {
       _builder.newLine();
       _builder.append("\t\t");
       _builder.newLine();
-      _builder.append("void subsystem(){");
+      _builder.append("void init_subsystem(){");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("/* Initialize Message Queue     */");
@@ -155,10 +155,12 @@ public class StartTaskTemplateSrcRTOS implements InitTemplate {
       _builder.append("\t");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("/* Delete start task           */");
+      _builder.append("/* Suspend All the Created Tasks */");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("vTaskStartScheduler();");
+      _builder.newLine();
+      _builder.append("\t");
+      _builder.append("//vTaskStartScheduler();");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("//vTaskDelete(NULL); ");
@@ -474,6 +476,6 @@ public class StartTaskTemplateSrcRTOS implements InitTemplate {
   }
   
   public String getFileName() {
-    return "start_task";
+    return "init_subsystem";
   }
 }

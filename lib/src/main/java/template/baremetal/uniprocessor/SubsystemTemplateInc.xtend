@@ -15,8 +15,8 @@ class SubsystemTemplateInc implements SubsystemTemplate{
 			/* Includes--------------------*/
 			
 			/* Function Prototype----------*/
-			int subsystem_single_uniprocessor();
-			void initChannels();
+			int fire_subsystem_single_uniprocessor();
+«««			void init_subsystem();
 			#endif
 		'''
 	}

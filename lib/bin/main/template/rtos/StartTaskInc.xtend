@@ -11,13 +11,13 @@ class StartTaskInc implements InitTemplate{
 		'''
 		#ifndef  SUBSYSTEM_H_
 		#define  SUBSYSTEM_H_
-		void subsystem();
+		void init_subsystem();
 		#endif
 		'''
 	}
 	
 	override getFileName() {
-		return "start_task"
+		return "init_subsystem"
 	}
 	
 }

@@ -15,7 +15,6 @@ import template.baremetal.SDFCombTemplateSrc
 import template.baremetal.SpinLockTemplateInc
 import template.baremetal.SpinLockTemplateSrc
 import template.baremetal.uniprocessor.SubsystemTemplateInc
-import template.baremetal.uniprocessor.SubsystemTemplateInc2
 import template.baremetal.uniprocessor.SubsystemTemplateSrc
 import utils.Load
 import generator.SDFCombProcessingModule
@@ -30,6 +29,7 @@ import java.util.Set
 import forsyde.io.java.drivers.ForSyDeModelHandler
 import forsyde.io.java.core.VertexTrait
 import forsyde.io.java.core.EdgeTrait
+import template.baremetal.uniprocessor.SubsystemInitInc
 
 class test3 {
 	def static void main(String[] args){

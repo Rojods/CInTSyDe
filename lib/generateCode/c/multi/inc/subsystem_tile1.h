@@ -4,5 +4,4 @@
 
 /* Function Prototype----------*/
 void subsystem_tile1();
-void init_tile1();
 #endif		

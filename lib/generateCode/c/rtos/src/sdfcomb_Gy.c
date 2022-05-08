@@ -58,11 +58,6 @@
 			#if defined(TESTING)
 HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,1);
 			#endif
-	/*
-	==============================================
-		Get External Datablock's locks
-	==============================================	
-	*/					
 			
 	/*
 	==============================================
@@ -91,11 +86,6 @@ HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,1);
 			xQueueSend(msg_queue_absysig,&gy,portMAX_DELAY);
 			#endif
 			
-	/*
-	==============================================
-		Release External Datablock's locks
-	==============================================	
-	*/	
 	/*
 	==============================================
 		Pend Timer's Semaphore

@@ -1,14 +1,6 @@
-#ifndef SUBSYSTEM_INCLUDE_HELP_H_
-#define SUBSYSTEM_INCLUDE_HELP_H_
-
-/*
-****************************************************************
-The aim of this .h file is to help subsystem.c
-Only the subsystem.c includes this file.
-****************************************************************
-*/
-#include "datatype_definition.h"
-#include "circular_fifo_lib.h"
+#include "../inc/subsystem_init.h"
+#include "../inc/datatype_definition.h"
+#include "../inc/circular_fifo_lib.h"
 /*
 ==============================================
 	Extern Variables 
@@ -68,4 +60,28 @@ extern int buffer_GrayScaleY_size;
 extern circular_fifo_UInt16 fifo_GrayScaleY;
 
 
-#endif
+
+
+/*
+*********************************************************
+Initialize All the Channels
+Should be called before subsystem_single_uniprocessor()
+*********************************************************
+*/
+void init_subsystem(){
+	init_channel_UInt16(&fifo_GrayScaleToAbs,buffer_GrayScaleToAbs,buffer_GrayScaleToAbs_size);
+	init_channel_UInt16(&fifo_AbsY,buffer_AbsY,buffer_AbsY_size);
+	init_channel_DoubleType(&fifo_gysig,buffer_gysig,buffer_gysig_size);
+	init_channel_UInt16(&fifo_AbsX,buffer_AbsX,buffer_AbsX_size);
+	init_channel_DoubleType(&fifo_GrayScaleToGetPx,buffer_GrayScaleToGetPx,buffer_GrayScaleToGetPx_size);
+	init_channel_DoubleType(&fifo_gxsig,buffer_gxsig,buffer_gxsig_size);
+	init_channel_DoubleType(&fifo_absysig,buffer_absysig,buffer_absysig_size);
+	init_channel_DoubleType(&fifo_absxsig,buffer_absxsig,buffer_absxsig_size);
+	init_channel_UInt16(&fifo_GrayScaleX,buffer_GrayScaleX,buffer_GrayScaleX_size);
+	init_channel_UInt16(&fifo_GrayScaleY,buffer_GrayScaleY,buffer_GrayScaleY_size);
+	
+	write_non_blocking_UInt16(&fifo_AbsY,ZeroValue);
+	write_non_blocking_UInt16(&fifo_AbsX,ZeroValue);
+	write_non_blocking_UInt16(&fifo_GrayScaleX,ZeroValue);
+	write_non_blocking_UInt16(&fifo_GrayScaleY,ZeroValue);
+}

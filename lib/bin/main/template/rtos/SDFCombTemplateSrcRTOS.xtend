@@ -109,19 +109,19 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 				HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
 						«ENDIF»
 						#endif
-				/*
-				==============================================
-					Get External Datablock's locks
-				==============================================	
-				*/					
-						«IF datablock.size()!=0»
-							«FOR data:datablock»
-								#if «data.getIdentifier().toUpperCase()»_BLOCKING==1
-								extern SemaphoreHandle_t datablock_sem_«data.getIdentifier()»;
-								xSemaphoreTake(datablock_sem_«data.getIdentifier()», portMAX_DELAY);
-								#endif
-							«ENDFOR»
-						«ENDIF»		
+«««				/*
+«««				==============================================
+«««					Get External Datablock's locks
+«««				==============================================	
+«««				*/					
+«««						«IF datablock.size()!=0»
+«««							«FOR data:datablock»
+«««								#if «data.getIdentifier().toUpperCase()»_BLOCKING==1
+«««								extern SemaphoreHandle_t datablock_sem_«data.getIdentifier()»;
+«««								xSemaphoreTake(datablock_sem_«data.getIdentifier()», portMAX_DELAY);
+«««								#endif
+«««							«ENDFOR»
+«««						«ENDIF»		
 						
 				/*
 				==============================================
@@ -156,16 +156,16 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 						«write(actor)»
 						
 				/*
-				==============================================
-					Release External Datablock's locks
-				==============================================	
-				*/	
-						«FOR data : datablock»
-							#if «data.getIdentifier().toUpperCase()»_BLOCKING==1
-							xSemaphoreGive(datablock_sem_«data.getIdentifier()»);
-							#endif
-						«ENDFOR»
-				/*
+«««				==============================================
+«««					Release External Datablock's locks
+«««				==============================================	
+«««				*/	
+«««						«FOR data : datablock»
+«««							#if «data.getIdentifier().toUpperCase()»_BLOCKING==1
+«««							xSemaphoreGive(datablock_sem_«data.getIdentifier()»);
+«««							#endif
+«««						«ENDFOR»
+«««				/*
 				==============================================
 					Pend Timer's Semaphore
 				==============================================	

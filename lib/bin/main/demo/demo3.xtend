@@ -15,12 +15,15 @@ class demo3 {
 		val path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
 		val path2 = "forsyde-io/modified1/sobel-application.fiodl"
 		val root = "generateCode/c/rtos"
-		// val roottest="D:\\Users\\LEGION\\Desktop\\Master Thesis\\code\\stm32-nucleo\\freertos_test1\\Core\\mycode"
+		 //val roottest="D:\\Users\\LEGION\\Desktop\\Master Thesis\\code\\stm32-nucleo\\freertos_test1\\Core\\mycode"
 		var loader = (new ForSyDeModelHandler)
 		var model = loader.loadModel(path)
 		model.mergeInPlace(loader.loadModel(path2))
+		
+		
 		var Generator gen = new Generator(model, root)
-
+		Generator.PC=0;
+		Generator.NUCLEO=1;
 		var initModule = new InitProcessingModule
 		var actorModule = new SDFCombProcessingModule
 		var sdfchannelModule = new SDFChannelProcessingModule
@@ -36,10 +39,14 @@ class demo3 {
 		initModule.add(new DataDefinitionSrc)
 		initModule.add(new ExternalDataBlockInc)
 		initModule.add(new ExternalDataBlockSrc)
-
+		initModule.add(new FireAllInc)
+		initModule.add(new FireAllSrc)
+		
+		
 		/* actor module */
 		actorModule.add(new SDFCombTemplateSrcRTOS)
 		actorModule.add(new SDFCombInc)
+		
 
 		/* channel module */
 		/* subsystem module */

@@ -19,7 +19,6 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 		var model = Generator.model
 		var sdfcomb = model.vertexSet().stream().filter([v|SDFComb.conforms(v)]).collect(Collectors.toSet())
 		'''
-			#include "../inc/subsystem_include_help.h"
 			#include "../inc/subsystem.h"
 			«FOR v : sdfcomb»
 				#include "../inc/sdfcomb_«v.getIdentifier()».h"
@@ -35,33 +34,29 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 				Subsystem Function
 			==============================================
 			*/	
-			void initChannels();
-			int subsystem_single_uniprocessor(){
-				
-				/* Initilize Channels */
-//				initChannels();
-				
-				/*    SDFdelay        */
-//				int i=0;
-//				while(1){
+			int fire_subsystem_single_uniprocessor(){
 					«FOR set : Generator.uniprocessorSchedule.entrySet() SEPARATOR "" AFTER ""»
 					printf("%s\n","enter «set.getValue().getIdentifier()»");
 						«IF Generator.TESTING==1&&Generator.PC==1»
 						actor_«set.getValue().getIdentifier()»();
 						«ENDIF»
 					«ENDFOR»	
-					
-//				}
 			}
 			
-			void initChannels(){
-				«initChannels()»
-			}
+«««			void init_subsystem(){
+«««				«initChannels()»
+«««			}
 		'''
 	}
 
 	def String initChannels() {
 		'''
+		/*
+		*********************************************************
+		Initialize All the Channels
+		Should be called before subsystem_single_uniprocessor()
+		*********************************************************
+		*/
 			«FOR channel : Generator.sdfchannelSet»
 				«var sdfname=channel.getIdentifier()»
 				init_channel_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«sdfname»,buffer_«sdfname»,buffer_«sdfname»_size);

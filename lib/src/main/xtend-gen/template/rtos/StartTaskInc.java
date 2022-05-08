@@ -14,7 +14,7 @@ public class StartTaskInc implements InitTemplate {
     _builder.newLine();
     _builder.append("#define  SUBSYSTEM_H_");
     _builder.newLine();
-    _builder.append("void subsystem();");
+    _builder.append("void init_subsystem();");
     _builder.newLine();
     _builder.append("#endif");
     _builder.newLine();
@@ -22,6 +22,6 @@ public class StartTaskInc implements InitTemplate {
   }
   
   public String getFileName() {
-    return "start_task";
+    return "init_subsystem";
   }
 }

@@ -19,10 +19,14 @@ import template.baremetal.SDFCombTemplateInc;
 import template.baremetal.SDFCombTemplateSrc;
 import template.baremetal.SpinLockTemplateInc;
 import template.baremetal.SpinLockTemplateSrc;
+import template.baremetal.uniprocessor.SubsystemInitInc;
+import template.baremetal.uniprocessor.SubsystemInitSrc;
 import template.baremetal.uniprocessor.SubsystemTemplateInc;
-import template.baremetal.uniprocessor.SubsystemTemplateInc2;
 import template.baremetal.uniprocessor.SubsystemTemplateSrc;
 
+/**
+ * one core
+ */
 @SuppressWarnings("all")
 public class demo1 {
   public static void main(final String[] args) {
@@ -47,8 +51,6 @@ public class demo1 {
       SubsystemUniprocessorModule subsystem = new SubsystemUniprocessorModule();
       SubsystemTemplateSrc _subsystemTemplateSrc = new SubsystemTemplateSrc();
       subsystem.add(_subsystemTemplateSrc);
-      SubsystemTemplateInc2 _subsystemTemplateInc2 = new SubsystemTemplateInc2();
-      subsystem.add(_subsystemTemplateInc2);
       SubsystemTemplateInc _subsystemTemplateInc = new SubsystemTemplateInc();
       subsystem.add(_subsystemTemplateInc);
       gen.add(subsystem);
@@ -67,6 +69,10 @@ public class demo1 {
       initModule.add(_spinLockTemplateSrc);
       Config _config = new Config();
       initModule.add(_config);
+      SubsystemInitInc _subsystemInitInc = new SubsystemInitInc();
+      initModule.add(_subsystemInitInc);
+      SubsystemInitSrc _subsystemInitSrc = new SubsystemInitSrc();
+      initModule.add(_subsystemInitSrc);
       gen.add(initModule);
       gen.create();
       InputOutput.<String>println("end!");

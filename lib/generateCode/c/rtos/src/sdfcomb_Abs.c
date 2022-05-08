@@ -77,19 +77,6 @@
 			#if defined(TESTING)
 HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
 			#endif
-	/*
-	==============================================
-		Get External Datablock's locks
-	==============================================	
-	*/					
-			#if SYSTEM_IMG_SINK_GLOBAL_BLOCKING==1
-			extern SemaphoreHandle_t datablock_sem_system_img_sink_global;
-			xSemaphoreTake(datablock_sem_system_img_sink_global, portMAX_DELAY);
-			#endif
-			#if OUTPUTIMAGE_BLOCKING==1
-			extern SemaphoreHandle_t datablock_sem_outputImage;
-			xSemaphoreTake(datablock_sem_outputImage, portMAX_DELAY);
-			#endif
 			
 	/*
 	==============================================
@@ -124,17 +111,6 @@ HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,1);
 			xQueueSend(msg_queue_AbsY,&offsetY,portMAX_DELAY);
 			#endif
 			
-	/*
-	==============================================
-		Release External Datablock's locks
-	==============================================	
-	*/	
-			#if SYSTEM_IMG_SINK_GLOBAL_BLOCKING==1
-			xSemaphoreGive(datablock_sem_system_img_sink_global);
-			#endif
-			#if OUTPUTIMAGE_BLOCKING==1
-			xSemaphoreGive(datablock_sem_outputImage);
-			#endif
 	/*
 	==============================================
 		Pend Timer's Semaphore

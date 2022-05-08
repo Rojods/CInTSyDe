@@ -1,8 +1,7 @@
-#ifndef SUBSYSTEM_1270144618_H_
-#define SUBSYSTEM_1270144618_H_
+#ifndef SUBSYSTEM_1263793464_H_
+#define SUBSYSTEM_1263793464_H_
 /* Includes--------------------*/
 
 /* Function Prototype----------*/
-int subsystem_single_uniprocessor();
-void initChannels();
+int fire_subsystem_single_uniprocessor();
 #endif

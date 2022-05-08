@@ -11,6 +11,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import template.baremetal.CircularFIFOTemplateInc;
 import template.baremetal.CircularFIFOTemplateSrc;
+import template.baremetal.Config;
 import template.baremetal.DataDefinitionSrc;
 import template.baremetal.DataTypeTemplateInc;
 import template.baremetal.SDFChannelTemplateSrc;
@@ -18,9 +19,14 @@ import template.baremetal.SDFCombTemplateInc;
 import template.baremetal.SDFCombTemplateSrc;
 import template.baremetal.SpinLockTemplateInc;
 import template.baremetal.SpinLockTemplateSrc;
+import template.baremetal.multiprocessor.SubsystemInitInc;
+import template.baremetal.multiprocessor.SubsystemInitSrc;
 import template.baremetal.multiprocessor.SubsystemTemplateIncMulti;
 import template.baremetal.multiprocessor.SubsystemTemplateSrcMulti;
 
+/**
+ * multi cores
+ */
 @SuppressWarnings("all")
 public class demo2 {
   public static void main(final String[] args) {
@@ -61,6 +67,12 @@ public class demo2 {
       initModule.add(_spinLockTemplateInc);
       SpinLockTemplateSrc _spinLockTemplateSrc = new SpinLockTemplateSrc();
       initModule.add(_spinLockTemplateSrc);
+      Config _config = new Config();
+      initModule.add(_config);
+      SubsystemInitInc _subsystemInitInc = new SubsystemInitInc();
+      initModule.add(_subsystemInitInc);
+      SubsystemInitSrc _subsystemInitSrc = new SubsystemInitSrc();
+      initModule.add(_subsystemInitSrc);
       gen.add(initModule);
       gen.create();
       InputOutput.<String>println("end!");

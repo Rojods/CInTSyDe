@@ -17,9 +17,13 @@ import template.baremetal.SDFCombTemplateSrc
 import template.baremetal.SpinLockTemplateInc
 import template.baremetal.SpinLockTemplateSrc
 import template.baremetal.uniprocessor.SubsystemTemplateInc
-import template.baremetal.uniprocessor.SubsystemTemplateInc2
 import template.baremetal.uniprocessor.SubsystemTemplateSrc
+import template.baremetal.uniprocessor.SubsystemInitInc
+import template.baremetal.uniprocessor.SubsystemInitSrc
 
+/**
+ * one core
+ */
 class demo1 {
 	def static void main(String[] args) {
 		val path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
@@ -42,7 +46,7 @@ class demo1 {
 
 		var subsystem = new SubsystemUniprocessorModule
 		subsystem.add(new SubsystemTemplateSrc)
-		subsystem.add(new SubsystemTemplateInc2)
+		
 		subsystem.add(new SubsystemTemplateInc)
 		gen.add(subsystem)
 
@@ -54,9 +58,11 @@ class demo1 {
 		initModule.add(new CircularFIFOTemplateSrc)
 		initModule.add(new SpinLockTemplateInc)
 		initModule.add(new SpinLockTemplateSrc)
-
 		initModule.add(new Config)
-
+		
+		initModule.add(new SubsystemInitInc)
+		initModule.add(new SubsystemInitSrc)
+		
 		gen.add(initModule)
 
 		gen.create()

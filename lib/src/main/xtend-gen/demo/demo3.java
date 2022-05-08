@@ -15,6 +15,8 @@ import template.rtos.DataDefinitionSrc;
 import template.rtos.DataType;
 import template.rtos.ExternalDataBlockInc;
 import template.rtos.ExternalDataBlockSrc;
+import template.rtos.FireAllInc;
+import template.rtos.FireAllSrc;
 import template.rtos.SDFCombInc;
 import template.rtos.SDFCombTemplateSrcRTOS;
 import template.rtos.SoftTimerTemplateSrc;
@@ -35,6 +37,8 @@ public class demo3 {
       ForSyDeSystemGraph model = loader.loadModel(path);
       model.mergeInPlace(loader.loadModel(path2));
       Generator gen = new Generator(model, root);
+      Generator.PC = 0;
+      Generator.NUCLEO = 1;
       InitProcessingModule initModule = new InitProcessingModule();
       SDFCombProcessingModule actorModule = new SDFCombProcessingModule();
       SDFChannelProcessingModule sdfchannelModule = new SDFChannelProcessingModule();
@@ -57,6 +61,10 @@ public class demo3 {
       initModule.add(_externalDataBlockInc);
       ExternalDataBlockSrc _externalDataBlockSrc = new ExternalDataBlockSrc();
       initModule.add(_externalDataBlockSrc);
+      FireAllInc _fireAllInc = new FireAllInc();
+      initModule.add(_fireAllInc);
+      FireAllSrc _fireAllSrc = new FireAllSrc();
+      initModule.add(_fireAllSrc);
       SDFCombTemplateSrcRTOS _sDFCombTemplateSrcRTOS = new SDFCombTemplateSrcRTOS();
       actorModule.add(_sDFCombTemplateSrcRTOS);
       SDFCombInc _sDFCombInc = new SDFCombInc();

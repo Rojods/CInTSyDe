@@ -40,12 +40,12 @@ public class Config implements InitTemplate {
       _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
-      _builder.append("************************************************");
+      _builder.append("*************************************************************");
       _builder.newLine();
-      _builder.append("\t\t\t\t");
-      _builder.append("Config");
+      _builder.append("\t");
+      _builder.append("Config Channel Block or Non Block Read Write");
       _builder.newLine();
-      _builder.append("************************************************");
+      _builder.append("*************************************************************");
       _builder.newLine();
       _builder.append("*/");
       _builder.newLine();

@@ -1,4 +1,4 @@
 #ifndef  SUBSYSTEM_H_
 #define  SUBSYSTEM_H_
-void subsystem();
+void init_subsystem();
 #endif

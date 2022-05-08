@@ -289,52 +289,6 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.append("\t\t\t");
       _builder.append("#endif");
       _builder.newLine();
-      _builder.append("\t");
-      _builder.append("/*");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.append("==============================================");
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("Get External Datablock\'s locks");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.append("==============================================\t");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.append("*/\t\t\t\t\t");
-      _builder.newLine();
-      {
-        int _size = datablock.size();
-        boolean _notEquals = (_size != 0);
-        if (_notEquals) {
-          {
-            for(final Vertex data : datablock) {
-              _builder.append("\t\t\t");
-              _builder.append("#if ");
-              String _upperCase_1 = data.getIdentifier().toUpperCase();
-              _builder.append(_upperCase_1, "\t\t\t");
-              _builder.append("_BLOCKING==1");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t\t\t");
-              _builder.append("extern SemaphoreHandle_t datablock_sem_");
-              String _identifier_2 = data.getIdentifier();
-              _builder.append(_identifier_2, "\t\t\t");
-              _builder.append(";");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t\t\t");
-              _builder.append("xSemaphoreTake(datablock_sem_");
-              String _identifier_3 = data.getIdentifier();
-              _builder.append(_identifier_3, "\t\t\t");
-              _builder.append(", portMAX_DELAY);");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t\t\t");
-              _builder.append("#endif");
-              _builder.newLine();
-            }
-          }
-        }
-      }
       _builder.append("\t\t\t");
       _builder.newLine();
       _builder.append("\t");
@@ -434,40 +388,6 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       _builder.newLineIfNotEmpty();
       _builder.append("\t\t\t");
       _builder.newLine();
-      _builder.append("\t");
-      _builder.append("/*");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.append("==============================================");
-      _builder.newLine();
-      _builder.append("\t\t");
-      _builder.append("Release External Datablock\'s locks");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.append("==============================================\t");
-      _builder.newLine();
-      _builder.append("\t");
-      _builder.append("*/\t");
-      _builder.newLine();
-      {
-        for(final Vertex data_1 : datablock) {
-          _builder.append("\t\t\t");
-          _builder.append("#if ");
-          String _upperCase_2 = data_1.getIdentifier().toUpperCase();
-          _builder.append(_upperCase_2, "\t\t\t");
-          _builder.append("_BLOCKING==1");
-          _builder.newLineIfNotEmpty();
-          _builder.append("\t\t\t");
-          _builder.append("xSemaphoreGive(datablock_sem_");
-          String _identifier_4 = data_1.getIdentifier();
-          _builder.append(_identifier_4, "\t\t\t");
-          _builder.append(");");
-          _builder.newLineIfNotEmpty();
-          _builder.append("\t\t\t");
-          _builder.append("#endif");
-          _builder.newLine();
-        }
-      }
       _builder.append("\t");
       _builder.append("/*");
       _builder.newLine();

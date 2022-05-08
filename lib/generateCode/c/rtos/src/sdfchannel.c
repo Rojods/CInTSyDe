@@ -29,6 +29,18 @@ long item_size_AbsY = sizeof(UInt16);
 
 /*
 ============================================
+SDFChannel gysig Message Queue
+============================================
+*/
+/* msg queue */
+QueueHandle_t msg_queue_gysig;
+/* maximum number of tokens in message queue */
+int queue_length_gysig = 6;
+/* size of token */
+long item_size_gysig = sizeof(DoubleType);
+
+/*
+============================================
 SDFChannel AbsX Message Queue
 ============================================
 */
@@ -50,18 +62,6 @@ QueueHandle_t msg_queue_GrayScaleToGetPx;
 int queue_length_GrayScaleToGetPx = 6;
 /* size of token */
 long item_size_GrayScaleToGetPx = sizeof(DoubleType);
-
-/*
-============================================
-SDFChannel gysig Message Queue
-============================================
-*/
-/* msg queue */
-QueueHandle_t msg_queue_gysig;
-/* maximum number of tokens in message queue */
-int queue_length_gysig = 6;
-/* size of token */
-long item_size_gysig = sizeof(DoubleType);
 
 /*
 ============================================
@@ -89,18 +89,6 @@ long item_size_absysig = sizeof(DoubleType);
 
 /*
 ============================================
-SDFChannel GrayScaleX Message Queue
-============================================
-*/
-/* msg queue */
-QueueHandle_t msg_queue_GrayScaleX;
-/* maximum number of tokens in message queue */
-int queue_length_GrayScaleX = 1;
-/* size of token */
-long item_size_GrayScaleX = sizeof(UInt16);
-
-/*
-============================================
 SDFChannel absxsig Message Queue
 ============================================
 */
@@ -110,6 +98,18 @@ QueueHandle_t msg_queue_absxsig;
 int queue_length_absxsig = 1;
 /* size of token */
 long item_size_absxsig = sizeof(DoubleType);
+
+/*
+============================================
+SDFChannel GrayScaleX Message Queue
+============================================
+*/
+/* msg queue */
+QueueHandle_t msg_queue_GrayScaleX;
+/* maximum number of tokens in message queue */
+int queue_length_GrayScaleX = 1;
+/* size of token */
+long item_size_GrayScaleX = sizeof(UInt16);
 
 /*
 ============================================

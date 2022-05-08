@@ -17,7 +17,13 @@ import template.baremetal.SpinLockTemplateInc
 import template.baremetal.SpinLockTemplateSrc
 import template.baremetal.multiprocessor.SubsystemTemplateIncMulti
 import template.baremetal.multiprocessor.SubsystemTemplateSrcMulti
+import template.baremetal.Config
+import template.baremetal.multiprocessor.SubsystemInitInc
+import template.baremetal.multiprocessor.SubsystemInitSrc
 
+/**
+ * multi cores
+ */
 class demo2 {
 	def static void main(String[] args) {
 		val path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
@@ -49,7 +55,11 @@ class demo2 {
 		initModule.add(new CircularFIFOTemplateSrc)
 		initModule.add(new SpinLockTemplateInc)
 		initModule.add(new SpinLockTemplateSrc)
-
+		initModule.add(new Config)
+		initModule.add(new SubsystemInitInc)
+		initModule.add(new SubsystemInitSrc)
+		
+		
 		gen.add(initModule)
 
 		gen.create()
