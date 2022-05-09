@@ -1,12 +1,12 @@
 systemgraph {
-   vertex A
+   vertex vertex_a
    [decision::sdf::PASSedSDFComb,moc::sdf::SDFComb]
    (a,combFunctions)
    {"production": {"a": 1_i},"firingSlots": 0_i}
-   vertex B
+   vertex vertex_b
    [decision::sdf::PASSedSDFComb,moc::sdf::SDFComb]
-   (a,combFunctions)
-   {"production": {"a": 1_i},"firingSlots": 0_i}
+   (b,combFunctions)
+   {"firingSlots": 1_i,"consumption": {"b": 1_i}}
    vertex sig
    [decision::sdf::BoundedSDFChannel,impl::TokenizableDataBlock,moc::sdf::SDFChannel]
    (consumer,producer)

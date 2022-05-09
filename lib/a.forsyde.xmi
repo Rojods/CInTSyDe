@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<forsyde.io.eclipse.systemgraph:ForSyDeSystemGraph xmlns:forsyde.io.eclipse.systemgraph="forsyde.io.eclipse.systemgraph" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" xsi:schemaLocation="forsyde.io.eclipse.systemgraph systemgraph.ecore#//io/eclipse/systemgraph">
-    <nodes identifier="A">
-        <ports>S</ports>
-        <propertiesValues intValue="1" xsi:type="forsyde.io.eclipse.systemgraph:IntVertexProperty"/>
-        <propertiesNames>max</propertiesNames>
-    </nodes>
-</forsyde.io.eclipse.systemgraph:ForSyDeSystemGraph>
