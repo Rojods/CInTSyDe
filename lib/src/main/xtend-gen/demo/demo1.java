@@ -1,46 +1,84 @@
 package demo;
 
 import forsyde.io.java.core.ForSyDeSystemGraph;
-import generator.generator;
+import forsyde.io.java.drivers.ForSyDeFiodlHandler;
+import generator.Generator;
+import generator.InitProcessingModule;
+import generator.SDFChannelProcessingModule;
+import generator.SDFCombProcessingModule;
+import generator.SubsystemUniprocessorModule;
+import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
-import template.nonRTOS.actor.actorInc;
-import template.nonRTOS.actor.actorSrc;
-import template.nonRTOS.fifo.circular.A.channelInc;
-import template.nonRTOS.fifo.circular.A.channelSrc;
-import template.nonRTOS.spinlock.spinlock;
-import template.nonRTOS.subsystem.configInc;
-import template.nonRTOS.subsystem.subsystemIncUniprocessor;
-import template.nonRTOS.subsystem.subsystemSrcUniprocessor;
+import template.baremetal.CircularFIFOTemplateInc;
+import template.baremetal.CircularFIFOTemplateSrc;
+import template.baremetal.Config;
+import template.baremetal.DataDefinitionSrc;
+import template.baremetal.DataTypeTemplateInc;
+import template.baremetal.ExternalDataBlockInc;
+import template.baremetal.ExternalDataBlockSrc;
+import template.baremetal.SDFChannelTemplateSrc;
+import template.baremetal.SDFCombTemplateInc;
+import template.baremetal.SDFCombTemplateSrc;
+import template.baremetal.SpinLockTemplateInc;
+import template.baremetal.SpinLockTemplateSrc;
+import template.baremetal.uniprocessor.SubsystemTemplateInc;
+import template.baremetal.uniprocessor.SubsystemTemplateInc2;
+import template.baremetal.uniprocessor.SubsystemTemplateSrc;
 import utils.Load;
 
-/**
- * demo for uniprocessor
- */
 @SuppressWarnings("all")
 public class demo1 {
   public static void main(final String[] args) {
-    final String forsyde = "forsyde-io\\complete-mapped-sobel-model.forsyde.xmi";
-    final String root = "generateCode\\c\\single";
-    ForSyDeSystemGraph model = Load.load(forsyde);
-    generator gen = new generator(model, root);
-    channelInc _channelInc = new channelInc();
-    gen.add(_channelInc);
-    InputOutput.<String>println("inc end");
-    channelSrc _channelSrc = new channelSrc();
-    gen.add(_channelSrc);
-    spinlock _spinlock = new spinlock();
-    gen.add(_spinlock);
-    actorInc _actorInc = new actorInc();
-    gen.add(_actorInc);
-    actorSrc _actorSrc = new actorSrc();
-    gen.add(_actorSrc);
-    subsystemIncUniprocessor _subsystemIncUniprocessor = new subsystemIncUniprocessor();
-    gen.add(_subsystemIncUniprocessor);
-    subsystemSrcUniprocessor _subsystemSrcUniprocessor = new subsystemSrcUniprocessor();
-    gen.add(_subsystemSrcUniprocessor);
-    configInc _configInc = new configInc();
-    gen.add(_configInc);
-    gen.create();
-    InputOutput.<String>println("end!");
+    try {
+      final String path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
+      final String path2 = "forsyde-io/modified1/sobel-application.fiodl";
+      final String root = "generateCode/c/single";
+      ForSyDeSystemGraph model1 = Load.load(path);
+      ForSyDeSystemGraph model2 = new ForSyDeFiodlHandler().loadModel(path2);
+      model2.mergeInPlace(model1);
+      Generator gen = new Generator(model2, root);
+      SDFChannelProcessingModule sdfchannelModule = new SDFChannelProcessingModule();
+      SDFChannelTemplateSrc _sDFChannelTemplateSrc = new SDFChannelTemplateSrc();
+      sdfchannelModule.add(_sDFChannelTemplateSrc);
+      gen.add(sdfchannelModule);
+      SDFCombProcessingModule actorModule = new SDFCombProcessingModule();
+      SDFCombTemplateSrc _sDFCombTemplateSrc = new SDFCombTemplateSrc();
+      actorModule.add(_sDFCombTemplateSrc);
+      SDFCombTemplateInc _sDFCombTemplateInc = new SDFCombTemplateInc();
+      actorModule.add(_sDFCombTemplateInc);
+      gen.add(actorModule);
+      SubsystemUniprocessorModule subsystem = new SubsystemUniprocessorModule();
+      SubsystemTemplateSrc _subsystemTemplateSrc = new SubsystemTemplateSrc();
+      subsystem.add(_subsystemTemplateSrc);
+      SubsystemTemplateInc2 _subsystemTemplateInc2 = new SubsystemTemplateInc2();
+      subsystem.add(_subsystemTemplateInc2);
+      SubsystemTemplateInc _subsystemTemplateInc = new SubsystemTemplateInc();
+      subsystem.add(_subsystemTemplateInc);
+      gen.add(subsystem);
+      InitProcessingModule initModule = new InitProcessingModule();
+      DataTypeTemplateInc _dataTypeTemplateInc = new DataTypeTemplateInc();
+      initModule.add(_dataTypeTemplateInc);
+      DataDefinitionSrc _dataDefinitionSrc = new DataDefinitionSrc();
+      initModule.add(_dataDefinitionSrc);
+      CircularFIFOTemplateInc _circularFIFOTemplateInc = new CircularFIFOTemplateInc();
+      initModule.add(_circularFIFOTemplateInc);
+      CircularFIFOTemplateSrc _circularFIFOTemplateSrc = new CircularFIFOTemplateSrc();
+      initModule.add(_circularFIFOTemplateSrc);
+      SpinLockTemplateInc _spinLockTemplateInc = new SpinLockTemplateInc();
+      initModule.add(_spinLockTemplateInc);
+      SpinLockTemplateSrc _spinLockTemplateSrc = new SpinLockTemplateSrc();
+      initModule.add(_spinLockTemplateSrc);
+      Config _config = new Config();
+      initModule.add(_config);
+      ExternalDataBlockInc _externalDataBlockInc = new ExternalDataBlockInc();
+      initModule.add(_externalDataBlockInc);
+      ExternalDataBlockSrc _externalDataBlockSrc = new ExternalDataBlockSrc();
+      initModule.add(_externalDataBlockSrc);
+      gen.add(initModule);
+      gen.create();
+      InputOutput.<String>println("end!");
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
   }
 }

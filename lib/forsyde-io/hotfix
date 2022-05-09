@@ -1,0 +1,30 @@
+hotfix in fiodl file
+
+
+1. Some ports name in fiodl are not consistent with the port names in xmi file
+	change them to the same name. 
+	change the corresponding edge port. 
+	
+2. 
+In actor AbsImpl, there is no impl port connecting input port resx and resy in vertex Abs.
+   add the edge:
+     edge [] from Abs port resx to AbsImpl port resx
+     edge [] from Abs port resy to AbsImpl port resy 
+
+3.
+add decision::sdf::BoundedSDFChannel to  GrayScaleToGetPx and GrayScaleToAbs .
+add "maximumTokens" to  GrayScaleToGetPx and GrayScaleToAbs 
+
+
+4. 
+ The external data block (channels connected to the outside system)  
+ and the local variable in the inline code  cannot have
+ the same name.
+ 
+ For example, 
+ in vertex A[SDFComb], 
+ "inline code":"
+ 	int x
+ "
+ there is a variable called "a", as a result, the external data block
+ cannot be named as "x".

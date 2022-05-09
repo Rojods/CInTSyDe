@@ -1,44 +1,71 @@
 package demo
 
-
-import factory.c.CFactory
-
-
-
-import strategy.Strategy
-
-
-import util.Load
-
-import strategy.c.single.*
-import strategy.c.multi.MainSourceStrategy_multi
+import generator.Generator
+import utils.Load
+import forsyde.io.java.drivers.ForSyDeFiodlHandler
+import generator.*
+import template.rtos.*
 /**
- * 
- * demo for multi platform,c language
+ * rtos
  */
 class demo3 {
 	def static void main(String[] args) {
-		val forsyde="forsyde-io\\sobel2mpsoc_mapped_no_outside_port.forsyde.xmi";
-		val root="generatedCode\\c\\multi"
-		var model = Load.load(forsyde);		
-		var system="example"
-		var fac = new CFactory(root)
+		val path="forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
+		val path2="forsyde-io/modified1/sobel-application.fiodl"
+		val root="generateCode/c/rtos"
+		//val roottest="D:\\Users\\LEGION\\Desktop\\Master Thesis\\code\\stm32-nucleo\\freertos_test1\\Core\\mycode"
+		var model1 = Load.load(path)
+		var model2 = (new ForSyDeFiodlHandler()).loadModel(path2)	
+		
+		model2.mergeInPlace(model1)
+		
+		var Generator gen = new Generator(model2,root)
+		
+		var initModule= new InitProcessingModule
+		var actorModule= new SDFCombProcessingModule
+		var sdfchannelModule = new SDFChannelProcessingModule
+		var subsystem = new SubsystemUniprocessorModule
+		
+		/* init module */
+		initModule.add(new ConfigRTOSInc)
+		initModule.add(new SoftTimerTemplateSrc)
+		initModule.add(new Channel)
+		initModule.add(new StartTaskTemplateSrcRTOS)
+		initModule.add(new StartTaskInc)
+		initModule.add(new DataType)
+		initModule.add(new DataDefinitionSrc)
+		initModule.add(new ExternalDataBlockInc)
+		initModule.add(new ExternalDataBlockSrc)
+		
+		/* actor module */
+		actorModule.add(new SDFCombTemplateSrcRTOS)
+		actorModule.add(new SDFCombInc)
+		
+		
+		
+		/* channel module */
+		
+		/* subsystem module */
+		
+		
+		
+		
+		
+		
+		
 
-		fac.add(new SDFChannelHeader(model))
-		fac.add(new SDFChannelSource(model))
 		
 		
-		fac.add(new SDFCombHeader(model))
-		fac.add(new SDFCombSource(model))
 		
 		
-		fac.add(new MainSourceStrategy_multi(model))
 		
-
+		gen.add(initModule)
+		gen.add(actorModule)
+		gen.add(sdfchannelModule)
+		gen.add(subsystem)
 		
-		fac.create()
+		gen.create()
 		
-		println("end!")
-		
+		println(" RTOS end!")		
 	}
 }

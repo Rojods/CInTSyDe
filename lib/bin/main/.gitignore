@@ -1,9 +1,5 @@
-/aaa/
-/cintsyde/
 /demo/
-/factory/
-/interfaces/
-/platform/
-/project/
-/strategy/
-/util/
+/fileAnnotation/
+/generator/
+/template/
+/utils/

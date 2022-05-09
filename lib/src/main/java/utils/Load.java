@@ -3,6 +3,7 @@ package utils;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 
 import forsyde.io.java.drivers.ForSyDeModelHandler;
+import generator.Generator;
 
 public class Load {
 	public static ForSyDeSystemGraph load(String path) {
