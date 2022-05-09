@@ -1,8 +1,6 @@
 package demo;
 
-import forsyde.io.java.core.ForSyDeSystemGraph;
-import forsyde.io.java.drivers.ForSyDeModelHandler;
-import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 
 /**
  * load fiodl file
@@ -10,11 +8,8 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 @SuppressWarnings("all")
 public class test {
   public static void main(final String[] args) {
-    try {
-      final String path = "a.fiodl";
-      ForSyDeSystemGraph model = new ForSyDeModelHandler().loadModel(path);
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
+    final String path = "a.fiodl";
+    demo1.test(path);
+    InputOutput.<String>println("end!");
   }
 }

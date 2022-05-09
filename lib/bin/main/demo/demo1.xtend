@@ -69,4 +69,50 @@ class demo1 {
 
 		println("end!")
 	}
+	
+	def static void test(String path){
+		
+		var root = "generateCode/c/test1"
+		var loader = (new ForSyDeModelHandler)
+		var model = loader.loadModel(path)
+		
+		
+		
+		model.mergeInPlace(loader.loadModel(path))
+		var Generator gen = new Generator(model, root)
+
+		var sdfchannelModule = new SDFChannelProcessingModule
+		sdfchannelModule.add(new SDFChannelTemplateSrc)
+		gen.add(sdfchannelModule)
+
+		var actorModule = new SDFCombProcessingModule
+		actorModule.add(new SDFCombTemplateSrc)
+		actorModule.add(new SDFCombTemplateInc)
+		gen.add(actorModule)
+
+		var subsystem = new SubsystemUniprocessorModule
+		subsystem.add(new SubsystemTemplateSrc)
+		
+		subsystem.add(new SubsystemTemplateInc)
+		gen.add(subsystem)
+
+		var initModule = new InitProcessingModule
+		initModule.add(new DataTypeTemplateInc)
+		initModule.add(new DataDefinitionSrc)
+
+		initModule.add(new CircularFIFOTemplateInc)
+		initModule.add(new CircularFIFOTemplateSrc)
+		initModule.add(new SpinLockTemplateInc)
+		initModule.add(new SpinLockTemplateSrc)
+		initModule.add(new Config)
+		
+		initModule.add(new SubsystemInitInc)
+		initModule.add(new SubsystemInitSrc)
+		
+		gen.add(initModule)
+
+		gen.create()
+
+		println("end!")		
+	}
 }

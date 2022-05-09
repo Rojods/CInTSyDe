@@ -80,4 +80,54 @@ public class demo1 {
       throw Exceptions.sneakyThrow(_e);
     }
   }
+  
+  public static void test(final String path) {
+    try {
+      String root = "generateCode/c/test1";
+      ForSyDeModelHandler loader = new ForSyDeModelHandler();
+      ForSyDeSystemGraph model = loader.loadModel(path);
+      model.mergeInPlace(loader.loadModel(path));
+      Generator gen = new Generator(model, root);
+      SDFChannelProcessingModule sdfchannelModule = new SDFChannelProcessingModule();
+      SDFChannelTemplateSrc _sDFChannelTemplateSrc = new SDFChannelTemplateSrc();
+      sdfchannelModule.add(_sDFChannelTemplateSrc);
+      gen.add(sdfchannelModule);
+      SDFCombProcessingModule actorModule = new SDFCombProcessingModule();
+      SDFCombTemplateSrc _sDFCombTemplateSrc = new SDFCombTemplateSrc();
+      actorModule.add(_sDFCombTemplateSrc);
+      SDFCombTemplateInc _sDFCombTemplateInc = new SDFCombTemplateInc();
+      actorModule.add(_sDFCombTemplateInc);
+      gen.add(actorModule);
+      SubsystemUniprocessorModule subsystem = new SubsystemUniprocessorModule();
+      SubsystemTemplateSrc _subsystemTemplateSrc = new SubsystemTemplateSrc();
+      subsystem.add(_subsystemTemplateSrc);
+      SubsystemTemplateInc _subsystemTemplateInc = new SubsystemTemplateInc();
+      subsystem.add(_subsystemTemplateInc);
+      gen.add(subsystem);
+      InitProcessingModule initModule = new InitProcessingModule();
+      DataTypeTemplateInc _dataTypeTemplateInc = new DataTypeTemplateInc();
+      initModule.add(_dataTypeTemplateInc);
+      DataDefinitionSrc _dataDefinitionSrc = new DataDefinitionSrc();
+      initModule.add(_dataDefinitionSrc);
+      CircularFIFOTemplateInc _circularFIFOTemplateInc = new CircularFIFOTemplateInc();
+      initModule.add(_circularFIFOTemplateInc);
+      CircularFIFOTemplateSrc _circularFIFOTemplateSrc = new CircularFIFOTemplateSrc();
+      initModule.add(_circularFIFOTemplateSrc);
+      SpinLockTemplateInc _spinLockTemplateInc = new SpinLockTemplateInc();
+      initModule.add(_spinLockTemplateInc);
+      SpinLockTemplateSrc _spinLockTemplateSrc = new SpinLockTemplateSrc();
+      initModule.add(_spinLockTemplateSrc);
+      Config _config = new Config();
+      initModule.add(_config);
+      SubsystemInitInc _subsystemInitInc = new SubsystemInitInc();
+      initModule.add(_subsystemInitInc);
+      SubsystemInitSrc _subsystemInitSrc = new SubsystemInitSrc();
+      initModule.add(_subsystemInitSrc);
+      gen.add(initModule);
+      gen.create();
+      InputOutput.<String>println("end!");
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
 }

@@ -79,7 +79,7 @@ public class Query {
 				return (new ArrayViewer(datatypeVertex)).getInnerTypePort(model).get().getIdentifier();
 			}
 
-		} else {
+		} else if(outputedge!=null) {
 			// output sdf channel
 			String actorname = outputedge.getSource();
 			String port = outputedge.getSourcePort().get();
@@ -102,6 +102,8 @@ public class Query {
 			} else {
 				return (new ArrayViewer(datatypeVertex)).getInnerTypePort(model).get().getIdentifier();
 			}
+		}else {
+			return "Channel "+ sdf.getIdentifier()+" Not Connected To Any Actor!";
 		}
 
 	}
