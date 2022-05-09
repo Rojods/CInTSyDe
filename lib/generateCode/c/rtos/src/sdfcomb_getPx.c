@@ -60,15 +60,6 @@
 			#if defined(TESTING)
 HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,1);
 			#endif
-	/*
-	==============================================
-		Get External Datablock's locks
-	==============================================	
-	*/					
-			#if INPUTIMAGE_BLOCKING==1
-			extern SemaphoreHandle_t datablock_sem_inputImage;
-			xSemaphoreTake(datablock_sem_inputImage, portMAX_DELAY);
-			#endif
 			
 	/*
 	==============================================
@@ -110,14 +101,6 @@ HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,1);
 				#endif
 			}
 			
-	/*
-	==============================================
-		Release External Datablock's locks
-	==============================================	
-	*/	
-			#if INPUTIMAGE_BLOCKING==1
-			xSemaphoreGive(datablock_sem_inputImage);
-			#endif
 	/*
 	==============================================
 		Pend Timer's Semaphore

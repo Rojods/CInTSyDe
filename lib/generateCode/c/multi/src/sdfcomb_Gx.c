@@ -19,39 +19,48 @@ extern circular_fifo_DoubleType fifo_absxsig;
 extern spinlock spinlock_absxsig;
 /*
 ========================================
+	Declare Extern Global Variables
+========================================
+*/			
+
+/*
+========================================
 	Actor Function
 ========================================
 */			
 void actor_Gx(){
-	
-	/* Initilize Memory      */
+				
+	/* Initilize Memo
+y */
 	DoubleType gx; 
 	Array6OfDoubleType imgBlockX; 
-	/* Read From Input Port  */
-	printf("%s\n","read");
-	int ret=0;
-	for(int i=0;i<6;++i){
-		
-		#if GXSIG_BLOCKING==0
-		ret=read_non_blocking_DoubleType(&fifo_gxsig,&imgBlockX[i]);
-		if(ret==-1){
-			printf("fifo_gxsig read error\n");
-		}
-		#else
-		read_blocking_DoubleType(&fifo_gxsig,&imgBlockX[i],&spinlock_gxsig);
-		#endif
-	}
+/* Read From Input Port  */
+printf("%s\n","read");
+int ret=0;
+for(int i=0;i<6;++i){
 	
-	/* Inline Code           */
-	printf("%s\n","inline code");
-	/* in combFunction GxImpl */
-	gx=0;
-	gx=gx-imgBlockX[0];
-	gx=gx+imgBlockX[1];
-	gx=gx-2.0*imgBlockX[2];
-	gx=gx+2.0*imgBlockX[3];
-	gx=gx-imgBlockX[4];
-	gx=gx+imgBlockX[5];
+	#if GXSIG_BLOCKING==0
+	ret=read_non_blocking_DoubleType(&fifo_gxsig,&imgBlockX[i]);
+	if(ret==-1){
+		printf("fifo_gxsig read error\n");
+	}
+	#else
+	read_blocking_DoubleType(&fifo_gxsig,&imgBlockX[i],&spinlock_gxsig);
+	#endif
+}
+
+
+			
+/* Inline Code           */
+printf("%s\n","inline code");
+/* in combFunction GxImpl */
+gx=0;
+gx=gx-imgBlockX[0];
+gx=gx+imgBlockX[1];
+gx=gx-2.0*imgBlockX[2];
+gx=gx+2.0*imgBlockX[3];
+gx=gx-imgBlockX[4];
+gx=gx+imgBlockX[5];
 
 	/* Write To Output Ports */
 	printf("%s\n","write");

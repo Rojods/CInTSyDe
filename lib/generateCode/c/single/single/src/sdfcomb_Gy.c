@@ -3,7 +3,7 @@
 #include "../inc/datatype_definition.h"
 #include "../inc/circular_fifo_lib.h"
 #include "../inc/sdfcomb_Gy.h"
-#include "../inc/extern_datablock.h"
+
 
 
 /*
@@ -19,12 +19,19 @@ extern circular_fifo_DoubleType fifo_absysig;
 extern spinlock spinlock_absysig;
 /*
 ========================================
+	Declare Extern Global Variables
+========================================
+*/			
+
+/*
+========================================
 	Actor Function
 ========================================
 */			
 void actor_Gy(){
 				
-	/* Initilize Memory */
+	/* Initilize Memo
+y */
 	DoubleType gy; 
 	Array6OfDoubleType imgBlockY; 
 /* Read From Input Port  */
@@ -43,7 +50,7 @@ for(int i=0;i<6;++i){
 }
 
 
-
+			
 /* Inline Code           */
 printf("%s\n","inline code");
 /* in combFunction GyImpl */

@@ -6,60 +6,32 @@ import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import utils.Name
 import fileAnnotation.FileTypeAnno
 import fileAnnotation.FileType
+import generator.Generator
+import utils.Query
 
 @FileTypeAnno(type=FileType.C_SOURCE)
-class SubsystemTemplateSrcMulti  implements SubsystemTemplate{
+class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 	Schedule s
+
 	override create(Schedule schedule) {
-		this.s=schedule
-		var tile=schedule.tile
+		this.s = schedule
+		var tile = schedule.tile
 		'''
-		#include "../inc/subsystem_«s.tile.getIdentifier()».h"
-		«FOR channel:schedule.channels SEPARATOR"" AFTER""»
-			«var channelName=Name.name(channel)»
-			«IF SDFChannel.conforms(channel)»
-				extern circularFIFO_«channelName» channel_«channelName»;
-				extern token_«channelName» arr_«channelName»[];
-				extern int buffersize_«channelName»;
-			«ELSE»
-				extern circularFIFO_«channelName» channel_«channelName»;
-			«ENDIF»
-		«ENDFOR»	
-		void subsystem_«tile.getIdentifier()»(){
-«««			«FOR channel:schedule.channels  SEPARATOR "" AFTER "" »
-«««				«var channelName=Name.name(channel)»
-«««				«IF SDFChannel.conforms(channel)»
-«««				init_circularFIFO_«channelName»(&channel_«channelName»,arr_«channelName»,buffersize_«channelName»);
-«««				«ENDIF»
-«««			«ENDFOR»			
-«««			«subsystemHelp.sdfDelayHelpA(channels)»
+			#include "../inc/subsystem_«s.tile.getIdentifier()».h"
 			
-//			while(1){
-				«FOR actor:schedule.slots SEPARATOR "" AFTER "\n"»
+			void fire_subsystem_«tile.getIdentifier()»(){
+			«FOR actor : schedule.slots SEPARATOR "" AFTER ""»
+			«var tmp =1»
 				«IF actor!==null»
-				actor_«Name.name(actor)»();
+					 actor_«Name.name(actor)»();
 				«ENDIF»
-				«ENDFOR»		
-			
-//			}	
-			
-		}	
-		
-		void init_«tile.getIdentifier()»(){
-			«FOR channel:schedule.channels  SEPARATOR "" AFTER "" »
-				«var channelName=Name.name(channel)»
-				«IF SDFChannel.conforms(channel)»
-				init_circularFIFO_«channelName»(&channel_«channelName»,arr_«channelName»,buffersize_«channelName»);
-				«ENDIF»
-			«ENDFOR»				
-		}
+			«ENDFOR»
+			}	
 		'''
-	}	
+	}
 
 	override getFileName() {
-		return "subsystem_tile_"+s.tile.getIdentifier()
+		return "subsystem_tile_" + s.tile.getIdentifier()
 	}
-	
 
-	
 }

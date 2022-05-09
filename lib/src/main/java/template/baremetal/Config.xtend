@@ -25,9 +25,9 @@ class Config implements InitTemplate {
 			#endif
 			
 			/*
-			************************************************
-							Config
-			************************************************
+			*************************************************************
+				Config Channel Block or Non Block Read Write
+			*************************************************************
 			*/
 			«FOR c:channels »
 			#define «c.getIdentifier().toUpperCase()»_BLOCKING 0

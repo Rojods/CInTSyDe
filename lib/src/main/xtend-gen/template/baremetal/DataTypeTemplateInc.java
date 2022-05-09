@@ -23,9 +23,9 @@ public class DataTypeTemplateInc implements InitTemplate {
       + "\nno viable alternative at input \'Â\'"
       + "\nmismatched input \'»\\r\\n\\t\\t\\t\\r\\n\\t\\t\\t/*\\r\\n\\t\\t\\t==============================================================\\r\\n\\t\\t\\t\\t\\tTYPING_DATATYPES_FLOAT\\r\\n\\t\\t\\t==============================================================\\r\\n\\t\\t\\t*/\\r\\n\\t\\t\\tÂ«\' expecting \'}\'"
       + "\nThe method doubleTypeDef(ForSyDeSystemGraph) is undefined"
-      + "\nThe method or field Â is undefined"
-      + "\nThis expression is not allowed in this context, since it doesn\'t cause any side effects.");
+      + "\nThis expression is not allowed in this context, since it doesn\'t cause any side effects."
+      + "\nThe field DataTypeTemplateInc.Â refers to the missing type Â«");
   }
   
-  private /* outset */Object SEPARATOR;
+  private /* Â« */Object Â;
 }

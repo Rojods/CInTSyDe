@@ -1,6 +1,7 @@
 package template.baremetal
 
 import fileAnnotation.FileType
+
 import fileAnnotation.FileTypeAnno
 import template.templateInterface.InitTemplate
 
@@ -11,6 +12,7 @@ class SpinLockTemplateInc implements InitTemplate{
 		'''
 		#ifndef SPINLOCK_H_
 		#define SPINLOCK_H_
+		#define ARM
 		
 		typedef struct{
 		volatile	int flag;

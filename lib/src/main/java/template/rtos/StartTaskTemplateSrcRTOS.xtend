@@ -52,7 +52,7 @@ class StartTaskTemplateSrcRTOS implements InitTemplate {
 			static void init_actor_task();
 			static void timer_start();
 					
-			void subsystem(){
+			void init_subsystem(){
 				/* Initialize Message Queue     */
 				init_msg_queue();
 				
@@ -68,8 +68,9 @@ class StartTaskTemplateSrcRTOS implements InitTemplate {
 				/* Start Software Timer        */
 				timer_start();
 				
-				/* Delete start task           */
-				vTaskStartScheduler();
+				/* Suspend All the Created Tasks */
+				
+				//vTaskStartScheduler();
 				//vTaskDelete(NULL); 
 				
 			}
@@ -150,7 +151,7 @@ class StartTaskTemplateSrcRTOS implements InitTemplate {
 	}
 
 	override getFileName() {
-		return "start_task"
+		return "init_subsystem"
 	}
 
 }

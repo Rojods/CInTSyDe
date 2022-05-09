@@ -1,7 +1,7 @@
 package demo;
 
 import forsyde.io.java.core.ForSyDeSystemGraph;
-import forsyde.io.java.drivers.ForSyDeFiodlHandler;
+import forsyde.io.java.drivers.ForSyDeModelHandler;
 import generator.Generator;
 import generator.InitProcessingModule;
 import generator.SDFChannelProcessingModule;
@@ -14,29 +14,30 @@ import template.baremetal.CircularFIFOTemplateSrc;
 import template.baremetal.Config;
 import template.baremetal.DataDefinitionSrc;
 import template.baremetal.DataTypeTemplateInc;
-import template.baremetal.ExternalDataBlockInc;
-import template.baremetal.ExternalDataBlockSrc;
 import template.baremetal.SDFChannelTemplateSrc;
 import template.baremetal.SDFCombTemplateInc;
 import template.baremetal.SDFCombTemplateSrc;
 import template.baremetal.SpinLockTemplateInc;
 import template.baremetal.SpinLockTemplateSrc;
+import template.baremetal.uniprocessor.SubsystemInitInc;
+import template.baremetal.uniprocessor.SubsystemInitSrc;
 import template.baremetal.uniprocessor.SubsystemTemplateInc;
-import template.baremetal.uniprocessor.SubsystemTemplateInc2;
 import template.baremetal.uniprocessor.SubsystemTemplateSrc;
-import utils.Load;
 
+/**
+ * one core
+ */
 @SuppressWarnings("all")
 public class demo1 {
   public static void main(final String[] args) {
     try {
       final String path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
       final String path2 = "forsyde-io/modified1/sobel-application.fiodl";
-      final String root = "generateCode/c/single";
-      ForSyDeSystemGraph model1 = Load.load(path);
-      ForSyDeSystemGraph model2 = new ForSyDeFiodlHandler().loadModel(path2);
-      model2.mergeInPlace(model1);
-      Generator gen = new Generator(model2, root);
+      final String root = "generateCode/c/single/single";
+      ForSyDeModelHandler loader = new ForSyDeModelHandler();
+      ForSyDeSystemGraph model = loader.loadModel(path);
+      model.mergeInPlace(loader.loadModel(path2));
+      Generator gen = new Generator(model, root);
       SDFChannelProcessingModule sdfchannelModule = new SDFChannelProcessingModule();
       SDFChannelTemplateSrc _sDFChannelTemplateSrc = new SDFChannelTemplateSrc();
       sdfchannelModule.add(_sDFChannelTemplateSrc);
@@ -50,8 +51,6 @@ public class demo1 {
       SubsystemUniprocessorModule subsystem = new SubsystemUniprocessorModule();
       SubsystemTemplateSrc _subsystemTemplateSrc = new SubsystemTemplateSrc();
       subsystem.add(_subsystemTemplateSrc);
-      SubsystemTemplateInc2 _subsystemTemplateInc2 = new SubsystemTemplateInc2();
-      subsystem.add(_subsystemTemplateInc2);
       SubsystemTemplateInc _subsystemTemplateInc = new SubsystemTemplateInc();
       subsystem.add(_subsystemTemplateInc);
       gen.add(subsystem);
@@ -70,10 +69,10 @@ public class demo1 {
       initModule.add(_spinLockTemplateSrc);
       Config _config = new Config();
       initModule.add(_config);
-      ExternalDataBlockInc _externalDataBlockInc = new ExternalDataBlockInc();
-      initModule.add(_externalDataBlockInc);
-      ExternalDataBlockSrc _externalDataBlockSrc = new ExternalDataBlockSrc();
-      initModule.add(_externalDataBlockSrc);
+      SubsystemInitInc _subsystemInitInc = new SubsystemInitInc();
+      initModule.add(_subsystemInitInc);
+      SubsystemInitSrc _subsystemInitSrc = new SubsystemInitSrc();
+      initModule.add(_subsystemInitSrc);
       gen.add(initModule);
       gen.create();
       InputOutput.<String>println("end!");

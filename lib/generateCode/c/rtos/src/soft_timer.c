@@ -29,21 +29,21 @@ TimerHandle_t task_timer_Abs;
 #endif
 /*
 ============================================
-Soft Timer for Actor GrayScale
-============================================
-*/
-#if FREERTOS==1
-SemaphoreHandle_t timer_sem_GrayScale;
-TimerHandle_t task_timer_GrayScale;
-#endif
-/*
-============================================
 Soft Timer for Actor Gy
 ============================================
 */
 #if FREERTOS==1
 SemaphoreHandle_t timer_sem_Gy;
 TimerHandle_t task_timer_Gy;
+#endif
+/*
+============================================
+Soft Timer for Actor GrayScale
+============================================
+*/
+#if FREERTOS==1
+SemaphoreHandle_t timer_sem_GrayScale;
+TimerHandle_t task_timer_GrayScale;
 #endif
 /*
 ============================================

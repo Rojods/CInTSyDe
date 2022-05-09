@@ -3,7 +3,7 @@
 #include "../inc/datatype_definition.h"
 #include "../inc/circular_fifo_lib.h"
 #include "../inc/sdfcomb_getPx.h"
-#include "../inc/extern_datablock.h"
+
 
 
 /*
@@ -21,12 +21,20 @@ extern circular_fifo_DoubleType fifo_gxsig;
 extern spinlock spinlock_gxsig;
 /*
 ========================================
+	Declare Extern Global Variables
+========================================
+*/			
+extern Array1000OfArrayOfDouble inputImage;
+
+/*
+========================================
 	Actor Function
 ========================================
 */			
 void actor_getPx(){
 				
-	/* Initilize Memory */
+	/* Initilize Memo
+y */
 	Array6OfDoubleType gray; 
 	Array6OfDoubleType imgBlockY; 
 	Array6OfDoubleType imgBlockX; 
@@ -46,12 +54,7 @@ for(int i=0;i<6;++i){
 }
 
 
-/* Get lock of outside system channel */
-#if INPUTIMAGE_BLOCKING==1
-extern spinlock spinlock_inputImage;
-spinlock_get(&spinlock_inputImage);
-#endif
-
+			
 /* Inline Code           */
 printf("%s\n","inline code");
 /* in combFunction getPxImpl1 */
@@ -87,7 +90,4 @@ imgBlockY[5]=gray[5];
 		#endif
 	}
 	
-	#if INPUTIMAGE_BLOCKING==1
-	spinlock_release(&spinlock_inputImage);
-	#endif
 }

@@ -3,7 +3,7 @@
 #include "../inc/datatype_definition.h"
 #include "../inc/circular_fifo_lib.h"
 #include "../inc/sdfcomb_Gx.h"
-#include "../inc/extern_datablock.h"
+
 
 
 /*
@@ -19,12 +19,19 @@ extern circular_fifo_DoubleType fifo_absxsig;
 extern spinlock spinlock_absxsig;
 /*
 ========================================
+	Declare Extern Global Variables
+========================================
+*/			
+
+/*
+========================================
 	Actor Function
 ========================================
 */			
 void actor_Gx(){
 				
-	/* Initilize Memory */
+	/* Initilize Memo
+y */
 	DoubleType gx; 
 	Array6OfDoubleType imgBlockX; 
 /* Read From Input Port  */
@@ -43,7 +50,7 @@ for(int i=0;i<6;++i){
 }
 
 
-
+			
 /* Inline Code           */
 printf("%s\n","inline code");
 /* in combFunction GxImpl */

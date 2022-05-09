@@ -1,7 +1,7 @@
 package demo;
 
 import forsyde.io.java.core.ForSyDeSystemGraph;
-import forsyde.io.java.drivers.ForSyDeFiodlHandler;
+import forsyde.io.java.drivers.ForSyDeModelHandler;
 import generator.Generator;
 import generator.InitProcessingModule;
 import generator.SDFChannelProcessingModule;
@@ -11,6 +11,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import template.baremetal.CircularFIFOTemplateInc;
 import template.baremetal.CircularFIFOTemplateSrc;
+import template.baremetal.Config;
 import template.baremetal.DataDefinitionSrc;
 import template.baremetal.DataTypeTemplateInc;
 import template.baremetal.SDFChannelTemplateSrc;
@@ -18,21 +19,25 @@ import template.baremetal.SDFCombTemplateInc;
 import template.baremetal.SDFCombTemplateSrc;
 import template.baremetal.SpinLockTemplateInc;
 import template.baremetal.SpinLockTemplateSrc;
+import template.baremetal.multiprocessor.SubsystemInitInc;
+import template.baremetal.multiprocessor.SubsystemInitSrc;
 import template.baremetal.multiprocessor.SubsystemTemplateIncMulti;
 import template.baremetal.multiprocessor.SubsystemTemplateSrcMulti;
-import utils.Load;
 
+/**
+ * multi cores
+ */
 @SuppressWarnings("all")
 public class demo2 {
   public static void main(final String[] args) {
     try {
-      final String path = "forsyde-io/test/complete-mapped-sobel-model.forsyde.xmi";
-      final String path2 = "forsyde-io/test/sobel-application.fiodl";
+      final String path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
+      final String path2 = "forsyde-io/modified1/sobel-application.fiodl";
       final String root = "generateCode/c/multi";
-      ForSyDeSystemGraph model1 = Load.load(path);
-      ForSyDeSystemGraph model2 = new ForSyDeFiodlHandler().loadModel(path2);
-      model2.mergeInPlace(model1);
-      Generator gen = new Generator(model2, root);
+      ForSyDeModelHandler loader = new ForSyDeModelHandler();
+      ForSyDeSystemGraph model = loader.loadModel(path);
+      model.mergeInPlace(loader.loadModel(path2));
+      Generator gen = new Generator(model, root);
       SDFChannelProcessingModule sdfchannelModule = new SDFChannelProcessingModule();
       SDFChannelTemplateSrc _sDFChannelTemplateSrc = new SDFChannelTemplateSrc();
       sdfchannelModule.add(_sDFChannelTemplateSrc);
@@ -62,6 +67,12 @@ public class demo2 {
       initModule.add(_spinLockTemplateInc);
       SpinLockTemplateSrc _spinLockTemplateSrc = new SpinLockTemplateSrc();
       initModule.add(_spinLockTemplateSrc);
+      Config _config = new Config();
+      initModule.add(_config);
+      SubsystemInitInc _subsystemInitInc = new SubsystemInitInc();
+      initModule.add(_subsystemInitInc);
+      SubsystemInitSrc _subsystemInitSrc = new SubsystemInitSrc();
+      initModule.add(_subsystemInitSrc);
       gen.add(initModule);
       gen.create();
       InputOutput.<String>println("end!");

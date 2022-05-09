@@ -3,7 +3,7 @@
 #include "../inc/datatype_definition.h"
 #include "../inc/circular_fifo_lib.h"
 #include "../inc/sdfcomb_GrayScale.h"
-#include "../inc/extern_datablock.h"
+
 
 
 /*
@@ -23,12 +23,22 @@ extern circular_fifo_DoubleType fifo_GrayScaleToGetPx;
 extern spinlock spinlock_GrayScaleToGetPx;
 /*
 ========================================
+	Declare Extern Global Variables
+========================================
+*/			
+extern ArrayXOfArrayXOfDoubleType system_img_source_global;
+extern UInt16 dimX_global;
+extern UInt16 dimY_global;
+
+/*
+========================================
 	Actor Function
 ========================================
 */			
 void actor_GrayScale(){
 				
-	/* Initilize Memory */
+	/* Initilize Memo
+y */
 	UInt16 offsetX; 
 	Array2OfUInt16 dimsOut; 
 	UInt16 offsetY; 
@@ -60,20 +70,7 @@ read_blocking_UInt16(&fifo_GrayScaleY,&offsetY,&spinlock_GrayScaleY);
 #endif
 
 
-/* Get lock of outside system channel */
-#if SYSTEM_IMG_SOURCE_GLOBAL_BLOCKING==1
-extern spinlock spinlock_system_img_source_global;
-spinlock_get(&spinlock_system_img_source_global);
-#endif
-#if DIMX_GLOBAL_BLOCKING==1
-extern spinlock spinlock_dimX_global;
-spinlock_get(&spinlock_dimX_global);
-#endif
-#if DIMY_GLOBAL_BLOCKING==1
-extern spinlock spinlock_dimY_global;
-spinlock_get(&spinlock_dimY_global);
-#endif
-
+			
 /* Inline Code           */
 printf("%s\n","inline code");
 /* in combFunction GrayScaleImpl */
@@ -123,13 +120,4 @@ dimsOut[1]=dimY;
 		#endif
 	}
 	
-	#if SYSTEM_IMG_SOURCE_GLOBAL_BLOCKING==1
-	spinlock_release(&spinlock_system_img_source_global);
-	#endif
-	#if DIMX_GLOBAL_BLOCKING==1
-	spinlock_release(&spinlock_dimX_global);
-	#endif
-	#if DIMY_GLOBAL_BLOCKING==1
-	spinlock_release(&spinlock_dimY_global);
-	#endif
 }

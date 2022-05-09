@@ -1,6 +1,7 @@
 package template.rtos
 
 import fileAnnotation.FileType
+
 import fileAnnotation.FileTypeAnno
 import generator.Generator
 import template.templateInterface.InitTemplate
