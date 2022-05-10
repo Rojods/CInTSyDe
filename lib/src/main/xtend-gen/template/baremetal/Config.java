@@ -12,9 +12,18 @@ public class Config implements InitTemplate {
       + "\nno viable alternative at input \'Â\'"
       + "\nno viable alternative at input \'Â\'"
       + "\nno viable alternative at input \'»\\r\\n\\t\\t\\t#endif\\t\\t\\r\\n\\t\\t\'\'\'\'"
+      + "\nThe method or field SDFChannel is undefined"
       + "\nThe method or field Â is undefined"
       + "\nThe method or field Â is undefined"
-      + "\nThe method or field ENDFORÂ is undefined");
+      + "\nThe method or field ENDFORÂ is undefined"
+      + "\nThe field Generator.model refers to the missing type ForSyDeSystemGraph"
+      + "\nvertexSet cannot be resolved"
+      + "\nstream cannot be resolved"
+      + "\nfilter cannot be resolved"
+      + "\nconforms cannot be resolved"
+      + "\ncollect cannot be resolved"
+      + "\ngetIdentifier cannot be resolved"
+      + "\ntoUpperCase cannot be resolved");
   }
   
   public String getFileName() {

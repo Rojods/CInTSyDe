@@ -14,7 +14,10 @@ public class ConfigRTOSInc implements InitTemplate {
       + "\nno viable alternative at input \'»\\r\\n\\t\\t\\t#endif\\t\\t\\r\\n\\t\\t\'\'\'\'"
       + "\nThe method or field Â is undefined"
       + "\nThe method or field Â is undefined"
-      + "\nThe method or field ENDFORÂ is undefined");
+      + "\nThe method or field ENDFORÂ is undefined"
+      + "\nThe field Generator.sdfcombSet refers to the missing type Vertex"
+      + "\ngetIdentifier cannot be resolved"
+      + "\ntoUpperCase cannot be resolved");
   }
   
   public String getFileName() {

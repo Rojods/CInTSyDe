@@ -11,7 +11,7 @@ import java.util.List;
  * point for component-based generation. It runs on top of a base model
  * of type BaseT.
  */
-public interface ProjectComponent<BaseT> extends Component<BaseT> {
+public interface ProjectComponent<BaseT, ContextT> extends Component<BaseT, ContextT> {
 
     boolean canGenerate();
 

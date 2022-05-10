@@ -19,10 +19,17 @@ public class Channel implements InitTemplate {
       + "\nThe method or field sdfnameÂ is undefined"
       + "\nThe method or field sdfnameÂ is undefined"
       + "\nThe method or field sdfnameÂ is undefined"
+      + "\nThe method getBufferSize(Vertex) is undefined for the type Class<Query>"
       + "\nThe method or field Â is undefined"
       + "\nThe method or field sdfnameÂ is undefined"
+      + "\nThe method findSDFChannelDataType(ForSyDeSystemGraph, Object) is undefined for the type Class<Query>"
       + "\nThe method or field Â is undefined"
-      + "\nThe method or field ENDFORÂ is undefined");
+      + "\nThe method or field ENDFORÂ is undefined"
+      + "\nThe field Generator.model refers to the missing type ForSyDeSystemGraph"
+      + "\nThe field Generator.sdfchannelSet refers to the missing type Vertex"
+      + "\ngetIdentifier cannot be resolved"
+      + "\nqueryVertex cannot be resolved"
+      + "\nget cannot be resolved");
   }
   
   public String getFileName() {

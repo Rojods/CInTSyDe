@@ -16,6 +16,7 @@ public class ExternalDataBlockSrc implements InitTemplate {
       + "\nno viable alternative at input \'getFileName\'"
       + "\nno viable alternative at input \'{\'"
       + "\nno viable alternative at input \'}\'"
+      + "\nThe method findAllExternalDataBlocks(ForSyDeSystemGraph) is undefined for the type Class<Query>"
       + "\nThe method or field externDataBlocksÂ is undefined"
       + "\nThe method or field Â is undefined"
       + "\nThe method or field ENDFORÂ is undefined"
@@ -24,6 +25,7 @@ public class ExternalDataBlockSrc implements InitTemplate {
       + "\nThe method or field ENDFORÂ is undefined"
       + "\nThe method or field override is undefined"
       + "\nDuplicate local variable data"
+      + "\nThe field Generator.model refers to the missing type ForSyDeSystemGraph"
       + "\nUnreachable expression."
       + "\ngetIdentifier cannot be resolved"
       + "\ngetIdentifier cannot be resolved");

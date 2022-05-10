@@ -17,7 +17,9 @@ public class SoftTimerTemplateSrc implements InitTemplate {
       + "\nThe method or field nameÂ is undefined"
       + "\nThe method or field nameÂ is undefined"
       + "\nThe method or field nameÂ is undefined"
-      + "\nThe method or field ENDFORÂ is undefined");
+      + "\nThe method or field ENDFORÂ is undefined"
+      + "\nThe field Generator.sdfcombSet refers to the missing type Vertex"
+      + "\ngetIdentifier cannot be resolved");
   }
   
   public String getFileName() {

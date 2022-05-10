@@ -15,7 +15,10 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
       + "\nno viable alternative at input \'Â\'"
       + "\nmismatched input \'».h\"\\r\\n\\t\\t\\t\\r\\n\\t\\t\\tvoid fire_subsystem_Â«\' expecting \'}\'"
       + "\nThe method or field Â is undefined"
-      + "\nThis expression is not allowed in this context, since it doesn\'t cause any side effects.");
+      + "\nThe field Schedule.tile refers to the missing type Vertex"
+      + "\nThis expression is not allowed in this context, since it doesn\'t cause any side effects."
+      + "\nThe field Schedule.tile refers to the missing type Vertex"
+      + "\ngetIdentifier cannot be resolved");
   }
   
   private /* schedule.slots */Object SEPARATOR;

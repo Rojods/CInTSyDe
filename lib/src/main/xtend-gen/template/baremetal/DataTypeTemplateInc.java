@@ -22,9 +22,22 @@ public class DataTypeTemplateInc implements InitTemplate {
     throw new Error("Unresolved compilation problems:"
       + "\nno viable alternative at input \'Â\'"
       + "\nmismatched input \'»\\r\\n\\t\\t\\t\\r\\n\\t\\t\\t/*\\r\\n\\t\\t\\t==============================================================\\r\\n\\t\\t\\t\\t\\tTYPING_DATATYPES_FLOAT\\r\\n\\t\\t\\t==============================================================\\r\\n\\t\\t\\t*/\\r\\n\\t\\t\\tÂ«\' expecting \'}\'"
+      + "\nThe method or field VertexTrait is undefined"
+      + "\nThe method or field VertexTrait is undefined"
       + "\nThe method doubleTypeDef(ForSyDeSystemGraph) is undefined"
+      + "\nThe field Generator.model refers to the missing type ForSyDeSystemGraph"
       + "\nThis expression is not allowed in this context, since it doesn\'t cause any side effects."
-      + "\nThe field DataTypeTemplateInc.Â refers to the missing type Â«");
+      + "\nThe field DataTypeTemplateInc.Â refers to the missing type Â«"
+      + "\nvertexSet cannot be resolved"
+      + "\nstream cannot be resolved"
+      + "\nfilter cannot be resolved"
+      + "\nhasTrait cannot be resolved"
+      + "\nMOC_SDF_SDFCHANNEL cannot be resolved"
+      + "\n! cannot be resolved"
+      + "\n&& cannot be resolved"
+      + "\nhasTrait cannot be resolved"
+      + "\nTYPING_TYPEDDATABLOCK cannot be resolved"
+      + "\ncollect cannot be resolved");
   }
   
   private /* Â« */Object Â;

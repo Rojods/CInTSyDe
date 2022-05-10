@@ -11,9 +11,11 @@ public class ExternalDataBlockInc implements InitTemplate {
     throw new Error("Unresolved compilation problems:"
       + "\nno viable alternative at input \'Â\'"
       + "\nno viable alternative at input \'»\\t\\t\\r\\n\\r\\n\\t\\t#endif \\r\\n\\t\\t\\r\\n\\t\\t\'\'\'\'"
+      + "\nThe method findAllExternalDataBlocks(ForSyDeSystemGraph) is undefined for the type Class<Query>"
       + "\nThe method or field externDataBlocksÂ is undefined"
       + "\nThe method or field Â is undefined"
       + "\nThe method or field ENDFORÂ is undefined"
+      + "\nThe field Generator.model refers to the missing type ForSyDeSystemGraph"
       + "\ngetIdentifier cannot be resolved"
       + "\ntoUpperCase cannot be resolved");
   }
