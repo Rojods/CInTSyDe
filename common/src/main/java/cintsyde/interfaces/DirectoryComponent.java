@@ -7,11 +7,15 @@ import java.util.List;
 
 public interface DirectoryComponent<BaseT, ContexT> extends Component<BaseT, ContexT> {
 
-    Path getComponentPath();
+    Path getSourcePath();
 
-    void setComponentPath(Path path);
+    void setSourcePath(Path path);
 
-    default void generate(Path targetPath) throws IOException {
+    Path getTargetPath();
+
+    void setTargetPath(Path path);
+
+    default void generateComponent() throws IOException {
 
     }
 

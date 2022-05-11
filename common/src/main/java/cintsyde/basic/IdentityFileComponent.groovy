@@ -8,7 +8,8 @@ import java.util.function.Function
 
 class IdentityFileComponent<BaseT, ContextT> implements FileComponent<BaseT, ContextT> {
 
-    private ContextT context;
+    ContextT context
+    BaseT baseModel
     private Path templatePath;
     private Path componentPath;
 
@@ -20,16 +21,6 @@ class IdentityFileComponent<BaseT, ContextT> implements FileComponent<BaseT, Con
     @Override
     void setContext(ContextT context) {
         this.context = context
-    }
-
-    @Override
-    void setQuery(Function<BaseT, Void> query) {
-
-    }
-
-    @Override
-    Function<BaseT, Void> getQuery() {
-        return { b -> };
     }
 
     @Override

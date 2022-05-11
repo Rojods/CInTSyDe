@@ -14,11 +14,11 @@ public interface Component<BaseT, ContextT> {
 
     ContextT getContext();
 
+    BaseT getBaseModel();
+
+    void setBaseModel(BaseT baseModel);
+
     void setContext(ContextT context);
-
-    void setQuery(Function<BaseT, Void> query);
-
-    Function<BaseT, Void> getQuery();
 
     boolean componentIsEqual(Component<BaseT, ?> other);
 

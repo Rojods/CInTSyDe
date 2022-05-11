@@ -1,27 +1,27 @@
 package cintsyde.basic
 
-import cintsyde.interfaces.Component
-import cintsyde.interfaces.FileComponent
+import cintsyde.interfaces.InlineComponent
 
 import java.nio.file.Path
 import java.util.function.Function
 
-class LocalFileComponent<BaseT, ContextT> implements FileComponent<BaseT, ContextT> {
+class LocalInlineComponent<BaseT, ContextT> implements InlineComponent<BaseT, ContextT> {
 
     ContextT context
     BaseT baseModel
-    Path templatePath
+    String inlineCode = ""
+    String identifier = "unknown"
     Path componentPath
     Map<String, Object> dynamicContext = new HashMap<>()
 
     @Override
-    Path getTemplatePath() {
-        return templatePath
+    String getComponentIdentifier() {
+        return identifier
     }
 
     @Override
-    void setTemplatePath(Path path) {
-        templatePath = path
+    String getComponentTemplate() {
+        return inlineCode
     }
 
     @Override
@@ -41,4 +41,5 @@ class LocalFileComponent<BaseT, ContextT> implements FileComponent<BaseT, Contex
     def propertyMissing(String name, def arg) {
         dynamicContext[name] = arg
     }
+
 }

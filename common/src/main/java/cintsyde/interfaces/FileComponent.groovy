@@ -17,14 +17,8 @@ public interface FileComponent<BaseT, ContextT> extends Component<BaseT, Context
 
     void setComponentPath(Path path);
 
-    default void generateComponent(BaseT baseModel, ContextT context) throws IOException {
-        setContext(context);
-        generateComponent(baseModel);
-    }
-
-    default void generateComponent(BaseT baseModel) throws IOException {
+    default void generateComponent() throws IOException {
         final Mustache mustache = mustacheFactory.compile(Files.newBufferedReader(getTemplatePath()), getTemplatePath().toString());
-        getQuery().apply(baseModel);
         mustache.execute(Files.newBufferedWriter(getComponentPath(), StandardOpenOption.CREATE_NEW, StandardOpenOption.TRUNCATE_EXISTING), getContext());
     }
 
