@@ -6,9 +6,8 @@ import cintsyde.interfaces.FileComponent
 import java.nio.file.Path
 import java.util.function.Function
 
-class LocalFileComponent<BaseT, ContextT> implements FileComponent<BaseT, ContextT> {
+class LocalFileComponent<BaseT> implements FileComponent<BaseT> {
 
-    ContextT context
     BaseT baseModel
     Path templatePath
     Path componentPath
@@ -40,5 +39,15 @@ class LocalFileComponent<BaseT, ContextT> implements FileComponent<BaseT, Contex
 
     def propertyMissing(String name, def arg) {
         dynamicContext[name] = arg
+    }
+
+    @Override
+    Map<String, Object> getContextAsMap() {
+        return dynamicContext
+    }
+
+    @Override
+    void setContextByMap(Map<String, Object> context) {
+        dynamicContext = context
     }
 }

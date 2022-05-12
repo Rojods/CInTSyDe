@@ -6,10 +6,10 @@ import groovy.lang.GroovyShell;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public interface DirectoryComponent<BaseT, ContexT> extends Component<BaseT, ContexT> {
+public interface DirectoryComponent<BaseT> extends Component<BaseT> {
 
     Path getSourcePath();
 
@@ -19,16 +19,11 @@ public interface DirectoryComponent<BaseT, ContexT> extends Component<BaseT, Con
 
     void setTargetPath(Path path);
 
-    default void generateComponent() throws IOException {
-        final Optional<Path> dirFile = Files.list(getSourcePath())
-                .filter(p -> p.getFileName().toString().equals("cintsyde.groovy"))
-                .findFirst();
-        final Binding binding = new Binding();
-        final GroovyShell groovyShell = new GroovyShell(binding);
-        groovyShell.setVariable("model", getBaseModel());
-        if (dirFile.isPresent())
-            groovyShell.evaluate(Files.newBufferedReader(dirFile.get()));
+    void generateComponent() throws IOException;
 
+    default boolean componentIsEqual(Component<BaseT> other) {
+        return other instanceof DirectoryComponent<Object> && ((DirectoryComponent<Object>) other).getSourcePath() == getSourcePath()
+                && other.getBaseModel().equals(getBaseModel());
     }
 
     static boolean isDirectoryComponent(Path path) throws IOException {

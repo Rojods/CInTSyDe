@@ -5,9 +5,8 @@ import cintsyde.interfaces.InlineComponent
 import java.nio.file.Path
 import java.util.function.Function
 
-class LocalInlineComponent<BaseT, ContextT> implements InlineComponent<BaseT, ContextT> {
+class LocalInlineComponent<BaseT> implements InlineComponent<BaseT> {
 
-    ContextT context
     BaseT baseModel
     String inlineCode = ""
     String identifier = "unknown"
@@ -42,4 +41,13 @@ class LocalInlineComponent<BaseT, ContextT> implements InlineComponent<BaseT, Co
         dynamicContext[name] = arg
     }
 
+    @Override
+    Map<String, Object> getContextAsMap() {
+        return dynamicContext
+    }
+
+    @Override
+    void setContextByMap(Map<String, Object> context) {
+        dynamicContext = context
+    }
 }

@@ -6,26 +6,25 @@ import cintsyde.interfaces.FileComponent
 import java.nio.file.Path
 import java.util.function.Function
 
-class IdentityFileComponent<BaseT, ContextT> implements FileComponent<BaseT, ContextT> {
+class IdentityFileComponent<BaseT> implements FileComponent<BaseT> {
 
-    ContextT context
     BaseT baseModel
     private Path templatePath;
     private Path componentPath;
 
     @Override
-    ContextT getContext() {
-        return context
+    Map<String, Object> getContextAsMap() {
+        return [:]
     }
 
     @Override
-    void setContext(ContextT context) {
-        this.context = context
+    void setContextByMap(Map<String, Object> context) {
+
     }
 
     @Override
-    boolean componentIsEqual(Component<BaseT, ?> other) {
-        return other instanceof FileComponent<BaseT, ?> ? other.templatePath == templatePath : false
+    boolean componentIsEqual(Component<BaseT> other) {
+        return other instanceof FileComponent<BaseT> ? other.templatePath == templatePath : false
     }
 
     @Override
@@ -50,6 +49,6 @@ class IdentityFileComponent<BaseT, ContextT> implements FileComponent<BaseT, Con
 
     @Override
     boolean equals(Object obj) {
-        return obj instanceof Component<BaseT, ?> ? componentIsEqual(obj) : false
+        return obj instanceof Component<BaseT> ? componentIsEqual(obj) : false
     }
 }
