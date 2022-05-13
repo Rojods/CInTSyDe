@@ -10,5 +10,5 @@
 rootProject.name = 'CInTSyDe'
 include('lib')
 include('common')
-include 'forsyde-io-components'
+include 'forsyde-io-'
 

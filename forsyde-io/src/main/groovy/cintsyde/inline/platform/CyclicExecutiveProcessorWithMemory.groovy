@@ -1,20 +1,26 @@
-package platform;
+package cintsyde.inline.platform;
 
 import cintsyde.interfaces.Component;
+import cintsyde.interfaces.InlineComponent;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.typed.viewers.platform.GenericMemoryModule;
 import forsyde.io.java.typed.viewers.platform.GenericProcessingModule;
-import forsyde.io.java.typed.viewers.platform.runtime.CyclicExecutiveScheduler;
-import interfaces.ForSyDeIOComponent;
+import forsyde.io.java.typed.viewers.platform.runtime.CyclicExecutiveScheduler
 
+import java.nio.file.Path;
 import java.util.List;
 
-public class CyclicExecutiveProcessorWithMemory implements ForSyDeIOComponent  {
+public class CyclicExecutiveProcessorWithMemory implements InlineComponent<ForSyDeSystemGraph> {
 
+    String componentIdentifier
+    Path targetPath
+    ForSyDeSystemGraph baseModel
     CyclicExecutiveScheduler scheduler;
     GenericProcessingModule processor;
     GenericMemoryModule mainMemory;
     List<GenericMemoryModule> auxiliaryMemories;
+
+    String componentTemplate = ""
 
     public CyclicExecutiveProcessorWithMemory(CyclicExecutiveScheduler scheduler, GenericProcessingModule processor) {
         this.scheduler = scheduler;
@@ -22,16 +28,12 @@ public class CyclicExecutiveProcessorWithMemory implements ForSyDeIOComponent  {
     }
 
     @Override
-    public boolean componentIsEqual(Component<ForSyDeSystemGraph> other) {
-        if (other instanceof CyclicExecutiveProcessorWithMemory) {
-            return false;
-        } else {
-            return false;
-        }
+    Map<String, Object> getContextAsMap() {
+        return null
     }
 
     @Override
-    public void expand(ForSyDeSystemGraph baseModel) {
+    void setContextByMap(Map<String, Object> context) {
 
     }
 }

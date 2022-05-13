@@ -12,18 +12,18 @@ interface InlineComponent<BaseT> extends Component<BaseT> {
 
     String getComponentTemplate();
 
-    Path getComponentPath();
+    Path getTargetPath();
 
-    void setComponentPath(Path path);
+    void setTargetPath(Path path);
 
     default void generateComponent() throws IOException {
         final Mustache mustache = mustacheFactory.compile(new StringReader(getComponentTemplate()), getComponentIdentifier());
-        mustache.execute(Files.newBufferedWriter(getComponentPath(), StandardOpenOption.CREATE_NEW, StandardOpenOption.TRUNCATE_EXISTING), getContextAsMap());
+        mustache.execute(Files.newBufferedWriter(getTargetPath(), StandardOpenOption.CREATE_NEW, StandardOpenOption.TRUNCATE_EXISTING), getContextAsMap());
     }
 
     default boolean componentIsEqual(Component<BaseT> other) {
         return other instanceof InlineComponent<BaseT> ? other.getComponentIdentifier() == getComponentIdentifier() &&
-                other.getComponentPath() == getComponentPath() : false
+                other.getTargetPath() == getTargetPath() : false
     }
 
 }

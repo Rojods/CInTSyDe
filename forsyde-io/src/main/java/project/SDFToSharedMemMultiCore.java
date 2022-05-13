@@ -1,7 +1,6 @@
 package project;
 
 import cintsyde.interfaces.Component;
-import cintsyde.interfaces.ProjectComponent;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import interfaces.ForSyDeIOProjectComponent;
 
