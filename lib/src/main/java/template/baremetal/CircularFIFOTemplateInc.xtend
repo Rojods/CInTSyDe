@@ -20,18 +20,15 @@ class CircularFIFOTemplateInc implements InitTemplate {
 	Set<Vertex> typeVertexSet
 	new() {		
 		val model = Generator.model
-//				println("====================")
-//		model.edgeSet().stream()
-//					.filter([e|e.getSource()=="GrayScaleToGetPx"||e.getTarget()=="GrayScaleToGetPx"])
-//					.forEach([e|println(e)])
-//		
-//		println("====================")
+
 		typeVertexSet=model.vertexSet().stream()
 			.filter([v|SDFChannel.conforms(v)])
 			.map([v|Query.findSDFChannelDataType(model,v)])
 			.map([s|Query.findVertexByName(model,s)])
 			.collect(Collectors.toSet())
-			
+		if(typeVertexSet.contains(null)){
+			typeVertexSet.remove(null)
+		}	
 
 	}
 
@@ -39,6 +36,8 @@ class CircularFIFOTemplateInc implements InitTemplate {
 		'''
 			#ifndef CIRCULAR_FIFO_LIB_H_
 			#define CIRCULAR_FIFO_LIB_H_
+			#include "config.h"
+			#if SINGLECORE==1
 			/*
 			************************************************************
 			This header file defines all the prototype of token types in
@@ -48,10 +47,14 @@ class CircularFIFOTemplateInc implements InitTemplate {
 			
 			
 			#include "datatype_definition.h"
-			#include "spinlock.h"			
+			#include "spinlock.h"	
+			«IF typeVertexSet.size()!=0»		
 			«FOR v : typeVertexSet SEPARATOR "" AFTER ""»
 			«foo(v)»
 			«ENDFOR»
+			«ENDIF»
+			#endif
+			
 			#endif
 		'''
 	}

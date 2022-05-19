@@ -50,9 +50,25 @@ public class test2 {
       a3.addTraits(VertexTrait.MOC_SDF_SDFCHANNEL, VertexTrait.DECISION_SDF_BOUNDEDSDFCHANNEL);
       a3.addTraits(VertexTrait.IMPL_TOKENIZABLEDATABLOCK);
       model.addVertex(a3);
+      Vertex type = new Vertex("DoubleType");
+      type.addTraits(VertexTrait.TYPING_DATATYPES_DOUBLE);
+      model.addVertex(type);
+      final Set<String> impl_port1 = Collections.<String>unmodifiableSet(CollectionLiterals.<String>newHashSet("portTypes", "aa"));
+      VertexProperty _create_5 = VertexProperty.create("aa=100;");
+      Pair<String, VertexProperty> _mappedTo_7 = Pair.<String, VertexProperty>of("inlinedCode", _create_5);
+      VertexProperty _create_6 = VertexProperty.create(Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList("aa")));
+      Pair<String, VertexProperty> _mappedTo_8 = Pair.<String, VertexProperty>of("outputPorts", _create_6);
+      final Map<String, VertexProperty> impl_pro1 = Collections.<String, VertexProperty>unmodifiableMap(CollectionLiterals.<String, VertexProperty>newHashMap(_mappedTo_7, _mappedTo_8));
+      Vertex impl = new Vertex("vertex_a_impl", impl_port1, impl_pro1);
+      impl.addTraits(VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexTrait.TYPING_TYPEDOPERATION, 
+        VertexTrait.IMPL_INSTRUMENTEDEXECUTABLE);
+      model.addVertex(impl);
       model.connect(a, a3, "aa", "producer", EdgeTrait.MOC_SDF_SDFDATAEDGE);
-      model.connect(a2, a3, "bb", "consumer", EdgeTrait.MOC_SDF_SDFDATAEDGE);
-      new ForSyDeModelHandler().writeModel(model, "a.fiodl");
+      model.connect(a3, a2, "consumer", "bb", EdgeTrait.MOC_SDF_SDFDATAEDGE);
+      model.connect(impl, type, "aa", EdgeTrait.TYPING_DATATYPES_DATADEFINITION);
+      model.connect(impl, a, "aa", "aa");
+      model.connect(a, impl, "combFunctions");
+      new ForSyDeModelHandler().writeModel(model, "a.forsyde.xmi");
       InputOutput.<ForSyDeSystemGraph>println(model);
       InputOutput.<String>println("end!");
     } catch (Throwable _e) {

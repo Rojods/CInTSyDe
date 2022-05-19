@@ -43,16 +43,34 @@ class test2 {
 		a3.addTraits(VertexTrait.IMPL_TOKENIZABLEDATABLOCK)
 
 		model.addVertex(a3)
-/////////////////////////////////////////////////////////////////////////
-		
-//		var EdgeInfo e = new EdgeInfo("vertex_a","sig","aa","producer")
-//		model.add(e)
 
-		model.connect(a,a3,"aa","producer",EdgeTrait.MOC_SDF_SDFDATAEDGE)
-		model.connect(a2,a3,"bb","consumer",EdgeTrait.MOC_SDF_SDFDATAEDGE)
+////////////////////////////////////////////////////
+		var type = new Vertex("DoubleType")
+		type.addTraits(VertexTrait.TYPING_DATATYPES_DOUBLE)
+		model.addVertex(type)
+////////Implentation/////////////////////////////////////////////////////////////////
+		val impl_port1 = #{"portTypes", "aa"}
+		val impl_pro1 = #{
+			"inlinedCode" -> VertexProperty.create("aa=100;"),
+			"outputPorts" -> VertexProperty.create(#["aa"])
+		}
 
+		var impl = new Vertex("vertex_a_impl", impl_port1, impl_pro1)
+		impl.addTraits(VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexTrait.TYPING_TYPEDOPERATION,
+			VertexTrait.IMPL_INSTRUMENTEDEXECUTABLE)
+		model.addVertex(impl)
+
+//////////////////////////////
+		model.connect(a, a3, "aa", "producer", EdgeTrait.MOC_SDF_SDFDATAEDGE)
+		model.connect(a3, a2, "consumer", "bb", EdgeTrait.MOC_SDF_SDFDATAEDGE)
+		model.connect(impl, type, "aa", EdgeTrait.TYPING_DATATYPES_DATADEFINITION)
+
+		model.connect(impl, a, "aa", "aa")
+
+		model.connect(a, impl, "combFunctions")
+		// ///////////////////////////
 ///////////////////////////////////////////////////////////////////////////
-		(new ForSyDeModelHandler).writeModel(model, "a.fiodl")
+		(new ForSyDeModelHandler).writeModel(model, "a.forsyde.xmi")
 		println(model)
 		println("end!")
 	}

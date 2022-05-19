@@ -62,20 +62,27 @@ class Generator {
 
 	def void createUniprocessorSchedule(){
 		Generator.uniprocessorSchedule = new TreeMap
+		//var Set<Integer> tmp = new HashSet;
 		
 		for(Vertex actor: Generator.sdfcombSet){
 			
-			Generator.uniprocessorSchedule.put(getFiringSlot(actor),actor)
+			var tmp=getFiringSlot(actor)
+			for(var int i =0; i < tmp.size; i =i+1){
+				Generator.uniprocessorSchedule.put(tmp.get(i),actor)
+			}
+			//Generator.uniprocessorSchedule.put(getFiringSlot(actor),actor)
 		}
+
 	}
-	private def int  getFiringSlot(Vertex actor){
+	private def ArrayList<Integer>  getFiringSlot(Vertex actor){
 		var firingSlots=actor.getProperties().get("firingSlots")
 		if(firingSlots!==null){
 			
 			var slot = firingSlots.unwrap() as ArrayList<Integer>
-			return slot.get(0)
+			//return slot.get(0)
+			return slot;
 		}
-		return 10
+		return null;
 	}
 
 }

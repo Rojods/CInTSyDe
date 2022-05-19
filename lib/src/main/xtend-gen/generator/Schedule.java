@@ -78,6 +78,9 @@ public class Schedule {
     }
   }
   
+  /**
+   * find order
+   */
   private Vertex help1(final Trait a) {
     return VertexAcessor.getNamedPort(
       Generator.model, 

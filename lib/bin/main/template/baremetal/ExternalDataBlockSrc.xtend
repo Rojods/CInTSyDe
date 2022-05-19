@@ -7,6 +7,7 @@ import template.templateInterface.InitTemplate
 import utils.Query
 
 @FileTypeAnno(type=FileType.C_SOURCE)
+@Deprecated
 class ExternalDataBlockSrc implements InitTemplate {
 	
 	override create() {

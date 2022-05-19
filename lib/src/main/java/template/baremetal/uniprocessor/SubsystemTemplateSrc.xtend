@@ -20,6 +20,7 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 		var sdfcomb = model.vertexSet().stream().filter([v|SDFComb.conforms(v)]).collect(Collectors.toSet())
 		'''
 			#include "../inc/subsystem.h"
+			#include <stdio.h>
 			«FOR v : sdfcomb»
 				#include "../inc/sdfcomb_«v.getIdentifier()».h"
 			«ENDFOR»

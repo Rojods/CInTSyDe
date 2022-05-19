@@ -75,7 +75,9 @@ class Schedule {
 			channels.remove(null)
 		}
 	}
-
+/**
+ * find order
+ */
 	private def help1(Trait a) {
 		return VertexAcessor.getNamedPort(
 			Generator.model,

@@ -9,17 +9,17 @@ import generator.SubsystemUniprocessorModule
 import template.baremetal.CircularFIFOTemplateInc
 import template.baremetal.CircularFIFOTemplateSrc
 import template.baremetal.Config
-import template.baremetal.DataDefinitionSrc
-import template.baremetal.DataTypeTemplateInc
 import template.baremetal.SDFChannelTemplateSrc
-import template.baremetal.SDFCombTemplateInc
-import template.baremetal.SDFCombTemplateSrc
 import template.baremetal.SpinLockTemplateInc
 import template.baremetal.SpinLockTemplateSrc
 import template.baremetal.uniprocessor.SubsystemTemplateInc
 import template.baremetal.uniprocessor.SubsystemTemplateSrc
 import template.baremetal.uniprocessor.SubsystemInitInc
 import template.baremetal.uniprocessor.SubsystemInitSrc
+import template.baremetal.SDFActorInc
+import template.baremetal.SDFActorSrc
+import template.baremetal.DataTypeInc
+import template.baremetal.DataTypeSrc
 
 /**
  * one core
@@ -40,8 +40,8 @@ class demo1 {
 		gen.add(sdfchannelModule)
 
 		var actorModule = new SDFCombProcessingModule
-		actorModule.add(new SDFCombTemplateSrc)
-		actorModule.add(new SDFCombTemplateInc)
+		actorModule.add(new SDFActorSrc)
+		actorModule.add(new SDFActorInc)
 		gen.add(actorModule)
 
 		var subsystem = new SubsystemUniprocessorModule
@@ -51,8 +51,8 @@ class demo1 {
 		gen.add(subsystem)
 
 		var initModule = new InitProcessingModule
-		initModule.add(new DataTypeTemplateInc)
-		initModule.add(new DataDefinitionSrc)
+		initModule.add(new DataTypeInc)
+		initModule.add(new DataTypeSrc)
 
 		initModule.add(new CircularFIFOTemplateInc)
 		initModule.add(new CircularFIFOTemplateSrc)
@@ -86,8 +86,8 @@ class demo1 {
 		gen.add(sdfchannelModule)
 
 		var actorModule = new SDFCombProcessingModule
-		actorModule.add(new SDFCombTemplateSrc)
-		actorModule.add(new SDFCombTemplateInc)
+		actorModule.add(new SDFActorSrc)
+		actorModule.add(new SDFActorInc)
 		gen.add(actorModule)
 
 		var subsystem = new SubsystemUniprocessorModule
@@ -97,8 +97,8 @@ class demo1 {
 		gen.add(subsystem)
 
 		var initModule = new InitProcessingModule
-		initModule.add(new DataTypeTemplateInc)
-		initModule.add(new DataDefinitionSrc)
+		initModule.add(new DataTypeInc)
+		initModule.add(new DataTypeSrc)
 
 		initModule.add(new CircularFIFOTemplateInc)
 		initModule.add(new CircularFIFOTemplateSrc)

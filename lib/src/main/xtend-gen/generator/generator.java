@@ -94,17 +94,22 @@ public class Generator {
     TreeMap<Integer, Vertex> _treeMap = new TreeMap<Integer, Vertex>();
     Generator.uniprocessorSchedule = _treeMap;
     for (final Vertex actor : Generator.sdfcombSet) {
-      Generator.uniprocessorSchedule.put(Integer.valueOf(this.getFiringSlot(actor)), actor);
+      {
+        ArrayList<Integer> tmp = this.getFiringSlot(actor);
+        for (int i = 0; (i < tmp.size()); i = (i + 1)) {
+          Generator.uniprocessorSchedule.put(tmp.get(i), actor);
+        }
+      }
     }
   }
   
-  private int getFiringSlot(final Vertex actor) {
+  private ArrayList<Integer> getFiringSlot(final Vertex actor) {
     VertexProperty firingSlots = actor.getProperties().get("firingSlots");
     if ((firingSlots != null)) {
       Object _unwrap = firingSlots.unwrap();
       ArrayList<Integer> slot = ((ArrayList<Integer>) _unwrap);
-      return (slot.get(0)).intValue();
+      return slot;
     }
-    return 10;
+    return null;
   }
 }

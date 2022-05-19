@@ -3,18 +3,37 @@ package template.baremetal.uniprocessor;
 import fileAnnotation.FileType;
 import fileAnnotation.FileTypeAnno;
 import generator.Schedule;
+import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.SubsystemTemplate;
 
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class SubsystemTemplateInc implements SubsystemTemplate {
   public String create(final Schedule s) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nno viable alternative at input \'Â\'"
-      + "\nmismatched input \'»_H_\\r\\n\\t\\t\\t#define SUBSYSTEM_Â«\' expecting \'}\'"
-      + "\nThis expression is not allowed in this context, since it doesn\'t cause any side effects."
-      + "\nThe field SubsystemTemplateInc.Â refers to the missing type Â«");
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("#ifndef SUBSYSTEM_");
+    int _hashCode = this.hashCode();
+    _builder.append(_hashCode);
+    _builder.append("_H_");
+    _builder.newLineIfNotEmpty();
+    _builder.append("#define SUBSYSTEM_");
+    int _hashCode_1 = this.hashCode();
+    _builder.append(_hashCode_1);
+    _builder.append("_H_");
+    _builder.newLineIfNotEmpty();
+    _builder.append("/* Includes--------------------*/");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("/* Function Prototype----------*/");
+    _builder.newLine();
+    _builder.append("int fire_subsystem_single_uniprocessor();");
+    _builder.newLine();
+    _builder.append("#endif");
+    _builder.newLine();
+    return _builder.toString();
   }
   
-  private /* Â« */Object Â;
+  public String getFileName() {
+    return "subsystem";
+  }
 }

@@ -18,7 +18,7 @@ import java.util.stream.Collectors
 import template.templateInterface.InitTemplate
 
 @FileTypeAnno(type=FileType.C_INCLUDE)
-class DataTypeTemplateInc implements InitTemplate {
+class DataTypeInc implements InitTemplate {
 
 	Set<String> record = new HashSet
 

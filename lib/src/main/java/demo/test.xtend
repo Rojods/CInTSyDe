@@ -18,7 +18,7 @@ import forsyde.io.java.typed.viewers.values.IntegerValue
  */
 class test {
 	def static void main(String[] args) {
-		val path="a.fiodl"
+		val path="a.forsyde.xmi"
 //		var model = (new ForSyDeModelHandler).loadModel(path)
 		
 		demo1.test(path)

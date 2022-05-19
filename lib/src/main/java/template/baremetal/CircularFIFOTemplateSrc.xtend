@@ -22,10 +22,15 @@ class CircularFIFOTemplateSrc implements InitTemplate {
 			.map([v|Query.findSDFChannelDataType(model,v)])
 			.map([s|Query.findVertexByName(model,s)])
 			.collect(Collectors.toSet())
+		if(typeVertexSet.contains(null)){
+			typeVertexSet.remove(null)
+		}	
 	}
 
 	override create() {
 		'''
+			#include "../inc/config.h"
+			#if SINGLECORE==1
 			/*
 			*******************************************************
 				This file contains the function definition for 
@@ -44,7 +49,7 @@ class CircularFIFOTemplateSrc implements InitTemplate {
 			«FOR typeVertex : typeVertexSet SEPARATOR "" AFTER ""»
 			«produce(typeVertex )»	
 			«ENDFOR»
-		
+			#endif
 		'''
 	}
 

@@ -1,3 +1,5 @@
+#include "../inc/config.h"
+#if SINGLECORE==1
 /*
 *******************************************************
 	This file contains the function definition for 
@@ -169,4 +171,4 @@ int write_blocking_UInt16(circular_fifo_UInt16* channel, UInt16 value,spinlock* 
 	   }				
 }
 	
-		
+#endif

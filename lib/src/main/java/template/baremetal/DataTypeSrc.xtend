@@ -8,7 +8,7 @@ import java.util.stream.Collectors
 import template.templateInterface.InitTemplate
 
 @FileTypeAnno(type=FileType.C_SOURCE)
-class DataDefinitionSrc implements InitTemplate {
+class DataTypeSrc implements InitTemplate {
 	
 	override create() {
 		var model=Generator.model
