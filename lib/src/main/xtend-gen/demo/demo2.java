@@ -9,20 +9,18 @@ import generator.SDFCombProcessingModule;
 import generator.SubsystemMultiprocessorModule;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
-import template.baremetal.CircularFIFOTemplateInc;
-import template.baremetal.CircularFIFOTemplateSrc;
-import template.baremetal.Config;
-import template.baremetal.DataTypeInc;
-import template.baremetal.DataTypeSrc;
-import template.baremetal.SDFActorInc;
-import template.baremetal.SDFActorSrc;
-import template.baremetal.SDFChannelTemplateSrc;
-import template.baremetal.SpinLockTemplateInc;
-import template.baremetal.SpinLockTemplateSrc;
-import template.baremetal.multiprocessor.SubsystemInitInc;
-import template.baremetal.multiprocessor.SubsystemInitSrc;
-import template.baremetal.multiprocessor.SubsystemTemplateIncMulti;
-import template.baremetal.multiprocessor.SubsystemTemplateSrcMulti;
+import template.baremetal_multi.CircularFIFOTemplateInc;
+import template.baremetal_multi.CircularFIFOTemplateSrc;
+import template.baremetal_multi.Config;
+import template.baremetal_multi.DataTypeInc;
+import template.baremetal_multi.DataTypeSrc;
+import template.baremetal_multi.SDFActorInc;
+import template.baremetal_multi.SDFActorSrc;
+import template.baremetal_multi.SDFChannelTemplateSrc;
+import template.baremetal_multi.SpinLockTemplateInc;
+import template.baremetal_multi.SpinLockTemplateSrc;
+import template.baremetal_multi.SubsystemTemplateIncMulti;
+import template.baremetal_multi.SubsystemTemplateSrcMulti;
 
 /**
  * multi cores
@@ -69,10 +67,6 @@ public class demo2 {
       initModule.add(_spinLockTemplateSrc);
       Config _config = new Config();
       initModule.add(_config);
-      SubsystemInitInc _subsystemInitInc = new SubsystemInitInc();
-      initModule.add(_subsystemInitInc);
-      SubsystemInitSrc _subsystemInitSrc = new SubsystemInitSrc();
-      initModule.add(_subsystemInitSrc);
       gen.add(initModule);
       gen.create();
       InputOutput.<String>println("end!");

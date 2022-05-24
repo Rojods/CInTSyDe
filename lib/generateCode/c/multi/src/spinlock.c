@@ -1,5 +1,5 @@
 #include "../inc/spinlock.h"
-#if SINGLECORE==1
+
 	#if defined(WINDOWS)
 	#define ATOMIC_TEST_AND_SET   _InterlockedExchange
 	#endif
@@ -16,4 +16,4 @@
 	void spinlock_release(spinlock* lock){
 		ATOMIC_TEST_AND_SET(&lock->flag,0);
 	}	
-#endif
+

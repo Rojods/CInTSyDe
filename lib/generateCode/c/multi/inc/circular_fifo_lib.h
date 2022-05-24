@@ -1,21 +1,23 @@
-#ifndef CIRCULAR_FIFO_LIB_H_
-#define CIRCULAR_FIFO_LIB_H_
-#include "config.h"
-#if SINGLECORE==1
-/*
-************************************************************
-This header file defines all the prototype of token types in
-SDFChannels
-************************************************************
-*/
+	#ifndef CIRCULAR_FIFO_LIB_H_
+	#define CIRCULAR_FIFO_LIB_H_
+	#include "config.h"
 
-
-#include "datatype_definition.h"
-#include "spinlock.h"	
+	/*
+	************************************************************
+	This header file defines all the prototype of token types in
+	SDFChannels
+	************************************************************
+	*/
+	
+	
+	#include "datatype_definition.h"
+	
+	#include "spinlock.h"	
+	
 	/*
 	=============================================================
-				If Token type is DoubleType 
-	=============================================================
+			If Token type is DoubleType 
+	==============================================================
 	*/
 	typedef struct 
 	{
@@ -33,8 +35,8 @@ SDFChannels
 				
 	/*
 	=============================================================
-				If Token type is UInt16 
-	=============================================================
+			If Token type is UInt16 
+	==============================================================
 	*/
 	typedef struct 
 	{
@@ -50,6 +52,6 @@ SDFChannels
 	int write_non_blocking_UInt16(circular_fifo_UInt16* dst,UInt16 src );
 	int write_blocking_UInt16(circular_fifo_UInt16* dst,UInt16 src,spinlock *lock);	
 				
-#endif
 
-#endif
+	
+	#endif

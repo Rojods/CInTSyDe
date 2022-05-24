@@ -1,93 +1,63 @@
-	/* Includes-------------------------- */
-	#include "../inc/config.h"
-	#include "../inc/datatype_definition.h"
+/* Includes */
+#include "../inc/config.h"
+#include "../inc/datatype_definition.h"
+#include "../inc/circular_fifo_lib.h"
+#include "../inc/sdfcomb_GrayScale.h"
+
+/*
+========================================
+Declare Extern Channal Variables
+========================================
+*/
+/* Input FIFO */
+
+extern ref_fifo fifo_GrayScaleX;
+extern spinlock spinlock_GrayScaleX;	
+
+extern ref_fifo fifo_GrayScaleY;
+extern spinlock spinlock_GrayScaleY;	
+/* Output FIFO */
+extern ref_fifo fifo_GrayScaleToAbs;
+extern spinlock spinlock_GrayScaleToAbs;
+extern ref_fifo fifo_GrayScaleToGetPx;
+extern spinlock spinlock_GrayScaleToGetPx;
+/*
+========================================
+	Declare Extern Global Variables
+========================================
+*/			
+extern ArrayXOfArrayXOfDoubleType system_img_source_global;
+extern UInt16 dimX_global;
+extern UInt16 dimY_global;
 	
-	#if SINGLECORE==1
-	#include "../inc/circular_fifo_lib.h"
-	#endif
-	
-	#if MULTICORE==1
-	#include <cheap.h>
-	#endif
-	#include "../inc/sdfcomb_GrayScale.h"
-	
-	/*
-	========================================
-	Declare Extern Channal Variables
-	========================================
-	*/
-	/* Input FIFO */
-	#if SINGLECORE==1
-		extern circular_fifo_UInt16 fifo_GrayScaleX;
-		extern spinlock spinlock_GrayScaleX;
-	#endif
-	#if MULTICORE==1
-		
-	#endif
-	
-	#if SINGLECORE==1
-		extern circular_fifo_UInt16 fifo_GrayScaleY;
-		extern spinlock spinlock_GrayScaleY;
-	#endif
-	#if MULTICORE==1
-		
-	#endif
-	
-	/* Output FIFO */
-	#if SINGLECORE==1
-		extern circular_fifo_UInt16 fifo_GrayScaleToAbs;
-		extern spinlock spinlock_GrayScaleToAbs;
-	#endif
-	#if SINGLECORE==1
-		extern circular_fifo_DoubleType fifo_GrayScaleToGetPx;
-		extern spinlock spinlock_GrayScaleToGetPx;
-	#endif
-	/*
-	========================================
-		Declare Extern Global Variables
-	========================================
-	*/			
-	extern ArrayXOfArrayXOfDoubleType system_img_source_global;
-	extern UInt16 dimX_global;
-	extern UInt16 dimY_global;
-	
-	/*
-	========================================
-		Actor Function
-	========================================
-	*/			
-void actor_GrayScale(){
-				
+/*
+========================================
+	Actor Function
+========================================
+*/	
 /*  initialize memory*/
-UInt16 offsetX; 
-Array2OfUInt16 dimsOut; 
-UInt16 offsetY; 
-Array6OfDoubleType gray; 
-ArrayXOfArrayXOfDoubleType system_img_source_address = system_img_source_global; 
-UInt16 dimY = dimY_global; 
-UInt16 dimX = dimX_global; 
-	
+static	UInt16 offsetX; 
+static	Array2OfUInt16 dimsOut; 
+static	UInt16 offsetY; 
+static	Array6OfDoubleType gray; 
+void actor_GrayScale(){
+
+	ArrayXOfArrayXOfDoubleType system_img_source_address = system_img_source_global; 
+	UInt16 dimY = dimY_global; 
+	UInt16 dimX = dimX_global; 
 	/* Read From Input Port  */
 	int ret=0;
-	#if GRAYSCALEX_BLOCKING==0
-	ret=read_non_blocking_UInt16(&fifo_GrayScaleX,&offsetX);
-	if(ret==-1){
-		printf("fifo_GrayScaleX read error\n");
+	{
+		void* tmp_addr;
+		read_non_blocking(&fifo_GrayScaleX,&tmp_addr);
+		offsetX= *((UInt16 *)tmp_addr);
 	}
 	
-	#else
-	read_blocking_UInt16(&fifo_GrayScaleX,&offsetX,&spinlock_GrayScaleX);
-	#endif
-	
-	#if GRAYSCALEY_BLOCKING==0
-	ret=read_non_blocking_UInt16(&fifo_GrayScaleY,&offsetY);
-	if(ret==-1){
-		printf("fifo_GrayScaleY read error\n");
+	{
+		void* tmp_addr;
+		read_non_blocking(&fifo_GrayScaleY,&tmp_addr);
+		offsetY= *((UInt16 *)tmp_addr);
 	}
-	
-	#else
-	read_blocking_UInt16(&fifo_GrayScaleY,&offsetY,&spinlock_GrayScaleY);
-	#endif
 	
 
 	
@@ -111,32 +81,18 @@ UInt16 dimX = dimX_global;
 	
 	/* Write To Output Ports */
 	for(int i=0;i<6;++i){
-		#if GRAYSCALETOGETPX_BLOCKING==0
-		write_non_blocking_DoubleType(&fifo_GrayScaleToGetPx,gray[i]);
-		#else
-		write_blocking_DoubleType(&fifo_GrayScaleToGetPx,gray[i],&spinlock_GrayScaleToGetPx);
-		#endif
+		write_non_blocking(&fifo_GrayScaleToGetPx,(void*)&gray[i]);		
+								
 	}
 	
-	#if GRAYSCALEX_BLOCKING==0
-	write_non_blocking_UInt16(&fifo_GrayScaleX,offsetX);
-	#else
-	write_blocking_UInt16(&fifo_GrayScaleX,offsetX,&spinlock_GrayScaleX);
-	#endif
+	write_non_blocking(&fifo_GrayScaleX,(void*)&offsetX);
 							
-	#if GRAYSCALEY_BLOCKING==0
-	write_non_blocking_UInt16(&fifo_GrayScaleY,offsetY);
-	#else
-	write_blocking_UInt16(&fifo_GrayScaleY,offsetY,&spinlock_GrayScaleY);
-	#endif
+	write_non_blocking(&fifo_GrayScaleY,(void*)&offsetY);
 							
 	for(int i=0;i<2;++i){
-		#if GRAYSCALETOABS_BLOCKING==0
-		write_non_blocking_UInt16(&fifo_GrayScaleToAbs,dimsOut[i]);
-		#else
-		write_blocking_UInt16(&fifo_GrayScaleToAbs,dimsOut[i],&spinlock_GrayScaleToAbs);
-		#endif
+		write_non_blocking(&fifo_GrayScaleToAbs,(void*)&dimsOut[i]);		
+								
 	}
 	
 
-	}
+}

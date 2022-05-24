@@ -21,7 +21,9 @@ public class Schedule {
   
   public List<Vertex> slots = new ArrayList<Vertex>();
   
-  public Set<Vertex> channels = new HashSet<Vertex>();
+  public Set<Vertex> outgoingchannels = new HashSet<Vertex>();
+  
+  public Set<Vertex> incomingchannels = new HashSet<Vertex>();
   
   public Schedule() {
   }
@@ -62,19 +64,38 @@ public class Schedule {
         final Consumer<String> _function = new Consumer<String>() {
           public void accept(final String p) {
             if (((!Objects.equal(p, "Combinator")) && (!Objects.equal(p, "CombFunction")))) {
-              Schedule.this.channels.add(
-                VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.MOC_SDF_SDFCHANNEL).orElse(null));
-              Schedule.this.channels.add(
-                VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.IMPL_TOKENIZABLEDATABLOCK).orElse(null));
+              Schedule.this.outgoingchannels.add(
+                VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.MOC_SDF_SDFCHANNEL, VertexAcessor.VertexPortDirection.OUTGOING).orElse(null));
             }
           }
         };
         actor.getPorts().stream().forEach(_function);
       }
     }
-    boolean _contains = this.channels.contains(null);
+    boolean _contains = this.outgoingchannels.contains(null);
     if (_contains) {
-      this.channels.remove(null);
+      this.outgoingchannels.remove(null);
+    }
+    for (final Vertex actor_1 : this.slots) {
+      if ((actor_1 != null)) {
+        final Consumer<String> _function_1 = new Consumer<String>() {
+          public void accept(final String p) {
+            if (((!Objects.equal(p, "Combinator")) && (!Objects.equal(p, "CombFunction")))) {
+              Vertex channel = VertexAcessor.getNamedPort(Generator.model, actor_1, p, VertexTrait.MOC_SDF_SDFCHANNEL, VertexAcessor.VertexPortDirection.INCOMING).orElse(null);
+              boolean _contains = Schedule.this.outgoingchannels.contains(channel);
+              boolean _not = (!_contains);
+              if (_not) {
+                Schedule.this.incomingchannels.add(channel);
+              }
+            }
+          }
+        };
+        actor_1.getPorts().stream().forEach(_function_1);
+      }
+    }
+    boolean _contains_1 = this.incomingchannels.contains(null);
+    if (_contains_1) {
+      this.incomingchannels.remove(null);
     }
   }
   

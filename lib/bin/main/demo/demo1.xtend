@@ -1,25 +1,13 @@
 package demo
 
+
 import forsyde.io.java.drivers.ForSyDeModelHandler
 import generator.Generator
 import generator.InitProcessingModule
 import generator.SDFChannelProcessingModule
 import generator.SDFCombProcessingModule
 import generator.SubsystemUniprocessorModule
-import template.baremetal.CircularFIFOTemplateInc
-import template.baremetal.CircularFIFOTemplateSrc
-import template.baremetal.Config
-import template.baremetal.SDFChannelTemplateSrc
-import template.baremetal.SpinLockTemplateInc
-import template.baremetal.SpinLockTemplateSrc
-import template.baremetal.uniprocessor.SubsystemTemplateInc
-import template.baremetal.uniprocessor.SubsystemTemplateSrc
-import template.baremetal.uniprocessor.SubsystemInitInc
-import template.baremetal.uniprocessor.SubsystemInitSrc
-import template.baremetal.SDFActorInc
-import template.baremetal.SDFActorSrc
-import template.baremetal.DataTypeInc
-import template.baremetal.DataTypeSrc
+import template.baremetal_single.*
 
 /**
  * one core
@@ -60,8 +48,8 @@ class demo1 {
 		initModule.add(new SpinLockTemplateSrc)
 		initModule.add(new Config)
 		
-		initModule.add(new SubsystemInitInc)
-		initModule.add(new SubsystemInitSrc)
+		//initModule.add(new SubsystemInitInc)
+		//initModule.add(new SubsystemInitSrc)
 		
 		gen.add(initModule)
 

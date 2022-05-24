@@ -10,13 +10,14 @@ import java.util.TreeSet
 import java.util.Set
 import java.util.HashSet
 import generator.Generator
+import forsyde.io.java.core.VertexAcessor.VertexPortDirection
 
 class Schedule {
 	public var Vertex tile
 	public var Vertex order = null
 	public List<Vertex> slots =new ArrayList
-	public Set<Vertex> channels = new HashSet
-
+	public Set<Vertex> outgoingchannels = new HashSet
+	public Set<Vertex> incomingchannels = new HashSet
 	new() {
 		
 	}
@@ -60,20 +61,39 @@ class Schedule {
 			if (actor !== null) {
 				actor.getPorts().stream().forEach([ p |
 					if (p != "Combinator" && p != "CombFunction") {
-						channels.add(
-							VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.MOC_SDF_SDFCHANNEL).
-								orElse(null))
-						channels.add(
-							VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.IMPL_TOKENIZABLEDATABLOCK).
-								orElse(null))
+						outgoingchannels.add(
+							VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.MOC_SDF_SDFCHANNEL,VertexPortDirection.OUTGOING)
+										.orElse(null))
 					}
 				])
 			}
 		}
 		
-		if(channels.contains(null)){
-			channels.remove(null)
+		if(outgoingchannels.contains(null)){
+			outgoingchannels.remove(null)
 		}
+		
+		for (Vertex actor : slots) {
+			if (actor !== null) {
+				actor.getPorts().stream().forEach([ p |
+					if (p != "Combinator" && p != "CombFunction") {
+//						incomingchannels.add(
+//							VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.MOC_SDF_SDFCHANNEL,VertexPortDirection.INCOMING)
+//										.orElse(null))
+										
+						var channel = 	VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.MOC_SDF_SDFCHANNEL,VertexPortDirection.INCOMING)
+										.orElse(null)
+						if(!outgoingchannels.contains(channel)){
+							incomingchannels.add(channel)
+						}
+					}
+				])
+			}
+		}
+		
+		if(incomingchannels.contains(null)){
+			incomingchannels.remove(null)
+		}		
 	}
 /**
  * find order

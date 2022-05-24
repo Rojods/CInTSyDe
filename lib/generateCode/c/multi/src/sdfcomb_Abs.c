@@ -1,14 +1,8 @@
 	/* Includes-------------------------- */
 	#include "../inc/config.h"
 	#include "../inc/datatype_definition.h"
-	
-	#if SINGLECORE==1
 	#include "../inc/circular_fifo_lib.h"
-	#endif
-	
-	#if MULTICORE==1
-	#include <cheap.h>
-	#endif
+	#include <cheap_s.h>
 	#include "../inc/sdfcomb_Abs.h"
 	
 	/*
@@ -17,50 +11,25 @@
 	========================================
 	*/
 	/* Input FIFO */
-	#if SINGLECORE==1
-		extern circular_fifo_UInt16 fifo_GrayScaleToAbs;
-		extern spinlock spinlock_GrayScaleToAbs;
-	#endif
-	#if MULTICORE==1
-		
-	#endif
+	extern volatile cheap const fifo_admin_GrayScaleToAbs;
+	extern volatile UInt16 * const fifo_data_GrayScaleToAbs;	
+					
+	circular_fifo_UInt16 fifo_AbsY;
+	spinlock spinlock_AbsY={.flag=0};
 	
-	#if SINGLECORE==1
-		extern circular_fifo_UInt16 fifo_AbsY;
-		extern spinlock spinlock_AbsY;
-	#endif
-	#if MULTICORE==1
-		
-	#endif
+	circular_fifo_UInt16 fifo_AbsX;
+	spinlock spinlock_AbsX={.flag=0};
 	
-	#if SINGLECORE==1
-		extern circular_fifo_UInt16 fifo_AbsX;
-		extern spinlock spinlock_AbsX;
-	#endif
-	#if MULTICORE==1
-		
-	#endif
-	
-	#if SINGLECORE==1
-		extern circular_fifo_DoubleType fifo_absysig;
-		extern spinlock spinlock_absysig;
-	#endif
-	#if MULTICORE==1
-		
-	#endif
-	
-	#if SINGLECORE==1
-		extern circular_fifo_DoubleType fifo_absxsig;
-		extern spinlock spinlock_absxsig;
-	#endif
-	#if MULTICORE==1
-		
-	#endif
-	
+	extern volatile cheap const fifo_admin_absysig;
+	extern volatile DoubleType * const fifo_data_absysig;	
+					
+	extern volatile cheap const fifo_admin_absxsig;
+	extern volatile DoubleType * const fifo_data_absxsig;	
+					
 	/* Output FIFO */
 	/*
 	========================================
-		Declare Extern Global Variables
+	Declare Extern Global Variables
 	========================================
 	*/			
 	extern ArrayXOfArrayXOfDoubleType system_img_sink_global;
@@ -68,11 +37,11 @@
 	
 	/*
 	========================================
-		Actor Function
+	Actor Function
 	========================================
 	*/			
 void actor_Abs(){
-				
+
 /*  initialize memory*/
 UInt16 offsetX; 
 UInt16 offsetY; 
@@ -82,39 +51,34 @@ DoubleType resy;
 DoubleType resx; 
 	
 	/* Read From Input Port  */
-	int ret=0;
-	#if ABSXSIG_BLOCKING==0
-	ret=read_non_blocking_DoubleType(&fifo_absxsig,&resx);
-	if(ret==-1){
-		printf("fifo_absxsig read error\n");
+				int ret=0;
+	{
+		volatile DoubleType *tmp_ptrs;
+		while ((cheap_claim_tokens (fifo_admin_absxsig, (volatile void **) tmp_ptrs, 1)) < 1)
+	 		cheap_release_all_claimed_tokens (fifo_admin_absxsig);
+	 		 		
+		resx=fifo_ptrs[0];
+		cheap_release_spaces (fifo_admin_absxsig, 1);
 	}
-	
-	#else
-	read_blocking_DoubleType(&fifo_absxsig,&resx,&spinlock_absxsig);
-	#endif
-	
-	#if ABSYSIG_BLOCKING==0
-	ret=read_non_blocking_DoubleType(&fifo_absysig,&resy);
-	if(ret==-1){
-		printf("fifo_absysig read error\n");
+	{
+		volatile DoubleType *tmp_ptrs;
+		while ((cheap_claim_tokens (fifo_admin_absysig, (volatile void **) tmp_ptrs, 1)) < 1)
+	 		cheap_release_all_claimed_tokens (fifo_admin_absysig);
+	 		 		
+		resy=fifo_ptrs[0];
+		cheap_release_spaces (fifo_admin_absysig, 1);
 	}
-	
-	#else
-	read_blocking_DoubleType(&fifo_absysig,&resy,&spinlock_absysig);
-	#endif
-	
-	for(int i=0;i<2;++i){
+	{
+		volatile UInt16 *tmp_ptrs[2];
+		while ((cheap_claim_tokens (fifo_admin_GrayScaleToAbs, (volatile void **) tmp_ptrs, 2)) < 2)
+			 cheap_release_all_claimed_tokens (fifo_admin_GrayScaleToAbs);								
 		
-		#if GRAYSCALETOABS_BLOCKING==0
-		ret=read_non_blocking_UInt16(&fifo_GrayScaleToAbs,&dims[i]);
-		if(ret==-1){
-			printf("fifo_GrayScaleToAbs read error\n");
+		for(int i=0;i<2;++i){
+			dims[i]=tmp_ptrs[i];	
 		}
-		#else
-		read_blocking_UInt16(&fifo_GrayScaleToAbs,&dims[i],&spinlock_GrayScaleToAbs);
-		#endif
+		
+		cheap_release_spaces (fifo_admin_GrayScaleToAbs, 1);
 	}
-	
 	#if ABSX_BLOCKING==0
 	ret=read_non_blocking_UInt16(&fifo_AbsX,&offsetX);
 	if(ret==-1){
@@ -124,7 +88,6 @@ DoubleType resx;
 	#else
 	read_blocking_UInt16(&fifo_AbsX,&offsetX,&spinlock_AbsX);
 	#endif
-	
 	#if ABSY_BLOCKING==0
 	ret=read_non_blocking_UInt16(&fifo_AbsY,&offsetY);
 	if(ret==-1){
@@ -134,34 +97,31 @@ DoubleType resx;
 	#else
 	read_blocking_UInt16(&fifo_AbsY,&offsetY,&spinlock_AbsY);
 	#endif
-	
 
 	
 	/* Inline Code           */
-	/* in combFunction AbsImpl */
-	if(resx<0.0)resx=-resx;
-	if(resy<0.0)resy=-resy;
-	if(offsetX>=dims[0]-2){
-	offsetY+=1;
-	offsetX=0;
-	}
-	if(offsetY>=dims[1]-2){
-	offsetY=0;
-	}
-	system_img_sink_address[offsetX][offsetY]=resx+resy;
+				/* in combFunction AbsImpl */
+				if(resx<0.0)resx=-resx;
+				if(resy<0.0)resy=-resy;
+				if(offsetX>=dims[0]-2){
+				offsetY+=1;
+				offsetX=0;
+				}
+				if(offsetY>=dims[1]-2){
+				offsetY=0;
+				}
+				system_img_sink_address[offsetX][offsetY]=resx+resy;
 	
 	/* Write To Output Ports */
-	#if ABSX_BLOCKING==0
-	write_non_blocking_UInt16(&fifo_AbsX,offsetX);
-	#else
-	write_blocking_UInt16(&fifo_AbsX,offsetX,&spinlock_AbsX);
-	#endif
-							
-	#if ABSY_BLOCKING==0
-	write_non_blocking_UInt16(&fifo_AbsY,offsetY);
-	#else
-	write_blocking_UInt16(&fifo_AbsY,offsetY,&spinlock_AbsY);
-	#endif
-							
+				#if ABSX_BLOCKING==0
+				write_non_blocking_UInt16(&fifo_AbsX,offsetX);
+				#else
+				write_blocking_UInt16(&fifo_AbsX,offsetX,&spinlock_AbsX);
+				#endif
+				#if ABSY_BLOCKING==0
+				write_non_blocking_UInt16(&fifo_AbsY,offsetY);
+				#else
+				write_blocking_UInt16(&fifo_AbsY,offsetY,&spinlock_AbsY);
+				#endif
 
 	}
