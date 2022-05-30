@@ -1,7 +1,5 @@
 package cintsyde.interfaces;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +20,7 @@ public interface DirectoryComponent<BaseT> extends Component<BaseT> {
     void generateComponent() throws IOException;
 
     default boolean componentIsEqual(Component<BaseT> other) {
-        return other instanceof DirectoryComponent<Object> && ((DirectoryComponent<Object>) other).getSourcePath() == getSourcePath()
+        return other instanceof DirectoryComponent && ((DirectoryComponent<BaseT>) other).getSourcePath() == getSourcePath()
                 && other.getBaseModel().equals(getBaseModel());
     }
 

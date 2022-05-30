@@ -8,7 +8,9 @@ import java.nio.file.StandardOpenOption
 
 interface InlineComponent<BaseT> extends Component<BaseT> {
 
-    String getComponentIdentifier();
+    default String getComponentIdentifier() {
+        return getClass().getName();
+    };
 
     String getComponentTemplate();
 
