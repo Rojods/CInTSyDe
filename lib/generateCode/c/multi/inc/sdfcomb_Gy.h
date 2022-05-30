@@ -1,5 +1,4 @@
 #ifndef  GY_H_
-#define GY_H_
-#include "../inc/datatype_definition.h"
+#define GY_H_			
 void actor_Gy();
 #endif

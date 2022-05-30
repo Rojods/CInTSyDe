@@ -1,5 +1,4 @@
 #ifndef  GETPX_H_
-#define GETPX_H_
-#include "../inc/datatype_definition.h"
+#define GETPX_H_			
 void actor_getPx();
 #endif

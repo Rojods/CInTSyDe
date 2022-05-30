@@ -2,24 +2,11 @@ package demo
 
 import forsyde.io.java.drivers.ForSyDeModelHandler
 import generator.Generator
-import generator.InitProcessingModule
 import generator.SDFChannelProcessingModule
+import template.baremetal_multi.*
 import generator.SDFCombProcessingModule
 import generator.SubsystemMultiprocessorModule
-import template.baremetal.CircularFIFOTemplateInc
-import template.baremetal.CircularFIFOTemplateSrc
-import template.baremetal.DataDefinitionSrc
-import template.baremetal.DataTypeTemplateInc
-import template.baremetal.SDFChannelTemplateSrc
-import template.baremetal.SDFCombTemplateInc
-import template.baremetal.SDFCombTemplateSrc
-import template.baremetal.SpinLockTemplateInc
-import template.baremetal.SpinLockTemplateSrc
-import template.baremetal.multiprocessor.SubsystemTemplateIncMulti
-import template.baremetal.multiprocessor.SubsystemTemplateSrcMulti
-import template.baremetal.Config
-import template.baremetal.multiprocessor.SubsystemInitInc
-import template.baremetal.multiprocessor.SubsystemInitSrc
+import generator.InitProcessingModule
 
 /**
  * multi cores
@@ -39,8 +26,8 @@ class demo2 {
 		gen.add(sdfchannelModule)
 
 		var actorModule = new SDFCombProcessingModule
-		actorModule.add(new SDFCombTemplateSrc)
-		actorModule.add(new SDFCombTemplateInc)
+		actorModule.add(new SDFActorSrc)
+		actorModule.add(new SDFActorInc)
 		gen.add(actorModule)
 
 		var subsystem = new SubsystemMultiprocessorModule
@@ -49,15 +36,15 @@ class demo2 {
 		gen.add(subsystem)
 
 		var initModule = new InitProcessingModule
-		initModule.add(new DataTypeTemplateInc)
-		initModule.add(new DataDefinitionSrc)
+		initModule.add(new DataTypeInc)
+		initModule.add(new DataTypeSrc)
 		initModule.add(new CircularFIFOTemplateInc)
 		initModule.add(new CircularFIFOTemplateSrc)
 		initModule.add(new SpinLockTemplateInc)
 		initModule.add(new SpinLockTemplateSrc)
 		initModule.add(new Config)
-		initModule.add(new SubsystemInitInc)
-		initModule.add(new SubsystemInitSrc)
+//		initModule.add(new SubsystemInitInc)
+//		initModule.add(new SubsystemInitSrc)
 		
 		
 		gen.add(initModule)

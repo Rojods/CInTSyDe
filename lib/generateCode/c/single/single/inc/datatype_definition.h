@@ -2,7 +2,7 @@
 #define DATATYPE_DEFINITION_
 
 #include <stdio.h>
-#define TESTING
+
 /*
 ==============================================================
 		TYPING_DATATYPES_DOUBLE
@@ -37,5 +37,5 @@ typedef ArrayXOfDoubleType *ArrayXOfArrayXOfDoubleType;
 typedef DoubleType Array6OfDoubleType[6];
 typedef UInt16 Array2OfUInt16[2];
 
-		
+					
 #endif
