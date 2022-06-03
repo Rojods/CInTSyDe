@@ -5,24 +5,31 @@ import com.github.mustachejava.Mustache
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.StandardOpenOption
+import java.util.stream.Collectors;
 
 public interface FileComponent<BaseT> extends Component<BaseT> {
-    Path getTemplatePath();
 
-    void setTemplatePath(Path path);
+    List<StringComponent<BaseT>> getStringComponents();
 
     Path getTargetPath();
 
     void setTargetPath(Path path);
 
+    default String getComponentIdentifier() {
+        return getClass().getName();
+    };
+
     default void generateComponent() throws IOException {
-        final Mustache mustache = mustacheFactory.compile(Files.newBufferedReader(getTemplatePath()), getTemplatePath().toString());
-        mustache.execute(Files.newBufferedWriter(getTargetPath(), StandardOpenOption.CREATE_NEW, StandardOpenOption.TRUNCATE_EXISTING), getContextAsMap());
+        Files.writeString(
+                getTargetPath(),
+                getStringComponents().stream().map(c -> c.generateComponent()).collect(Collectors.joining("")),
+                StandardOpenOption.CREATE_NEW, StandardOpenOption.TRUNCATE_EXISTING
+        )
     }
 
     default boolean componentIsEqual(Component<BaseT> other) {
-        return other instanceof FileComponent<BaseT> ? other.getTemplatePath() == getTemplatePath() &&
+        return other instanceof FileComponent<BaseT> ? other.getContextAsMap() == getContextAsMap() &&
                 other.getTargetPath() == getTargetPath() : false
     }
 }

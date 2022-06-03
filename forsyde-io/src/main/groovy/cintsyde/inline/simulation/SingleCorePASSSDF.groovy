@@ -1,13 +1,12 @@
 package cintsyde.inline.simulation
 
+
 import cintsyde.interfaces.DirectoryComponent
-import cintsyde.interfaces.InlineComponent
-import cintsyde.interfaces.InlineDirectoryComponent
 import forsyde.io.java.core.ForSyDeSystemGraph
 
 import java.nio.file.Path
 
-class SingleCorePASSSDF implements InlineDirectoryComponent<ForSyDeSystemGraph> {
+class SingleCorePASSSDF implements DirectoryComponent<ForSyDeSystemGraph> {
 
     ForSyDeSystemGraph baseModel
     Path targetPath

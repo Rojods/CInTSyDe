@@ -1,36 +1,22 @@
 package cintsyde.basic
 
-import cintsyde.interfaces.Component
+
 import cintsyde.interfaces.FileComponent
+import cintsyde.interfaces.StringComponent
 
 import java.nio.file.Path
-import java.util.function.Function
+import java.nio.file.Paths
 
 class LocalFileComponent<BaseT> implements FileComponent<BaseT> {
 
     BaseT baseModel
     Path templatePath
-    Path componentPath
+    Path targetPath = Paths.get("src-gen")
     Map<String, Object> dynamicContext = new HashMap<>()
 
-    @Override
-    Path getTemplatePath() {
-        return templatePath
-    }
-
-    @Override
-    void setTemplatePath(Path path) {
-        templatePath = path
-    }
-
-    @Override
-    Path getComponentPath() {
-        return componentPath
-    }
-
-    @Override
-    void setComponentPath(Path path) {
-        componentPath = path
+    LocalFileComponent(Path templatePath) {
+        this.templatePath = templatePath
+        this.targetPath = Paths.get("src-gen").resolve(templatePath)
     }
 
     def propertyMissing(String name) {
@@ -50,4 +36,10 @@ class LocalFileComponent<BaseT> implements FileComponent<BaseT> {
     void setContextByMap(Map<String, Object> context) {
         dynamicContext = context
     }
+
+    @Override
+    List<StringComponent<BaseT>> getStringComponents() {
+        return null
+    }
+
 }

@@ -1,18 +1,13 @@
-package cintsyde.inline.platform;
+package cintsyde.inline.platform
 
-import cintsyde.interfaces.Component
-import cintsyde.interfaces.InlineComponent;
+
+import cintsyde.interfaces.StringComponent;
 import forsyde.io.java.core.ForSyDeSystemGraph
-import forsyde.io.java.typed.viewers.platform.GenericMemoryModule
-import forsyde.io.java.typed.viewers.platform.GenericProcessingModule
-import forsyde.io.java.typed.viewers.platform.runtime.CyclicExecutiveScheduler
 
 import java.nio.file.Path;
 
-public class PartitionedSharedMemMultiCore implements InlineComponent<ForSyDeSystemGraph> {
+public class PartitionedSharedMemMultiCore implements StringComponent<ForSyDeSystemGraph> {
 
-    String componentIdentifier
-    Path targetPath
     ForSyDeSystemGraph baseModel
 
     String componentTemplate = ""

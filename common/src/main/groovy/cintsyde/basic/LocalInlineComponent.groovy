@@ -1,11 +1,10 @@
 package cintsyde.basic
 
-import cintsyde.interfaces.InlineComponent
+import cintsyde.interfaces.StringComponent
 
 import java.nio.file.Path
-import java.util.function.Function
 
-class LocalInlineComponent<BaseT> implements InlineComponent<BaseT> {
+class LocalInlineComponent<BaseT> implements StringComponent<BaseT> {
 
     BaseT baseModel
     String inlineCode = ""

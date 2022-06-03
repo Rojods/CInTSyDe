@@ -1,14 +1,13 @@
 package cintsyde.basic
 
 import cintsyde.interfaces.Component
-import cintsyde.interfaces.DirectoryComponent
+
 import cintsyde.interfaces.FileComponent
-import cintsyde.interfaces.InlineComponent
+import cintsyde.interfaces.StringComponent
 import forsyde.io.java.core.ForSyDeSystemGraph
 
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.stream.Collectors
 
 class LocalForSyDeIODirectoryComponent implements DirectoryComponent<ForSyDeSystemGraph> {
@@ -68,8 +67,8 @@ class LocalForSyDeIODirectoryComponent implements DirectoryComponent<ForSyDeSyst
                 fileComponent.targetPath = componentTargetPath;
                 fileComponent.setContextByMap(binding.getVariables());
                 fileComponent.generateComponent();
-            } else if (component instanceof InlineComponent) {
-                final InlineComponent<ForSyDeSystemGraph> inlineComponent = (InlineComponent<ForSyDeSystemGraph>) component;
+            } else if (component instanceof StringComponent) {
+                final StringComponent<ForSyDeSystemGraph> inlineComponent = (StringComponent<ForSyDeSystemGraph>) component;
                 inlineComponent.targetPath = componentTargetPath;
                 inlineComponent.setContextByMap(binding.getVariables());
                 inlineComponent.generateComponent();

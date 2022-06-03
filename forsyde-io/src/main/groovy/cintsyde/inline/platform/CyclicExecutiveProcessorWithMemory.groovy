@@ -1,26 +1,32 @@
-package cintsyde.inline.platform;
+package cintsyde.inline.platform
 
-import cintsyde.interfaces.Component;
-import cintsyde.interfaces.InlineComponent;
-import forsyde.io.java.core.ForSyDeSystemGraph;
+
+import cintsyde.interfaces.StringComponent;
+import forsyde.io.java.core.ForSyDeSystemGraph
+import forsyde.io.java.typed.viewers.decision.Scheduled;
 import forsyde.io.java.typed.viewers.platform.GenericMemoryModule;
 import forsyde.io.java.typed.viewers.platform.GenericProcessingModule;
 import forsyde.io.java.typed.viewers.platform.runtime.CyclicExecutiveScheduler
 
-import java.nio.file.Path;
-import java.util.List;
+import java.nio.file.Path
+import java.util.stream.Collectors
 
-public class CyclicExecutiveProcessorWithMemory implements InlineComponent<ForSyDeSystemGraph> {
+public class CyclicExecutiveProcessorWithMemory implements StringComponent<ForSyDeSystemGraph> {
 
     String componentIdentifier
-    Path targetPath
     ForSyDeSystemGraph baseModel
     CyclicExecutiveScheduler scheduler;
     GenericProcessingModule processor;
     GenericMemoryModule mainMemory;
     List<GenericMemoryModule> auxiliaryMemories;
 
-    String componentTemplate = ""
+    // deduced elements
+    List<Scheduled> scheduledComputation = baseModel.vertexSet().stream().flatMap(v -> Scheduled.safeCast(v).stream())
+        .filter(s -> s.getSchedulerPort(model).contains(scheduler))
+        .collect(Collectors.toList())
+//    def orderedEntries = scheduler.getEntries().collect {
+//
+//    }
 
     public CyclicExecutiveProcessorWithMemory(CyclicExecutiveScheduler scheduler, GenericProcessingModule processor) {
         this.scheduler = scheduler;
@@ -35,5 +41,11 @@ public class CyclicExecutiveProcessorWithMemory implements InlineComponent<ForSy
     @Override
     void setContextByMap(Map<String, Object> context) {
 
+    }
+
+    @Override
+    String getComponentTemplate() {
+
+        return null
     }
 }

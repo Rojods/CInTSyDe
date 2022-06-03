@@ -15,12 +15,17 @@
 
 /*
 ************************************************************
-include the type def from another file
+inject the typedefs required for the fifo
 ************************************************************
 */
-{{#dataTypesPath}}
-#include "{{pathName}}"
-{{/dataTypesPath}}
+{{requiredTypeDefs}}
+
+
+/*
+************************************************************
+actual FIFO typedefs
+************************************************************
+*/
 
 typedef struct {
     {{typeName}}*  buffer;
