@@ -23,7 +23,7 @@ public interface FileComponent<BaseT> extends Component<BaseT> {
     default void generateComponent() throws IOException {
         Files.writeString(
                 getTargetPath(),
-                getStringComponents().stream().map(c -> c.generateComponent()).collect(Collectors.joining("")),
+                getPrefixTemplateString() + getStringComponents().stream().map(c -> c.generateComponent()).collect(Collectors.joining("")) + getSuffixTemplateString(),
                 StandardOpenOption.CREATE_NEW, StandardOpenOption.TRUNCATE_EXISTING
         )
     }
@@ -31,5 +31,13 @@ public interface FileComponent<BaseT> extends Component<BaseT> {
     default boolean componentIsEqual(Component<BaseT> other) {
         return other instanceof FileComponent<BaseT> ? other.getContextAsMap() == getContextAsMap() &&
                 other.getTargetPath() == getTargetPath() : false
+    }
+
+    default String getPrefixTemplateString() {
+        return ""
+    }
+
+    default String getSuffixTemplateString() {
+        return ""
     }
 }

@@ -11,13 +11,13 @@ class FIFOBuffer implements StringComponent<ForSyDeSystemGraph> {
 
     ForSyDeSystemGraph baseModel
     DataType fifoDataType
-    TypeDef fifoDataTypeDef = new TypeDef(dataType: fifoDataType)
+    TypeDefsFile typeDefsFile
 
     @Override
     Map<String, Object> getContextAsMap() {
         return [
                 "fifoDataType": fifoDataType,
-                "requiredTypeDefs": fifoDataTypeDef.generateWithAllChildren(),
+                "pathToTypeDefs": typeDefsFile.targetPath.toString(),
                 "typeName": fifoDataType.identifier
         ]
     }
@@ -29,6 +29,6 @@ class FIFOBuffer implements StringComponent<ForSyDeSystemGraph> {
 
     @Override
     String getComponentTemplate() {
-        return getClass().getResource("FIFOBuffer.headerOnly.template.c")
+        return getClass().getResource("FIFOBuffer.headerOnly.h")
     }
 }

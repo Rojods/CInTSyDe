@@ -18,8 +18,7 @@
 inject the typedefs required for the fifo
 ************************************************************
 */
-{{requiredTypeDefs}}
-
+#include "{{pathToTypeDefs}}"
 
 /*
 ************************************************************
