@@ -12,6 +12,7 @@ import utils.Query;
 @FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class Channel implements InitTemplate {
+  @Override
   public String create() {
     String _xblockexpression = null;
     {
@@ -86,6 +87,7 @@ public class Channel implements InitTemplate {
     return _xblockexpression;
   }
   
+  @Override
   public String getFileName() {
     return "sdfchannel";
   }

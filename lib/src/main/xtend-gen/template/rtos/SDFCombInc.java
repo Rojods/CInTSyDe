@@ -9,6 +9,7 @@ import template.templateInterface.ActorTemplate;
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class SDFCombInc implements ActorTemplate {
+  @Override
   public String create(final Vertex vertex) {
     String _xblockexpression = null;
     {

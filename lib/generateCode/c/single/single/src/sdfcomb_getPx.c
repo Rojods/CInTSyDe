@@ -10,13 +10,13 @@ Declare Extern Channal Variables
 ========================================
 */
 /* Input FIFO */
-
-extern ref_fifo fifo_GrayScaleToGetPx;
+extern circular_fifo fifo_GrayScaleToGetPx;
 extern spinlock spinlock_GrayScaleToGetPx;	
+
 /* Output FIFO */
-extern ref_fifo fifo_gysig;
+extern circular_fifo fifo_gysig;
 extern spinlock spinlock_gysig;
-extern ref_fifo fifo_gxsig;
+extern circular_fifo fifo_gxsig;
 extern spinlock spinlock_gxsig;
 /*
 ========================================
@@ -39,7 +39,6 @@ void actor_getPx(){
 	/* Read From Input Port  */
 	int ret=0;
 	for(int i=0;i<6;++i){
-		
 		void* tmp_addr;
 		read_non_blocking(&fifo_GrayScaleToGetPx,&tmp_addr);
 		gray[i]= *((DoubleType *)tmp_addr);
@@ -66,12 +65,10 @@ void actor_getPx(){
 	/* Write To Output Ports */
 	for(int i=0;i<6;++i){
 		write_non_blocking(&fifo_gysig,(void*)&imgBlockY[i]);		
-								
 	}
 	
 	for(int i=0;i<6;++i){
 		write_non_blocking(&fifo_gxsig,(void*)&imgBlockX[i]);		
-								
 	}
 	
 

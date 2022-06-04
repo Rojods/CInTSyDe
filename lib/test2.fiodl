@@ -1,0 +1,104 @@
+systemgraph {  vertex p1
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor]
+  (a, combFunctions)
+  {
+    "production": {
+      "a": 1_i
+    },
+    "firingSlots": [
+      0_i
+    ]
+  }
+  vertex p2
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor]
+  (b, combFunctions)
+  {
+    "firingSlots": [
+      1_i
+    ],
+    "consumption": {
+      "b": 1_i
+    }
+  }
+  vertex uint32
+  [typing::datatypes::Integer]
+  ()
+  {
+    "numberOfBits": 32_i
+  }
+  vertex p1impl
+  [impl::ANSICBlackBoxExecutable, impl::InstrumentedExecutable, typing::TypedOperation]
+  (a, portTypes)
+  {
+    "inputPorts": [
+
+    ],
+    "inlinedCode": "a=5;",
+    "outputPorts": [
+      "a"
+    ]
+  }
+  vertex p2impl
+  [impl::ANSICBlackBoxExecutable, impl::InstrumentedExecutable, typing::TypedOperation]
+  (b, portTypes)
+  {
+    "inputPorts": [
+      "b"
+    ],
+    "inlinedCode": "int c = 2*b;",
+    "outputPorts": [
+
+    ]
+  }
+  vertex s1
+  [decision::sdf::BoundedSDFChannel, impl::TokenizableDataBlock, moc::sdf::SDFChannel]
+  (consumer, producer)
+  {
+    "maximumTokens": 1_i,
+    "maxSizeInBits": 32_i,
+    "tokenSizeInBits": 32_i
+  }
+edge [] from p1 port combFunctions to p1impl 
+edge [] from p1impl port a to p1 port a
+edge [typing::datatypes::DataDefinition] from p1impl port a to uint32 
+edge [typing::datatypes::DataDefinition] from p2impl port b to uint32 
+edge [] from p2 port combFunctions to p2impl 
+edge [] from p2 port b to p2impl port b
+edge [moc::sdf::SDFDataEdge] from p1 port a to s1 port producer
+edge [moc::sdf::SDFDataEdge] from s1 port consumer to p2 port b
+
+
+
+
+
+  vertex tile1
+  [platform::GenericProcessingModule, visualization::GreyBox, visualization::Visualizable]
+  (communication, contained, execution)
+  {}
+  vertex tile2
+  [platform::GenericProcessingModule, visualization::GreyBox, visualization::Visualizable]
+  (communication, contained, execution)
+  {}
+
+
+  vertex order_1
+  [platform::runtime::TimeTriggeredScheduler, visualization::GreyBox]
+  (contained, slot_0, slot_1, slot_2, slot_3)
+  {}
+  vertex order_2
+  [platform::runtime::TimeTriggeredScheduler, visualization::GreyBox]
+  (contained, slot_0, slot_1, slot_2, slot_3)
+  {}
+
+edge [decision::AbstractAllocation] from tile1 port execution to order_1 
+edge [visualization::VisualContainment] from tile1 port contained to order_1 
+edge [AbstractScheduling] from order_1 port slot_0 to p1
+edge [visualization::VisualContainment] from order_1 port contained to p1
+
+
+edge [decision::AbstractAllocation] from tile2 port execution to order_2
+edge [visualization::VisualContainment] from tile2 port contained to order_2
+edge [AbstractScheduling] from order_2 port slot_0 to p2
+edge [visualization::VisualContainment] from order_2 port contained to p2
+
+}

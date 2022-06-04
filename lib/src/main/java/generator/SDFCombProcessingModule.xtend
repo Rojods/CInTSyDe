@@ -1,6 +1,7 @@
 package generator
 
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActor
+
 
 import forsyde.io.java.core.Vertex
 import java.util.Set
@@ -20,7 +21,7 @@ class SDFCombProcessingModule  implements ModuleInterface{
 	
 	override create() {
 
-		Generator.model.vertexSet().stream().filter([v|SDFComb::conforms(v)]).forEach([v|process(v)])
+		Generator.model.vertexSet().stream().filter([v|SDFActor::conforms(v)]).forEach([v|process(v)])
 	}
 	
 	def void process(Vertex v){

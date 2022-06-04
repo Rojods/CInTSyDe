@@ -54,19 +54,17 @@ public class Schedule {
           Vertex actor = VertexAcessor.getNamedPort(
             Generator.model, 
             this.order, portname, 
-            VertexTrait.MOC_SDF_SDFCOMB).orElse(null);
+            VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
           this.slots.add(actor);
         }
       }
     }
     for (final Vertex actor : this.slots) {
       if ((actor != null)) {
-        final Consumer<String> _function = new Consumer<String>() {
-          public void accept(final String p) {
-            if (((!Objects.equal(p, "Combinator")) && (!Objects.equal(p, "CombFunction")))) {
-              Schedule.this.outgoingchannels.add(
-                VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.MOC_SDF_SDFCHANNEL, VertexAcessor.VertexPortDirection.OUTGOING).orElse(null));
-            }
+        final Consumer<String> _function = (String p) -> {
+          if (((!Objects.equal(p, "Combinator")) && (!Objects.equal(p, "CombFunction")))) {
+            this.outgoingchannels.add(
+              VertexAcessor.getNamedPort(Generator.model, actor, p, VertexTrait.MOC_SDF_SDFCHANNEL, VertexAcessor.VertexPortDirection.OUTGOING).orElse(null));
           }
         };
         actor.getPorts().stream().forEach(_function);
@@ -78,15 +76,13 @@ public class Schedule {
     }
     for (final Vertex actor_1 : this.slots) {
       if ((actor_1 != null)) {
-        final Consumer<String> _function_1 = new Consumer<String>() {
-          public void accept(final String p) {
-            if (((!Objects.equal(p, "Combinator")) && (!Objects.equal(p, "CombFunction")))) {
-              Vertex channel = VertexAcessor.getNamedPort(Generator.model, actor_1, p, VertexTrait.MOC_SDF_SDFCHANNEL, VertexAcessor.VertexPortDirection.INCOMING).orElse(null);
-              boolean _contains = Schedule.this.outgoingchannels.contains(channel);
-              boolean _not = (!_contains);
-              if (_not) {
-                Schedule.this.incomingchannels.add(channel);
-              }
+        final Consumer<String> _function_1 = (String p) -> {
+          if (((!Objects.equal(p, "Combinator")) && (!Objects.equal(p, "CombFunction")))) {
+            Vertex channel = VertexAcessor.getNamedPort(Generator.model, actor_1, p, VertexTrait.MOC_SDF_SDFCHANNEL, VertexAcessor.VertexPortDirection.INCOMING).orElse(null);
+            boolean _contains_1 = this.outgoingchannels.contains(channel);
+            boolean _not = (!_contains_1);
+            if (_not) {
+              this.incomingchannels.add(channel);
             }
           }
         };

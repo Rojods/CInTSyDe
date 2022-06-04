@@ -1,0 +1,105 @@
+systemgraph {  vertex p1
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor]
+  (combFunctions, s1, s6, s_in)
+  {
+    "production": {
+      "s1": 1_i
+    },
+    "firingSlots": [
+      0_i,
+      4_i
+    ],
+    "consumption": {
+      "s6": 1_i,
+      "s_in": 2_i
+    }
+  }
+  vertex p2
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor]
+  (combFunctions, s1, s2, s3)
+  {
+    "production": {
+      "s3": 1_i,
+      "s2": 1_i
+    },
+    "firingSlots": [
+      1_i,
+      5_i
+    ],
+    "consumption": {
+      "s1": 1_i
+    }
+  }
+  vertex p3
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor]
+  (combFunctions, s3, s5, s6)
+  {
+    "production": {
+      "s6": 2_i
+    },
+    "firingSlots": [
+      8_i
+    ],
+    "consumption": {
+      "s3": 2_i,
+      "s5": 2_i
+    }
+  }
+  vertex p4
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor]
+  (combFunctions, s2, s4, s_out)
+  {
+    "production": {
+      "s4": 1_i,
+      "s_out": 3_i
+    },
+    "firingSlots": [
+      2_i,
+      6_i
+    ],
+    "consumption": {
+      "s2": 1_i
+    }
+  }
+  vertex p5
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor]
+  (combFunctions, s4, s5)
+  {
+    "production": {
+      "s5": 1_i
+    },
+    "firingSlots": [
+      3_i,
+      7_i
+    ],
+    "consumption": {
+      "s4": 1_i
+    }
+  }
+  vertex uint32
+  [typing::datatypes::Integer]
+  ()
+  {
+    "numberOfBits": 32_i
+  }
+  vertex p1impl
+  [impl::ANSICBlackBoxExecutable, impl::InstrumentedExecutable, typing::TypedOperation]
+  (portTypes, s1, s6, s_in)
+  {
+    "inputPorts": [
+      "s_in",
+      "s6"
+    ],
+    "inlinedCode": "s1=s6;",
+    "outputPorts": [
+      "s1"
+    ]
+  }
+edge [] from p1 port combFunctions to p1impl 
+edge [] from p1 port s_in to p1impl port s_in
+edge [] from p1 port s6 to p1impl port s6
+edge [] from p1impl port s1 to p1 port s1
+edge [typing::datatypes::DataDefinition] from p1impl port s_in to p1impl 
+edge [typing::datatypes::DataDefinition] from p1impl port s1 to p1impl 
+edge [typing::datatypes::DataDefinition] from p1impl port s6 to p1impl 
+}

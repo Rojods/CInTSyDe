@@ -29,12 +29,10 @@ import template.baremetal_multi.SubsystemTemplateSrcMulti;
 public class demo2 {
   public static void main(final String[] args) {
     try {
-      final String path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
-      final String path2 = "forsyde-io/modified1/sobel-application.fiodl";
-      final String root = "generateCode/c/multi";
+      final String path = "test2.fiodl";
+      final String root = "generateCode/c/multi3";
       ForSyDeModelHandler loader = new ForSyDeModelHandler();
       ForSyDeSystemGraph model = loader.loadModel(path);
-      model.mergeInPlace(loader.loadModel(path2));
       Generator gen = new Generator(model, root);
       SDFChannelProcessingModule sdfchannelModule = new SDFChannelProcessingModule();
       SDFChannelTemplateSrc _sDFChannelTemplateSrc = new SDFChannelTemplateSrc();

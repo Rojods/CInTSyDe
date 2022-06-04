@@ -10,11 +10,11 @@ Declare Extern Channal Variables
 ========================================
 */
 /* Input FIFO */
-
-extern ref_fifo fifo_gxsig;
+extern circular_fifo fifo_gxsig;
 extern spinlock spinlock_gxsig;	
+
 /* Output FIFO */
-extern ref_fifo fifo_absxsig;
+extern circular_fifo fifo_absxsig;
 extern spinlock spinlock_absxsig;
 /*
 ========================================
@@ -35,7 +35,6 @@ void actor_Gx(){
 	/* Read From Input Port  */
 	int ret=0;
 	for(int i=0;i<6;++i){
-		
 		void* tmp_addr;
 		read_non_blocking(&fifo_gxsig,&tmp_addr);
 		imgBlockX[i]= *((DoubleType *)tmp_addr);
@@ -55,6 +54,5 @@ void actor_Gx(){
 	
 	/* Write To Output Ports */
 	write_non_blocking(&fifo_absxsig,(void*)&gx);
-							
 
 }

@@ -10,21 +10,21 @@ Declare Extern Channal Variables
 ========================================
 */
 /* Input FIFO */
-
-extern ref_fifo fifo_GrayScaleToAbs;
+extern circular_fifo fifo_GrayScaleToAbs;
 extern spinlock spinlock_GrayScaleToAbs;	
 
-extern ref_fifo fifo_AbsY;
+extern circular_fifo fifo_AbsY;
 extern spinlock spinlock_AbsY;	
 
-extern ref_fifo fifo_AbsX;
+extern circular_fifo fifo_AbsX;
 extern spinlock spinlock_AbsX;	
 
-extern ref_fifo fifo_absysig;
+extern circular_fifo fifo_absysig;
 extern spinlock spinlock_absysig;	
 
-extern ref_fifo fifo_absxsig;
+extern circular_fifo fifo_absxsig;
 extern spinlock spinlock_absxsig;	
+
 /* Output FIFO */
 /*
 ========================================
@@ -63,7 +63,6 @@ void actor_Abs(){
 	}
 	
 	for(int i=0;i<2;++i){
-		
 		void* tmp_addr;
 		read_non_blocking(&fifo_GrayScaleToAbs,&tmp_addr);
 		dims[i]= *((UInt16 *)tmp_addr);
@@ -98,8 +97,6 @@ void actor_Abs(){
 	
 	/* Write To Output Ports */
 	write_non_blocking(&fifo_AbsX,(void*)&offsetX);
-							
 	write_non_blocking(&fifo_AbsY,(void*)&offsetY);
-							
 
 }

@@ -1,10 +1,11 @@
 package template.baremetal_multi
 
 import fileAnnotation.FileType
+
 import fileAnnotation.FileTypeAnno
 import forsyde.io.java.core.ForSyDeSystemGraph
 import forsyde.io.java.core.Vertex
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActor
 import forsyde.io.java.typed.viewers.typing.TypedDataBlockViewer
 import forsyde.io.java.typed.viewers.typing.TypedOperation
 import generator.Generator
@@ -28,12 +29,12 @@ class SDFActorSrc implements ActorTemplate {
 
 //		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions",
 //			VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING)
-		implActorSet = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().map([v|v.getViewedVertex()]).
+		implActorSet = SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().map([v|v.getViewedVertex()]).
 			collect(Collectors.toSet())
 		this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor)
 		this.outputSDFChannelSet = Query.findOutputSDFChannels(model, actor)
 		var Set<Vertex> datablock
-		datablock = Query.findAllExternalDataBlocks(model, SDFComb.safeCast(actor).get())
+		datablock = Query.findAllExternalDataBlocks(model, SDFActor.safeCast(actor).get())
 		'''
 				«var name = actor.getIdentifier()»
 				/* Includes-------------------------- */
@@ -179,7 +180,7 @@ class SDFActorSrc implements ActorTemplate {
 	}
 
 	def String read(ForSyDeSystemGraph model, Vertex actor) {
-		var Set<Vertex> impls = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().map([ e |
+		var Set<Vertex> impls = SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().map([ e |
 			e.getViewedVertex()
 		]).collect(Collectors.toSet())
 		var Set<String> variableNameRecord = new HashSet
@@ -195,7 +196,7 @@ class SDFActorSrc implements ActorTemplate {
 						var sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName)
 						var datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get())
 
-						var consumption = SDFComb.safeCast(actor).get().getConsumption().get(actorPortName)
+						var consumption = SDFActor.safeCast(actor).get().getConsumption().get(actorPortName)
 						if (consumption === null) {
 							ret += '''
 								Consumption in «actor.getIdentifier()» Not Specified!
@@ -214,11 +215,11 @@ class SDFActorSrc implements ActorTemplate {
 									#endif
 								«ELSE»
 									{
-										volatile «datatype» *tmp_ptrs;
+										volatile «datatype» *tmp_ptrs[1];
 										while ((cheap_claim_tokens (fifo_admin_«sdfchannelName», (volatile void **) tmp_ptrs, 1)) < 1)
 									 		cheap_release_all_claimed_tokens (fifo_admin_«sdfchannelName»);
 									 		 		
-										«port»=fifo_ptrs[0];
+										«port»=*tmp_ptrs[0];
 										cheap_release_spaces (fifo_admin_«sdfchannelName», 1);
 									}
 								«ENDIF»
@@ -244,7 +245,7 @@ class SDFActorSrc implements ActorTemplate {
 									 cheap_release_all_claimed_tokens (fifo_admin_«sdfchannelName»);								
 								
 								for(int i=0;i<«consumption»;++i){
-									«port»[i]=tmp_ptrs[i];	
+									«port»[i]=*tmp_ptrs[i];	
 								}
 								
 								cheap_release_spaces (fifo_admin_«sdfchannelName», 1);
@@ -284,7 +285,7 @@ class SDFActorSrc implements ActorTemplate {
 						datatype = "<" + sdfchannelName + " DataType Not Found>"
 					}
 
-					var production = SDFComb.enforce(actor).getProduction().get(actorPortName)
+					var production = SDFActor.enforce(actor).getProduction().get(actorPortName)
 					if (production == null) {
 						ret += '''
 							Production in «actor.getIdentifier()» Is Not Specified!

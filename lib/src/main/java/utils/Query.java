@@ -3,6 +3,7 @@ package utils;
 import java.util.ArrayList;
 
 
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,8 @@ import forsyde.io.java.typed.viewers.impl.DataBlock;
 import forsyde.io.java.typed.viewers.impl.Executable;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannelViewer;
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
-import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActor;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActorViewer;
 import forsyde.io.java.typed.viewers.platform.GenericProcessingModule;
 import forsyde.io.java.typed.viewers.typing.TypedOperation;
 import forsyde.io.java.typed.viewers.typing.datatypes.Array;
@@ -39,8 +40,8 @@ import java.lang.Math;
 public class Query {
 
 	public static boolean isOnOneCoreChannel(ForSyDeSystemGraph model,Vertex channel) {
-		var inputActor=VertexAcessor.getNamedPort(model,channel,"producer" , VertexTrait.MOC_SDF_SDFCOMB).get();
-		var outputActor = VertexAcessor.getNamedPort(model,channel,"consumer" , VertexTrait.MOC_SDF_SDFCOMB).get();
+		var inputActor=VertexAcessor.getNamedPort(model,channel,"producer" , VertexTrait.MOC_SDF_SDFACTOR).get();
+		var outputActor = VertexAcessor.getNamedPort(model,channel,"consumer" , VertexTrait.MOC_SDF_SDFACTOR).get();
 		Set<Vertex> tiles = model.vertexSet().stream()
 				.filter(v->GenericProcessingModule.conforms(v))
 				.collect(Collectors.toSet());
@@ -72,10 +73,10 @@ public class Query {
 				.collect(Collectors.toSet());
 	}
 
-	public static Set<Vertex> findAllExternalDataBlocks(ForSyDeSystemGraph model, SDFComb actor) {
+	public static Set<Vertex> findAllExternalDataBlocks(ForSyDeSystemGraph model, SDFActor actor) {
 		return model.vertexSet().stream().filter(v -> DataBlock.conforms(v) && !SDFChannel.conforms(v))
-				.filter(data -> model.hasConnection(SDFComb.safeCast(actor).get(), DataBlock.safeCast(data).get())
-						|| model.hasConnection(DataBlock.safeCast(data).get(), SDFComb.safeCast(actor).get()))
+				.filter(data -> model.hasConnection(SDFActor.safeCast(actor).get(), DataBlock.safeCast(data).get())
+						|| model.hasConnection(DataBlock.safeCast(data).get(), SDFActor.safeCast(actor).get()))
 				.collect(Collectors.toSet());
 	}
 
@@ -233,18 +234,20 @@ public class Query {
 	}
 
 	public static List<String> findImplInputPorts(Vertex impl) {
-		var ret = TypedOperation.safeCast(impl).get().getInputPorts();
-		return ret;
+//		var ret = TypedOperation.safeCast(impl).get().getInputPorts();
+//		return ret;
+		return (ArrayList<String>) impl.getProperties().get("inputPorts").unwrap();
 	}
 
 	public static List<String> findImplOutputPorts(Vertex impl) {
-		var ret = TypedOperation.safeCast(impl).get().getOutputPorts();
-		return ret;
+//		var ret = TypedOperation.safeCast(impl).get().getOutputPorts();
+//		return ret;
+		return (ArrayList<String>) impl.getProperties().get("outputPorts").unwrap();
 	}
 
 	public static Set<String> findCombFuntionVertex(ForSyDeSystemGraph model, Vertex actor) {
 
-		var a =SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().map(v->v.getIdentifier()).collect(Collectors.toSet());
+		var a =SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().map(v->v.getIdentifier()).collect(Collectors.toSet());
 		return a;
 	}
 
@@ -256,7 +259,7 @@ public class Query {
 	 */
 	public static Set<Vertex> findInputSDFChannels(ForSyDeSystemGraph model, Vertex actor) {
 		var inputSDFChannelSet = model.vertexSet().stream().filter(v -> SDFChannel.conforms(v)).filter(v -> model
-				.hasConnection(new SDFChannelViewer(v), new SDFCombViewer(actor), EdgeTrait.MOC_SDF_SDFDATAEDGE))
+				.hasConnection(new SDFChannelViewer(v), new SDFActorViewer(actor), EdgeTrait.MOC_SDF_SDFDATAEDGE))
 				.collect(Collectors.toSet());
 		return inputSDFChannelSet;
 	}
@@ -269,7 +272,7 @@ public class Query {
 	 */
 	public static Set<Vertex> findOutputSDFChannels(ForSyDeSystemGraph model, Vertex actor) {
 		var outputSDFChannelSet = model.vertexSet().stream().filter(v -> SDFChannel.conforms(v))
-				.filter(v -> model.hasConnection(SDFComb.safeCast(actor).get(), SDFChannel.safeCast(v).get(),
+				.filter(v -> model.hasConnection(SDFActor.safeCast(actor).get(), SDFChannel.safeCast(v).get(),
 						EdgeTrait.MOC_SDF_SDFDATAEDGE))
 				.collect(Collectors.toSet());
 		return outputSDFChannelSet;
@@ -439,7 +442,7 @@ public class Query {
 			}
 		}
 		for (Vertex v : wcet) {
-			a = VertexAcessor.getNamedPort(model, v, "application", VertexTrait.MOC_SDF_SDFCOMB);
+			a = VertexAcessor.getNamedPort(model, v, "application", VertexTrait.MOC_SDF_SDFACTOR);
 			if (a.isPresent() && a.get() == vertex) {
 				Map<String, VertexProperty> b = v.getProperties();
 				int c = (int) b.get("time").unwrap();

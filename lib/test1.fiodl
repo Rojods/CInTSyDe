@@ -1,0 +1,91 @@
+systemgraph {
+
+  vertex p1
+  [decision::sdf::PASSedSDFComb, moc::sdf::SDFActor, moc::sdf::SDFComb, visualization::Visualizable]
+  (combFunctions, a)
+  {
+    "production": {
+      "a": 1_i,
+
+    },
+
+    "firingSlots": [
+      0_i
+    ]
+
+  }
+
+
+
+  vertex p2
+  [decision::sdf::PASSedSDFComb, moc::sdf::SDFActor, moc::sdf::SDFComb, visualization::Visualizable]
+  (combFunctions, b)
+  {
+
+
+    "firingSlots": [
+      1_i
+    ],
+    "consumption": {
+      "b": 1_i
+    }
+  }
+
+
+  vertex sig
+  [decision::sdf::BoundedSDFChannel, impl::TokenizableDataBlock, impl::TypedDataBlock, moc::sdf::SDFChannel, visualization::Visualizable]
+  (consumer, dataType, producer)
+  {
+    "maxSizeInBits": 32_l,
+    "maximumTokens": 1_i,
+    "tokenSizeInBits": 32_l
+  }
+
+
+  vertex UInt32
+  [typing::datatypes::Integer]
+  ()
+  {
+    "numberOfBits": 32_i
+  }
+
+
+  vertex p1Impl
+  [impl::ANSICBlackBoxExecutable, impl::InstrumentedExecutable, typing::TypedOperation]
+  (a, portTypes)
+  {
+    "inlinedCode": "a=5;",
+    "outputPorts": [
+      "a"
+    ]
+  }
+edge [typing::datatypes::DataDefinition] from p1Impl port a to  UInt32
+edge [] from p1 port combFunctions to p1Impl 
+edge [] from p1Impl port a to p1 port a
+
+
+  vertex  p2Impl
+  [impl::ANSICBlackBoxExecutable, impl::InstrumentedExecutable, typing::TypedOperation]
+  (b, portTypes)
+  {
+    "inlinedCode": "int c = 2*b;",
+
+    "inputPorts": [
+      "b"
+    ]
+
+  }
+edge [typing::datatypes::DataDefinition] from p2Impl port b to  UInt32
+edge [] from p2 port combFunctions to p2Impl 
+edge [] from p2 port b to p2Impl port b
+
+
+
+edge [moc::sdf::SDFDataEdge] from p1 port a to sig port producer
+
+edge [moc::sdf::SDFDataEdge] from sig port consumer to p2 port b
+
+
+
+
+}    

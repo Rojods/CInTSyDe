@@ -1,8 +1,8 @@
 package utils;
 
 import forsyde.io.java.core.Vertex;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActor;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel;
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
 
 @SuppressWarnings("all")
 public class Name {
@@ -10,7 +10,7 @@ public class Name {
     return vertex.getIdentifier().replace("/", "_");
   }
   
-  public static String name(final SDFComb sdf) {
+  public static String name(final SDFActor sdf) {
     return sdf.getIdentifier().replace("/", "_");
   }
   

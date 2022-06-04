@@ -19,19 +19,16 @@ import utils.Query;
 @FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class SubsystemInitSrc implements InitTemplate {
+  @Override
   public String create() {
     String _xblockexpression = null;
     {
       ForSyDeSystemGraph model = Generator.model;
-      final Predicate<Vertex> _function = new Predicate<Vertex>() {
-        public boolean test(final Vertex v) {
-          return (IntegerValue.conforms(v)).booleanValue();
-        }
+      final Predicate<Vertex> _function = (Vertex v) -> {
+        return (IntegerValue.conforms(v)).booleanValue();
       };
-      final Function<Vertex, IntegerValue> _function_1 = new Function<Vertex, IntegerValue>() {
-        public IntegerValue apply(final Vertex v) {
-          return IntegerValue.safeCast(v).get();
-        }
+      final Function<Vertex, IntegerValue> _function_1 = (Vertex v) -> {
+        return IntegerValue.safeCast(v).get();
       };
       Set<IntegerValue> integerValues = model.vertexSet().stream().filter(_function).<IntegerValue>map(_function_1).collect(Collectors.<IntegerValue>toSet());
       StringConcatenation _builder = new StringConcatenation();
@@ -242,6 +239,7 @@ public class SubsystemInitSrc implements InitTemplate {
     return _xblockexpression;
   }
   
+  @Override
   public String getFileName() {
     return "subsystem_init";
   }

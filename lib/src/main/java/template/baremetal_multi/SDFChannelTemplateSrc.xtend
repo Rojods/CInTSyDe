@@ -26,6 +26,8 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 			#include "../inc/datatype_definition.h"
 			«var channelname=sdfchannel.getIdentifier()»
 			#include "../inc/circular_fifo_lib.h"
+			#include <cheap_s.h>
+			#define tile0_comm1 0x80020000
 				«IF BoundedSDFChannel.conforms(sdfchannel)»
 					«var viewer = new BoundedSDFChannelViewer(sdfchannel)»
 					«var maximumTokens =viewer.getMaximumTokens()»
@@ -38,9 +40,8 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 					spinlock spinlock_«channelname»={.flag=0};
 					«ELSE»
 					/* Channel Between Two Processors */
-					 volatile cheap const fifo_admin_«channelname»;
-					 volatile «type» * const fifo_data_«channelname»;
-					// volatile token_t *fifo_ptrs[«Query.getBufferSize(sdfchannel)»];				 
+					 volatile cheap const fifo_admin_«channelname»=(cheap) «channelname.toUpperCase()»_ADDR;
+					 volatile «type» * const fifo_data_«channelname»=(«type»  *)((cheap) «channelname.toUpperCase()»_ADDR +1);			 
 					 unsigned int buffer_«channelname»_size=«Query.getBufferSize(sdfchannel)»;
 					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»	;
 ««« 					 volatile «type» buffer_«channelname»[«maximumTokens»];			
@@ -55,9 +56,9 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 					spinlock spinlock_«channelname»={.flag=0};	
 					«ELSE»
 					/* Channel Between Two Processors */
- 					 volatile cheap const fifo_admin_«channelname»;
- 					 volatile «type» * const fifo_data_«channelname»;
- 					//volatile token_t *fifo_ptrs[1];	 					 
+					
+ 					 volatile cheap const fifo_admin_«channelname»=(cheap) «channelname.toUpperCase()»_ADDR;
+ 					 volatile «type» * const fifo_data_«channelname»=(«type»  *)((cheap) «channelname.toUpperCase()»_ADDR +1); 					 
  					 unsigned int buffer_«channelname»_size=1;
  					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»	;
 ««« 					 volatile «type» buffer_«channelname»[1];							

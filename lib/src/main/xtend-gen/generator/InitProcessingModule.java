@@ -19,11 +19,10 @@ public class InitProcessingModule implements ModuleInterface {
     this.templateSet = _hashSet;
   }
   
+  @Override
   public void create() {
-    final Consumer<InitTemplate> _function = new Consumer<InitTemplate>() {
-      public void accept(final InitTemplate t) {
-        InitProcessingModule.this.process(t);
-      }
+    final Consumer<InitTemplate> _function = (InitTemplate t) -> {
+      this.process(t);
     };
     this.templateSet.stream().forEach(_function);
   }

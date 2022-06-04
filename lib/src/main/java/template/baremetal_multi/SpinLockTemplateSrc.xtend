@@ -24,12 +24,12 @@ class SpinLockTemplateSrc implements InitTemplate{
 				#endif
 				
 				void spinlock_get(spinlock* lock){
-					while(ATOMIC_TEST_AND_SET(&lock->flag,1)==1){
+				//	while(ATOMIC_TEST_AND_SET(&lock->flag,1)==1){
 						
-					}
+				//	}
 				}
 				void spinlock_release(spinlock* lock){
-					ATOMIC_TEST_AND_SET(&lock->flag,0);
+				//	ATOMIC_TEST_AND_SET(&lock->flag,0);
 				}	
 
 		'''

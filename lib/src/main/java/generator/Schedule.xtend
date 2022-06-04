@@ -51,7 +51,7 @@ class Schedule {
 					Generator.model,
 					order,
 					portname,
-					VertexTrait.MOC_SDF_SDFCOMB
+					VertexTrait.MOC_SDF_SDFACTOR
 				).orElse(null)
 				slots.add(actor)
 			}

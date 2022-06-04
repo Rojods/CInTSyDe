@@ -2,38 +2,41 @@
 #include "../inc/datatype_definition.h"
 
 void subsystem_tile1(){
-	actor_getPx();
+	actor_GrayScale();
 }	
 
 int init_tile1(){
 	extern int ZeroValue;
 	extern int OneValue;
 
-	extern cheap fifo_admin_gysig;
-	extern volatile DoubleType * const fifo_data_gysig;
-	extern unsigned int buffer_gysig_size;
-	extern unsigned int token_gysig_size;
-	extern cheap fifo_admin_gxsig;
-	extern volatile DoubleType * const fifo_data_gxsig;
-	extern unsigned int buffer_gxsig_size;
-	extern unsigned int token_gxsig_size;
-	extern cheap fifo_admin_GrayScaleToGetPx;
-	extern volatile DoubleType * const fifo_data_GrayScaleToGetPx;
-	extern unsigned int buffer_GrayScaleToGetPx_size;
-	extern unsigned int token_GrayScaleToGetPx_size;
+	/* extern sdfchannel GrayScaleToAbs*/
+	extern UInt16 buffer_GrayScaleToAbs[];
+	extern int buffer_GrayScaleToAbs_size;
+	extern circular_fifo_UInt16 fifo_GrayScaleToAbs;
+	/* extern sdfchannel GrayScaleToGetPx*/
+	extern DoubleType buffer_GrayScaleToGetPx[];
+	extern int buffer_GrayScaleToGetPx_size;
+	extern circular_fifo_DoubleType fifo_GrayScaleToGetPx;
+	/* extern sdfchannel GrayScaleX*/
+	extern UInt16 buffer_GrayScaleX[];
+	extern int buffer_GrayScaleX_size;
+	extern circular_fifo_UInt16 fifo_GrayScaleX;
+	/* extern sdfchannel GrayScaleY*/
+	extern UInt16 buffer_GrayScaleY[];
+	extern int buffer_GrayScaleY_size;
+	extern circular_fifo_UInt16 fifo_GrayScaleY;
 /* Create the channels*/
-	if (cheap_init_r (fifo_admin_gysig, (void *) fifo_data_gysig, buffer_gysig_size, token_gysig_size) == NULL) {
-		//xil_printf("%04u/%010u: cheap_init_r failed\n", (uint32_t)(t>>32),(uint32_t)t);
-		return 1;
-	}				
-	if (cheap_init_r (fifo_admin_gxsig, (void *) fifo_data_gxsig, buffer_gxsig_size, token_gxsig_size) == NULL) {
-		//xil_printf("%04u/%010u: cheap_init_r failed\n", (uint32_t)(t>>32),(uint32_t)t);
-		return 1;
-	}				
+	init_channel_UInt16(&fifo_GrayScaleToAbs,buffer_GrayScaleToAbs,buffer_GrayScaleToAbs_size);
+	init_channel_DoubleType(&fifo_GrayScaleToGetPx,buffer_GrayScaleToGetPx,buffer_GrayScaleToGetPx_size);
+	init_channel_UInt16(&fifo_GrayScaleX,buffer_GrayScaleX,buffer_GrayScaleX_size);
+	init_channel_UInt16(&fifo_GrayScaleY,buffer_GrayScaleY,buffer_GrayScaleY_size);
 	
 	/*Initialize the channel */
+
+	write_non_blocking_UInt16(&fifo_GrayScaleX,ZeroValue);
+
+	write_non_blocking_UInt16(&fifo_GrayScaleY,ZeroValue);
 	
 	/* wait util other channels are created*/
-	while (cheap_get_buffer_capacity (fifo_admin_GrayScaleToGetPx) == 0); 
 	return 0;	
 }

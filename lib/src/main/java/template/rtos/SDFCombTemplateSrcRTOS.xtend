@@ -2,24 +2,19 @@ package template.rtos
 
 import fileAnnotation.FileType
 import fileAnnotation.FileTypeAnno
+import forsyde.io.java.core.ForSyDeSystemGraph
 import forsyde.io.java.core.Vertex
 import forsyde.io.java.core.VertexAcessor
 import forsyde.io.java.core.VertexAcessor.VertexPortDirection
 import forsyde.io.java.core.VertexTrait
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActor
+import forsyde.io.java.typed.viewers.typing.TypedOperation
 import generator.Generator
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.HashSet
 import java.util.Set
-import template.templateInterface.ActorTemplate
-import utils.Name
-import utils.Query
-import forsyde.io.java.core.EdgeInfo
 import java.util.stream.Collectors
-import forsyde.io.java.core.EdgeTrait
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
-import forsyde.io.java.typed.viewers.typing.TypedOperation
-import forsyde.io.java.core.ForSyDeSystemGraph
+import template.templateInterface.ActorTemplate
+import utils.Query
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFCombTemplateSrcRTOS implements ActorTemplate {
@@ -35,7 +30,7 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 		this.inputSDFChannelSet = Query.findInputSDFChannels(Generator.model, actor)
 		this.outputSDFChannelSet = Query.findOutputSDFChannels(Generator.model, actor)
 		var Set<Vertex> datablock
-		datablock = Query.findAllExternalDataBlocks(model, SDFComb.safeCast(actor).get())
+		datablock = Query.findAllExternalDataBlocks(model, SDFActor.safeCast(actor).get())
 
 		'''
 				#include "../inc/config.h"
@@ -227,7 +222,7 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 	 * copied and modified from method read in SDFCombTemplateSrc class
 	 */
 	def String read(ForSyDeSystemGraph model, Vertex actor) {
-		var Set<Vertex> impls = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().map([ e |
+		var Set<Vertex> impls = SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().map([ e |
 			e.getViewedVertex()
 		]).collect(Collectors.toSet())
 		var Set<String> variableNameRecord = new HashSet
@@ -243,7 +238,7 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 					var datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get())
 					// println(actor.getIdentifier()+" -->   "+actorPortName)
 					// println(actor)
-					var consumption = SDFComb.safeCast(actor).get().getConsumption().get(actorPortName)
+					var consumption = SDFActor.safeCast(actor).get().getConsumption().get(actorPortName)
 
 					if (consumption == 1) {
 						ret += '''
@@ -287,7 +282,7 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 					var sdfchannelName = Query.findOutputSDFChannelConnectedToActorPort(model, actor, actorPortName)
 					var datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get())
 					try {
-						var production = SDFComb.enforce(actor).getProduction().get(actorPortName)
+						var production = SDFActor.enforce(actor).getProduction().get(actorPortName)
 						if (production == 1) {
 							ret += '''
 								#if FREERTOS==1

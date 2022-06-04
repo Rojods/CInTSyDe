@@ -24,21 +24,18 @@ import utils.Query;
 public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
   private Schedule s;
   
+  @Override
   public String create(final Schedule schedule) {
     String _xblockexpression = null;
     {
       this.s = schedule;
       Vertex tile = schedule.tile;
       ForSyDeSystemGraph model = Generator.model;
-      final Predicate<Vertex> _function = new Predicate<Vertex>() {
-        public boolean test(final Vertex v) {
-          return (IntegerValue.conforms(v)).booleanValue();
-        }
+      final Predicate<Vertex> _function = (Vertex v) -> {
+        return (IntegerValue.conforms(v)).booleanValue();
       };
-      final Function<Vertex, IntegerValue> _function_1 = new Function<Vertex, IntegerValue>() {
-        public IntegerValue apply(final Vertex v) {
-          return IntegerValue.safeCast(v).get();
-        }
+      final Function<Vertex, IntegerValue> _function_1 = (Vertex v) -> {
+        return IntegerValue.safeCast(v).get();
       };
       Set<IntegerValue> integerValues = model.vertexSet().stream().filter(_function).<IntegerValue>map(_function_1).collect(Collectors.<IntegerValue>toSet());
       StringConcatenation _builder = new StringConcatenation();
@@ -49,6 +46,7 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
       _builder.newLineIfNotEmpty();
       _builder.append("#include \"../inc/datatype_definition.h\"");
       _builder.newLine();
+      _builder.append("#include <cheap_s.h>");
       _builder.newLine();
       _builder.append("void subsystem_");
       String _identifier_1 = tile.getIdentifier();
@@ -88,6 +86,9 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
       _builder.append(_identifier_2);
       _builder.append("(){");
       _builder.newLineIfNotEmpty();
+      _builder.append("\t");
+      _builder.append("xil_printf(\"tile initialization starts\\n\");");
+      _builder.newLine();
       {
         for(final IntegerValue value : integerValues) {
           _builder.append("\t");
@@ -243,6 +244,8 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
               _builder.append("_size);");
               _builder.newLineIfNotEmpty();
             } else {
+              _builder.append("\t");
+              _builder.newLine();
               _builder.append("\t");
               _builder.append("if (cheap_init_r (fifo_admin_");
               _builder.append(channelname, "\t");
@@ -412,6 +415,9 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
         }
       }
       _builder.append("\t");
+      _builder.append("xil_printf(\"tile initialization ends\\n\");\t\t\t\t");
+      _builder.newLine();
+      _builder.append("\t");
       _builder.append("return 0;\t");
       _builder.newLine();
       _builder.append("}");
@@ -421,6 +427,7 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
     return _xblockexpression;
   }
   
+  @Override
   public String getFileName() {
     String _identifier = this.s.tile.getIdentifier();
     return ("subsystem_tile_" + _identifier);

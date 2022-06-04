@@ -28,18 +28,18 @@ public class DataType implements InitTemplate {
   public DataType() {
   }
   
+  @Override
   public String getFileName() {
     return "datatype_definition";
   }
   
+  @Override
   public String create() {
     String _xblockexpression = null;
     {
       ForSyDeSystemGraph model = Generator.model;
-      final Predicate<Vertex> _function = new Predicate<Vertex>() {
-        public boolean test(final Vertex v) {
-          return ((!(v.hasTrait(VertexTrait.MOC_SDF_SDFCHANNEL)).booleanValue()) && (v.hasTrait(VertexTrait.TYPING_TYPEDDATABLOCK)).booleanValue());
-        }
+      final Predicate<Vertex> _function = (Vertex v) -> {
+        return ((!(v.hasTrait(VertexTrait.MOC_SDF_SDFCHANNEL)).booleanValue()) && (v.hasTrait(VertexTrait.TYPING_TYPEDDATABLOCK)).booleanValue());
       };
       Set<Vertex> outset = model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
       StringConcatenation _builder = new StringConcatenation();
@@ -152,10 +152,8 @@ public class DataType implements InitTemplate {
   
   public String doubleTypeDef(final ForSyDeSystemGraph model) {
     StringConcatenation _builder = new StringConcatenation();
-    final Predicate<Vertex> _function = new Predicate<Vertex>() {
-      public boolean test(final Vertex v) {
-        return (forsyde.io.java.typed.viewers.typing.datatypes.Double.conforms(v)).booleanValue();
-      }
+    final Predicate<Vertex> _function = (Vertex v) -> {
+      return (forsyde.io.java.typed.viewers.typing.datatypes.Double.conforms(v)).booleanValue();
     };
     Set<Vertex> doubleVertexSet = model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
     _builder.newLineIfNotEmpty();
@@ -184,10 +182,8 @@ public class DataType implements InitTemplate {
   
   public String floatTypeDef(final ForSyDeSystemGraph model) {
     StringConcatenation _builder = new StringConcatenation();
-    final Predicate<Vertex> _function = new Predicate<Vertex>() {
-      public boolean test(final Vertex v) {
-        return (forsyde.io.java.typed.viewers.typing.datatypes.Float.conforms(v)).booleanValue();
-      }
+    final Predicate<Vertex> _function = (Vertex v) -> {
+      return (forsyde.io.java.typed.viewers.typing.datatypes.Float.conforms(v)).booleanValue();
     };
     Set<Vertex> floatVertexSet = model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
     _builder.newLineIfNotEmpty();
@@ -216,15 +212,11 @@ public class DataType implements InitTemplate {
   
   public String intTypeDef(final ForSyDeSystemGraph model) {
     StringConcatenation _builder = new StringConcatenation();
-    final Predicate<Vertex> _function = new Predicate<Vertex>() {
-      public boolean test(final Vertex v) {
-        return (forsyde.io.java.typed.viewers.typing.datatypes.Integer.conforms(v)).booleanValue();
-      }
+    final Predicate<Vertex> _function = (Vertex v) -> {
+      return (forsyde.io.java.typed.viewers.typing.datatypes.Integer.conforms(v)).booleanValue();
     };
-    final Function<Vertex, IntegerViewer> _function_1 = new Function<Vertex, IntegerViewer>() {
-      public IntegerViewer apply(final Vertex v) {
-        return new IntegerViewer(v);
-      }
+    final Function<Vertex, IntegerViewer> _function_1 = (Vertex v) -> {
+      return new IntegerViewer(v);
     };
     Set<IntegerViewer> intVertexViewerSet = model.vertexSet().stream().filter(_function).<IntegerViewer>map(_function_1).collect(Collectors.<IntegerViewer>toSet());
     _builder.newLineIfNotEmpty();
@@ -294,15 +286,11 @@ public class DataType implements InitTemplate {
   public String arrayTypeDef(final ForSyDeSystemGraph model) {
     String _xblockexpression = null;
     {
-      final Predicate<Vertex> _function = new Predicate<Vertex>() {
-        public boolean test(final Vertex v) {
-          return (Array.conforms(v)).booleanValue();
-        }
+      final Predicate<Vertex> _function = (Vertex v) -> {
+        return (Array.conforms(v)).booleanValue();
       };
-      final Function<Vertex, ArrayViewer> _function_1 = new Function<Vertex, ArrayViewer>() {
-        public ArrayViewer apply(final Vertex v) {
-          return new ArrayViewer(v);
-        }
+      final Function<Vertex, ArrayViewer> _function_1 = (Vertex v) -> {
+        return new ArrayViewer(v);
       };
       Set<ArrayViewer> arrayViewerSet = model.vertexSet().stream().filter(_function).<ArrayViewer>map(_function_1).collect(Collectors.<ArrayViewer>toSet());
       StringConcatenation _builder = new StringConcatenation();

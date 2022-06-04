@@ -6,7 +6,7 @@ import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.typed.viewers.impl.Executable;
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActor;
 import forsyde.io.java.typed.viewers.typing.TypedDataBlockViewer;
 import forsyde.io.java.typed.viewers.typing.TypedOperation;
 import forsyde.io.java.typed.viewers.typing.datatypes.DataType;
@@ -34,20 +34,19 @@ public class SDFActorSrc implements ActorTemplate {
   
   private Set<Vertex> outputSDFChannelSet;
   
+  @Override
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
       final ForSyDeSystemGraph model = Generator.model;
-      final Function<Executable, Vertex> _function = new Function<Executable, Vertex>() {
-        public Vertex apply(final Executable v) {
-          return v.getViewedVertex();
-        }
+      final Function<Executable, Vertex> _function = (Executable v) -> {
+        return v.getViewedVertex();
       };
-      this.implActorSet = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
+      this.implActorSet = SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
       this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor);
       this.outputSDFChannelSet = Query.findOutputSDFChannels(model, actor);
       Set<Vertex> datablock = null;
-      datablock = Query.findAllExternalDataBlocks(model, SDFComb.safeCast(actor).get());
+      datablock = Query.findAllExternalDataBlocks(model, SDFActor.safeCast(actor).get());
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("\t");
       String name = actor.getIdentifier();
@@ -386,12 +385,10 @@ public class SDFActorSrc implements ActorTemplate {
   }
   
   public String read(final ForSyDeSystemGraph model, final Vertex actor) {
-    final Function<Executable, Vertex> _function = new Function<Executable, Vertex>() {
-      public Vertex apply(final Executable e) {
-        return e.getViewedVertex();
-      }
+    final Function<Executable, Vertex> _function = (Executable e) -> {
+      return e.getViewedVertex();
     };
-    Set<Vertex> impls = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
+    Set<Vertex> impls = SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
     Set<String> variableNameRecord = new HashSet<String>();
     String ret = "";
     for (final Vertex impl : impls) {
@@ -403,7 +400,7 @@ public class SDFActorSrc implements ActorTemplate {
               String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port);
               String sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName);
               String datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get());
-              Integer consumption = SDFComb.safeCast(actor).get().getConsumption().get(actorPortName);
+              Integer consumption = SDFActor.safeCast(actor).get().getConsumption().get(actorPortName);
               if ((consumption == null)) {
                 String _ret = ret;
                 StringConcatenation _builder = new StringConcatenation();
@@ -463,7 +460,7 @@ public class SDFActorSrc implements ActorTemplate {
                       _builder_1.append("\t");
                       _builder_1.append("volatile ");
                       _builder_1.append(datatype, "\t");
-                      _builder_1.append(" *tmp_ptrs;");
+                      _builder_1.append(" *tmp_ptrs[1];");
                       _builder_1.newLineIfNotEmpty();
                       _builder_1.append("\t");
                       _builder_1.append("while ((cheap_claim_tokens (fifo_admin_");
@@ -479,7 +476,7 @@ public class SDFActorSrc implements ActorTemplate {
                       _builder_1.newLine();
                       _builder_1.append("\t");
                       _builder_1.append(port, "\t");
-                      _builder_1.append("=fifo_ptrs[0];");
+                      _builder_1.append("=*tmp_ptrs[0];");
                       _builder_1.newLineIfNotEmpty();
                       _builder_1.append("\t");
                       _builder_1.append("cheap_release_spaces (fifo_admin_");
@@ -581,7 +578,7 @@ public class SDFActorSrc implements ActorTemplate {
                       _builder_2.newLineIfNotEmpty();
                       _builder_2.append("\t\t");
                       _builder_2.append(port, "\t\t");
-                      _builder_2.append("[i]=tmp_ptrs[i];\t");
+                      _builder_2.append("[i]=*tmp_ptrs[i];\t");
                       _builder_2.newLineIfNotEmpty();
                       _builder_2.append("\t");
                       _builder_2.append("}");
@@ -636,7 +633,7 @@ public class SDFActorSrc implements ActorTemplate {
                 throw Exceptions.sneakyThrow(_t);
               }
             }
-            Integer production = SDFComb.enforce(actor).getProduction().get(actorPortName);
+            Integer production = SDFActor.enforce(actor).getProduction().get(actorPortName);
             boolean _equals = Objects.equal(production, null);
             if (_equals) {
               String _ret = ret;

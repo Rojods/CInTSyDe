@@ -13,12 +13,27 @@ import generator.InitProcessingModule
  */
 class demo2 {
 	def static void main(String[] args) {
-		val path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
-		val path2 = "forsyde-io/modified1/sobel-application.fiodl"
-		val root = "generateCode/c/multi"
+//		val path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
+//		val path2 = "forsyde-io/modified1/sobel-application.fiodl"
+//		val root = "generateCode/c/multi"
+//		var loader = (new ForSyDeModelHandler)
+//		var model = loader.loadModel(path)
+//		model.mergeInPlace(loader.loadModel(path2))
+		
+		
+//		
+//		val path = "b.forsyde.xmi"
+//		val root = "generateCode/c/multi"
+//		var loader = (new ForSyDeModelHandler)
+//		var model = loader.loadModel(path)		
+		
+	
+		val path = "test2.fiodl"
+		val root = "generateCode/c/multi3"
 		var loader = (new ForSyDeModelHandler)
-		var model = loader.loadModel(path)
-		model.mergeInPlace(loader.loadModel(path2))
+		var model = loader.loadModel(path)		
+		
+		
 		var Generator gen = new Generator(model, root)
 
 		var sdfchannelModule = new SDFChannelProcessingModule

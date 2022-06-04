@@ -18,37 +18,34 @@ public class SubsystemMultiprocessorModule implements ModuleInterface {
     this.templates = _hashSet;
   }
   
+  @Override
   public void create() {
-    final Consumer<Schedule> _function = new Consumer<Schedule>() {
-      public void accept(final Schedule schedule) {
-        SubsystemMultiprocessorModule.this.process(schedule);
-      }
+    final Consumer<Schedule> _function = (Schedule schedule) -> {
+      this.process(schedule);
     };
     Generator.multiProcessorSchedules.stream().forEach(_function);
   }
   
   public void process(final Schedule s) {
     final Schedule schedule = s;
-    final Consumer<SubsystemTemplate> _function = new Consumer<SubsystemTemplate>() {
-      public void accept(final SubsystemTemplate t) {
-        FileTypeAnno anno = t.getClass().<FileTypeAnno>getAnnotation(FileTypeAnno.class);
-        FileType _type = anno.type();
-        boolean _equals = Objects.equal(_type, FileType.C_INCLUDE);
-        if (_equals) {
-          String _identifier = schedule.tile.getIdentifier();
-          String _plus = ((Generator.root + "/inc/subsystem_") + _identifier);
-          String _plus_1 = (_plus + ".h");
-          Save.save(_plus_1, 
-            t.create(schedule));
-        }
-        FileType _type_1 = anno.type();
-        boolean _equals_1 = Objects.equal(_type_1, FileType.C_SOURCE);
-        if (_equals_1) {
-          String _identifier_1 = schedule.tile.getIdentifier();
-          String _plus_2 = ((Generator.root + "/src/subsystem_") + _identifier_1);
-          String _plus_3 = (_plus_2 + ".c");
-          Save.save(_plus_3, t.create(schedule));
-        }
+    final Consumer<SubsystemTemplate> _function = (SubsystemTemplate t) -> {
+      FileTypeAnno anno = t.getClass().<FileTypeAnno>getAnnotation(FileTypeAnno.class);
+      FileType _type = anno.type();
+      boolean _equals = Objects.equal(_type, FileType.C_INCLUDE);
+      if (_equals) {
+        String _identifier = schedule.tile.getIdentifier();
+        String _plus = ((Generator.root + "/inc/subsystem_") + _identifier);
+        String _plus_1 = (_plus + ".h");
+        Save.save(_plus_1, 
+          t.create(schedule));
+      }
+      FileType _type_1 = anno.type();
+      boolean _equals_1 = Objects.equal(_type_1, FileType.C_SOURCE);
+      if (_equals_1) {
+        String _identifier_1 = schedule.tile.getIdentifier();
+        String _plus_2 = ((Generator.root + "/src/subsystem_") + _identifier_1);
+        String _plus_3 = (_plus_2 + ".c");
+        Save.save(_plus_3, t.create(schedule));
       }
     };
     this.templates.stream().forEach(_function);

@@ -1,24 +1,10 @@
 package template.rtos
+
 import fileAnnotation.FileType
 import fileAnnotation.FileTypeAnno
 import forsyde.io.java.core.Vertex
-import forsyde.io.java.core.VertexAcessor
-import forsyde.io.java.core.VertexAcessor.VertexPortDirection
-import forsyde.io.java.core.VertexTrait
-import generator.Generator
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.HashSet
-import java.util.Set
 import template.templateInterface.ActorTemplate
-import utils.Name
-import utils.Query
-import forsyde.io.java.core.EdgeInfo
-import java.util.stream.Collectors
-import forsyde.io.java.core.EdgeTrait
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
-import forsyde.io.java.typed.viewers.typing.TypedOperation
-import forsyde.io.java.core.ForSyDeSystemGraph
+
 @FileTypeAnno(type=FileType.C_INCLUDE)
 class SDFCombInc implements ActorTemplate{
 	

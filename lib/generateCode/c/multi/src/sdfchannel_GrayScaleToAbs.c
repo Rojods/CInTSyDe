@@ -2,9 +2,9 @@
 #include "../inc/spinlock.h"
 #include "../inc/datatype_definition.h"
 #include "../inc/circular_fifo_lib.h"
-	/* Channel Between Two Processors */
-	 volatile cheap const fifo_admin_GrayScaleToAbs;
-	 volatile UInt16 * const fifo_data_GrayScaleToAbs;
-	// volatile token_t *fifo_ptrs[2];				 
-	 unsigned int buffer_GrayScaleToAbs_size=2;
-	 unsigned int token_GrayScaleToAbs_size=1	;
+	/* Channel On One Processor */
+	volatile UInt16 buffer_GrayScaleToAbs[3];
+	int channel_GrayScaleToAbs_size=2;
+	int buffer_GrayScaleToAbs_size = 3; //Because of circular fifo, the buffer_size=channel_size+1 
+	circular_fifo_UInt16 fifo_GrayScaleToAbs;
+	spinlock spinlock_GrayScaleToAbs={.flag=0};

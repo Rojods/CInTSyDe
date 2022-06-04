@@ -27,7 +27,7 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 		'''
 			#include "../inc/subsystem_«s.tile.getIdentifier()».h"
 			#include "../inc/datatype_definition.h"
-			
+			#include <cheap_s.h>
 			void subsystem_«tile.getIdentifier()»(){
 			«FOR actor : schedule.slots SEPARATOR "" AFTER ""»
 				«var tmp =1»
@@ -38,6 +38,7 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 			}	
 			
 			int init_«tile.getIdentifier()»(){
+				xil_printf("tile initialization starts\n");
 				«FOR value : integerValues»
 				extern int «value.getIdentifier()»;
 			«ENDFOR»	
@@ -78,6 +79,7 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 					«IF Query.isOnOneCoreChannel(model,channel)»
 						init_channel_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size);
 					«ELSE»
+						
 						if (cheap_init_r (fifo_admin_«channelname», (void *) fifo_data_«channelname», buffer_«channelname»_size, token_«channelname»_size) == NULL) {
 							//xil_printf("%04u/%010u: cheap_init_r failed\n", (uint32_t)(t>>32),(uint32_t)t);
 							return 1;
@@ -124,7 +126,8 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 				/* wait util other channels are created*/
 				«FOR channel : schedule.incomingchannels»
 					while (cheap_get_buffer_capacity (fifo_admin_«channel.getIdentifier()») == 0); 
-				«ENDFOR»					
+				«ENDFOR»	
+				xil_printf("tile initialization ends\n");				
 				return 0;	
 			}
 		'''

@@ -1,9 +1,10 @@
 package template.rtos
 
 import fileAnnotation.FileType
+
 import fileAnnotation.FileTypeAnno
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActor
 import forsyde.io.java.typed.viewers.values.IntegerValue
 import generator.Generator
 import java.util.HashMap
@@ -26,7 +27,7 @@ class StartTaskTemplateSrcRTOS implements InitTemplate {
 			#include "semphr.h"
 			#include "timers.h"	
 			#include "queue.h"
-			«FOR actor:model.vertexSet().stream().filter([v|SDFComb.conforms(v)]).collect(Collectors.toSet())»
+			«FOR actor:model.vertexSet().stream().filter([v|SDFActor.conforms(v)]).collect(Collectors.toSet())»
 			#include "../inc/sdfcomb_«actor.getIdentifier()».h"
 			«ENDFOR»
 			/*

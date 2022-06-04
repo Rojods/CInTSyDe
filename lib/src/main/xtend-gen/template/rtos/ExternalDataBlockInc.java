@@ -13,6 +13,7 @@ import utils.Query;
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class ExternalDataBlockInc implements InitTemplate {
+  @Override
   public String create() {
     String _xblockexpression = null;
     {
@@ -79,6 +80,7 @@ public class ExternalDataBlockInc implements InitTemplate {
     return _xblockexpression;
   }
   
+  @Override
   public String getFileName() {
     return "extern_datablock";
   }
