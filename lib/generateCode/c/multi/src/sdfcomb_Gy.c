@@ -43,7 +43,7 @@ Array6OfDoubleType imgBlockY;
 			 cheap_release_all_claimed_tokens (fifo_admin_gysig);								
 		
 		for(int i=0;i<6;++i){
-			imgBlockY[i]=tmp_ptrs[i];	
+			imgBlockY[i]=*tmp_ptrs[i];	
 		}
 		
 		cheap_release_spaces (fifo_admin_gysig, 1);

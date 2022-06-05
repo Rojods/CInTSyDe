@@ -584,9 +584,13 @@ edge [Annotation] from min_throughput_obj to Gx
 edge [Annotation] from min_throughput_obj to Gy 
 edge [Annotation] from min_throughput_obj to Abs 
 
-edge [AbstractScheduling] from order_1 port slot_0 to getPx 
-edge [AbstractScheduling] from order_2 port slot_0 to Abs 
-edge [AbstractScheduling] from order_3 port slot_0 to Gx 
+edge [AbstractScheduling] from order_1 port slot_0 to GrayScale
+edge [AbstractScheduling] from order_1 port slot_1 to getPx 
+
+edge [AbstractScheduling] from order_2 port slot_0 to Gx 
+edge [AbstractScheduling] from order_2 port slot_1 to Gy 
+
+edge [AbstractScheduling] from order_3 port slot_0 to Abs 
 
 
 
@@ -597,9 +601,22 @@ edge [AbstractScheduling] from order_5 port slot_2 to absxsig
 edge [AbstractScheduling] from order_5 port slot_3 to absysig 
 
 
+edge [visualization::VisualContainment] from order_1 port contained to GrayScale
 edge [visualization::VisualContainment] from order_1 port contained to getPx 
-edge [visualization::VisualContainment] from order_2 port contained to Abs 
-edge [visualization::VisualContainment] from order_3 port contained to Gx 
+
+edge [visualization::VisualContainment] from order_2 port contained to Gx 
+edge [visualization::VisualContainment] from order_2 port contained to Gy
+
+
+edge [visualization::VisualContainment] from order_3 port contained to Abs 
+
+
+
+
+
+
+
+
 
 edge [visualization::VisualContainment] from order_5 port contained to gxsig 
 edge [visualization::VisualContainment] from order_5 port contained to gysig 

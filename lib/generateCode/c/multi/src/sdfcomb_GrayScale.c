@@ -21,9 +21,9 @@
 	extern volatile cheap const fifo_admin_GrayScaleToAbs;
 	extern volatile UInt16 * const fifo_data_GrayScaleToAbs;	
 					
-	extern volatile cheap const fifo_admin_GrayScaleToGetPx;
-	extern volatile DoubleType * const fifo_data_GrayScaleToGetPx;	
-					
+	circular_fifo_DoubleType fifo_GrayScaleToGetPx;
+	spinlock spinlock_GrayScaleToGetPx={.flag=0};
+	
 	/*
 	========================================
 	Declare Extern Global Variables
@@ -90,17 +90,13 @@ UInt16 dimX = dimX_global;
 				dimsOut[1]=dimY;
 	
 	/* Write To Output Ports */
-				{
-					volatile DoubleType *tmp_ptrs[6];
-					while ((cheap_claim_spaces (fifo_admin_GrayScaleToGetPx, (volatile void **) &tmp_ptrs[0], 6)) < 6)
-						cheap_release_all_claimed_spaces (fifo_admin_GrayScaleToGetPx);
-					
-					for(int i=0;i<6;++i){
-						*tmp_ptrs[i]=gray[i];
-					}
-					
-					cheap_release_tokens (fifo_admin_GrayScaleToGetPx, 6);
-				}						
+				for(int i=0;i<6;++i){
+					#if GRAYSCALETOGETPX_BLOCKING==0
+					write_non_blocking_DoubleType(&fifo_GrayScaleToGetPx,gray[i]);
+					#else
+					write_blocking_DoubleType(&fifo_GrayScaleToGetPx,gray[i],&spinlock_GrayScaleToGetPx);
+					#endif
+				}
 				#if GRAYSCALEX_BLOCKING==0
 				write_non_blocking_UInt16(&fifo_GrayScaleX,offsetX);
 				#else

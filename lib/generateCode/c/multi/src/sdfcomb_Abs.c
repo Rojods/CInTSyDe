@@ -53,19 +53,19 @@ DoubleType resx;
 	/* Read From Input Port  */
 				int ret=0;
 	{
-		volatile DoubleType *tmp_ptrs;
+		volatile DoubleType *tmp_ptrs[1];
 		while ((cheap_claim_tokens (fifo_admin_absxsig, (volatile void **) tmp_ptrs, 1)) < 1)
 	 		cheap_release_all_claimed_tokens (fifo_admin_absxsig);
 	 		 		
-		resx=fifo_ptrs[0];
+		resx=*tmp_ptrs[0];
 		cheap_release_spaces (fifo_admin_absxsig, 1);
 	}
 	{
-		volatile DoubleType *tmp_ptrs;
+		volatile DoubleType *tmp_ptrs[1];
 		while ((cheap_claim_tokens (fifo_admin_absysig, (volatile void **) tmp_ptrs, 1)) < 1)
 	 		cheap_release_all_claimed_tokens (fifo_admin_absysig);
 	 		 		
-		resy=fifo_ptrs[0];
+		resy=*tmp_ptrs[0];
 		cheap_release_spaces (fifo_admin_absysig, 1);
 	}
 	{
@@ -74,7 +74,7 @@ DoubleType resx;
 			 cheap_release_all_claimed_tokens (fifo_admin_GrayScaleToAbs);								
 		
 		for(int i=0;i<2;++i){
-			dims[i]=tmp_ptrs[i];	
+			dims[i]=*tmp_ptrs[i];	
 		}
 		
 		cheap_release_spaces (fifo_admin_GrayScaleToAbs, 1);

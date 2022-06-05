@@ -2,6 +2,8 @@
 #include "../inc/spinlock.h"
 #include "../inc/datatype_definition.h"
 #include "../inc/circular_fifo_lib.h"
+#include <cheap_s.h>
+#define tile0_comm1 0x80020000
 	/* Channel On One Processor */
 	volatile UInt16 buffer_AbsY[2];
 	unsigned int channel_AbsY_size = 1;

@@ -11,9 +11,9 @@
 	========================================
 	*/
 	/* Input FIFO */
-	extern volatile cheap const fifo_admin_GrayScaleToGetPx;
-	extern volatile DoubleType * const fifo_data_GrayScaleToGetPx;	
-					
+	circular_fifo_DoubleType fifo_GrayScaleToGetPx;
+	spinlock spinlock_GrayScaleToGetPx={.flag=0};
+	
 	/* Output FIFO */
 	extern volatile cheap const fifo_admin_gysig;
 	extern volatile DoubleType * const fifo_data_gysig;	
@@ -42,16 +42,16 @@ Array6OfDoubleType imgBlockX;
 	
 	/* Read From Input Port  */
 				int ret=0;
-	{
-		volatile DoubleType *tmp_ptrs[6];
-		while ((cheap_claim_tokens (fifo_admin_GrayScaleToGetPx, (volatile void **) tmp_ptrs, 6)) < 6)
-			 cheap_release_all_claimed_tokens (fifo_admin_GrayScaleToGetPx);								
+	for(int i=0;i<6;++i){
 		
-		for(int i=0;i<6;++i){
-			gray[i]=tmp_ptrs[i];	
+		#if GRAYSCALETOGETPX_BLOCKING==0
+		ret=read_non_blocking_DoubleType(&fifo_GrayScaleToGetPx,&gray[i]);
+		if(ret==-1){
+			printf("fifo_GrayScaleToGetPx read error\n");
 		}
-		
-		cheap_release_spaces (fifo_admin_GrayScaleToGetPx, 1);
+		#else
+		read_blocking_DoubleType(&fifo_GrayScaleToGetPx,&gray[i],&spinlock_GrayScaleToGetPx);
+		#endif
 	}
 
 	
