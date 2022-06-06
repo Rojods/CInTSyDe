@@ -10,7 +10,9 @@ class FIFOSrc3  implements InitTemplate {
 	new() {
 
 	}
-
+	override savePath() {
+		return "/circular_fifo_lib/circular_fifo_lib.c"
+	}
 	override create() {
 		'''
 			/*
@@ -18,9 +20,9 @@ class FIFOSrc3  implements InitTemplate {
 						copy by value
 			*******************************************************
 			*/
-			#include "../inc/config.h"
-			#include "../inc/datatype_definition.h"
-			#include "../inc/circular_fifo_lib.h"
+
+			#include "../datatype/datatype_definition.h"
+			#include "../circular_fifo_lib/circular_fifo_lib.h"
 			
 			
 			void init(circular_fifo* fifo_ptr, void* buf, size_t token_number, size_t token_size){
@@ -53,10 +55,6 @@ class FIFOSrc3  implements InitTemplate {
 	}
 
 	
-
-	override getFileName() {
-		return "circular_fifo_lib"
-	}
 
 
 }

@@ -23,8 +23,8 @@ class SubsystemTemplateIncMulti implements SubsystemTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "subsystem_tile_"+s.tile.getIdentifier()
+	override savePath() {
+		
+		return "/"+s.tile.getIdentifier()+"/subsystem_"+s.tile.getIdentifier()+".h"
 	}
-	
 }

@@ -52,8 +52,12 @@ public class SubsystemTemplateIncMulti implements SubsystemTemplate {
   }
   
   @Override
-  public String getFileName() {
+  public String savePath() {
     String _identifier = this.s.tile.getIdentifier();
-    return ("subsystem_tile_" + _identifier);
+    String _plus = ("/" + _identifier);
+    String _plus_1 = (_plus + "/subsystem_");
+    String _identifier_1 = this.s.tile.getIdentifier();
+    String _plus_2 = (_plus_1 + _identifier_1);
+    return (_plus_2 + ".h");
   }
 }

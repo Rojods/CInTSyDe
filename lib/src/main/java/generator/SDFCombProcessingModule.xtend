@@ -12,6 +12,8 @@ import utils.Name
 import fileAnnotation.FileTypeAnno
 import java.lang.reflect.*
 import fileAnnotation.FileType
+import forsyde.io.java.core.ForSyDeSystemGraph
+import utils.Query
 
 class SDFCombProcessingModule  implements ModuleInterface{
 	Set<ActorTemplate> templates
@@ -27,21 +29,31 @@ class SDFCombProcessingModule  implements ModuleInterface{
 	def void process(Vertex v){
 		templates.stream().forEach( [t| 
 			
-			 var anno = t.getClass(). getAnnotation(FileTypeAnno)
-			 
-			 if(anno.type()==FileType.C_INCLUDE){
-			 	Save.save(Generator.root+"/inc/sdfcomb_"+Name.name(v)+".h",t.create(v));
-			 }
-			 
-			 if(anno.type()==FileType.C_SOURCE){
-			 	Save.save(Generator.root+"/src/sdfcomb_"+Name.name(v)+".c",t.create(v))
-			 }
-			 
+//			 var anno = t.getClass(). getAnnotation(FileTypeAnno)
+//			 		 	
+//			
+//			 if(anno.type()==FileType.C_INCLUDE){
+//			 	Save.save(t.create(v),Generator.root+t.savePath());
+//			 }
+//			 
+//			 if(anno.type()==FileType.C_SOURCE){
+//			 	Save.save(t.create(v),Generator.root+t.savePath())
+//			 }
+			save(Generator.model,v,t) 
 		] )
 	}
 
 	def void add(ActorTemplate t){
 		templates.add(t)
 	}
-	
+	def save(ForSyDeSystemGraph model, Vertex actor, ActorTemplate t){
+		if(Generator.platform!=2){
+			Save.save(t.create(actor),Generator.root+"/tile/"+t.savePath());
+		}else{
+			var Vertex tile=Query.findTile(Generator.model,actor)	
+			if(tile!==null){
+				Save.save(t.create(actor),Generator.root+"/"+tile.getIdentifier()+"/"+t.savePath())
+			}	
+		}
+	}	
 }

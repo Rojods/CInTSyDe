@@ -33,19 +33,18 @@ public class SubsystemMultiprocessorModule implements ModuleInterface {
       FileType _type = anno.type();
       boolean _equals = Objects.equal(_type, FileType.C_INCLUDE);
       if (_equals) {
-        String _identifier = schedule.tile.getIdentifier();
-        String _plus = ((Generator.root + "/inc/subsystem_") + _identifier);
-        String _plus_1 = (_plus + ".h");
-        Save.save(_plus_1, 
-          t.create(schedule));
+        String _create = t.create(schedule);
+        String _savePath = t.savePath();
+        String _plus = (Generator.root + _savePath);
+        Save.save(_create, _plus);
       }
       FileType _type_1 = anno.type();
       boolean _equals_1 = Objects.equal(_type_1, FileType.C_SOURCE);
       if (_equals_1) {
-        String _identifier_1 = schedule.tile.getIdentifier();
-        String _plus_2 = ((Generator.root + "/src/subsystem_") + _identifier_1);
-        String _plus_3 = (_plus_2 + ".c");
-        Save.save(_plus_3, t.create(schedule));
+        String _create_1 = t.create(schedule);
+        String _savePath_1 = t.savePath();
+        String _plus_1 = (Generator.root + _savePath_1);
+        Save.save(_create_1, _plus_1);
       }
     };
     this.templates.stream().forEach(_function);

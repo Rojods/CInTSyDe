@@ -32,6 +32,11 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
   private Set<Vertex> outputSDFChannelSet;
   
   @Override
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
+  }
+  
+  @Override
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {

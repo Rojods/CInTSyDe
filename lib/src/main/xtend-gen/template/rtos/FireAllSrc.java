@@ -40,7 +40,7 @@ public class FireAllSrc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "fire_all";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

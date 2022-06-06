@@ -12,17 +12,22 @@ public class FIFOInc3 implements InitTemplate {
   }
   
   @Override
+  public String savePath() {
+    return "/circular_fifo_lib/circular_fifo_lib.h";
+  }
+  
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("#ifndef CIRCULAR_FIFO_LIB_H_");
     _builder.newLine();
     _builder.append("#define CIRCULAR_FIFO_LIB_H_");
     _builder.newLine();
-    _builder.append("#include \"config.h\"\t\t\t");
+    _builder.append("\t\t");
     _builder.newLine();
-    _builder.append("#include \"datatype_definition.h\"");
+    _builder.append("#include \"../datatype/datatype_definition.h\"");
     _builder.newLine();
-    _builder.append("#include \"spinlock.h\"\t");
+    _builder.append("#include \"../circular_fifo_lib/spinlock.h\"\t");
     _builder.newLine();
     _builder.append("#include <string.h>");
     _builder.newLine();
@@ -70,10 +75,5 @@ public class FIFOInc3 implements InitTemplate {
     _builder.append("#endif");
     _builder.newLine();
     return _builder.toString();
-  }
-  
-  @Override
-  public String getFileName() {
-    return "circular_fifo_lib";
   }
 }

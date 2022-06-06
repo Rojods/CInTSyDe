@@ -13,9 +13,15 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.InitTemplate;
 import utils.Query;
 
+@Deprecated
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class Config implements InitTemplate {
+  @Override
+  public String savePath() {
+    return "/sdfchannel/config.h";
+  }
+  
   @Override
   public String create() {
     String _xblockexpression = null;
@@ -58,30 +64,10 @@ public class Config implements InitTemplate {
         }
       }
       _builder.newLine();
-      {
-        for(final Vertex c_1 : channels) {
-          {
-            boolean _isOnOneCoreChannel_1 = Query.isOnOneCoreChannel(model, c_1);
-            boolean _not = (!_isOnOneCoreChannel_1);
-            if (_not) {
-              _builder.append("#define ");
-              String _upperCase_1 = c_1.getIdentifier().toUpperCase();
-              _builder.append(_upperCase_1);
-              _builder.append("_ADDR 0x80020000");
-              _builder.newLineIfNotEmpty();
-            }
-          }
-        }
-      }
       _builder.append("#endif\t\t");
       _builder.newLine();
       _xblockexpression = _builder.toString();
     }
     return _xblockexpression;
-  }
-  
-  @Override
-  public String getFileName() {
-    return "config";
   }
 }

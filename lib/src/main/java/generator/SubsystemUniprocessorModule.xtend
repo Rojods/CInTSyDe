@@ -22,11 +22,11 @@ class SubsystemUniprocessorModule implements ModuleInterface {
 			 var anno = t.getClass(). getAnnotation(FileTypeAnno)
 			 
 			 if(anno.type()==FileType.C_INCLUDE){
-			 	Save.save(Generator.root+"/inc/"+t.getFileName()+".h",t.create(null));
+			 	Save.save(t.create(null),Generator.root+t.savePath());
 			 }
 			 
 			 if(anno.type()==FileType.C_SOURCE){
-			 	Save.save(Generator.root+"/src/"+t.getFileName()+".c",t.create(null))
+			 	Save.save(t.create(null),Generator.root+t.savePath())
 			 }
 			 
 		] )		

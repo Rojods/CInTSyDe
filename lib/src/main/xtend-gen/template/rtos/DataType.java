@@ -29,8 +29,8 @@ public class DataType implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "datatype_definition";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
   
   @Override

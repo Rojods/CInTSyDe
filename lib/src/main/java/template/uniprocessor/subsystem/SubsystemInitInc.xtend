@@ -59,8 +59,8 @@ class SubsystemInitInc implements InitTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "subsystem_init"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
 	

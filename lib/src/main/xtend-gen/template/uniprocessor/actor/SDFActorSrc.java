@@ -33,11 +33,21 @@ public class SDFActorSrc implements ActorTemplate {
   
   private Set<Vertex> outputSDFChannelSet;
   
+  private Vertex actor;
+  
+  @Override
+  public String savePath() {
+    String _identifier = this.actor.getIdentifier();
+    String _plus = ("/sdfactor/sdfactor_" + _identifier);
+    return (_plus + ".c");
+  }
+  
   @Override
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
       final ForSyDeSystemGraph model = Generator.model;
+      this.actor = actor;
       final Function<Executable, Vertex> _function = (Executable v) -> {
         return v.getViewedVertex();
       };
@@ -54,13 +64,12 @@ public class SDFActorSrc implements ActorTemplate {
       _builder.newLineIfNotEmpty();
       _builder.append("/* Includes */");
       _builder.newLine();
-      _builder.append("#include \"../inc/config.h\"");
       _builder.newLine();
-      _builder.append("#include \"../inc/datatype_definition.h\"");
+      _builder.append("#include \"../../datatype/datatype_definition.h\"");
       _builder.newLine();
-      _builder.append("#include \"../inc/circular_fifo_lib.h\"");
+      _builder.append("#include \"../../circular_fifo_lib/circular_fifo_lib.h\"");
       _builder.newLine();
-      _builder.append("#include \"../inc/sdfcomb_");
+      _builder.append("#include \"sdfactor_");
       _builder.append(name);
       _builder.append(".h\"");
       _builder.newLineIfNotEmpty();
@@ -444,7 +453,11 @@ public class SDFActorSrc implements ActorTemplate {
                       _builder_1.newLine();
                     }
                   }
-                  _builder_1.newLine();
+                  {
+                    if ((Generator.fifoType == 3)) {
+                      _builder_1.newLine();
+                    }
+                  }
                   ret = (_ret_1 + _builder_1);
                 } else {
                   String _ret_2 = ret;
@@ -517,6 +530,12 @@ public class SDFActorSrc implements ActorTemplate {
                       _builder_2.append(datatype, "\t");
                       _builder_2.append(" *)tmp_addr);");
                       _builder_2.newLineIfNotEmpty();
+                    }
+                  }
+                  {
+                    if ((Generator.fifoType == 3)) {
+                      _builder_2.append("\t");
+                      _builder_2.newLine();
                     }
                   }
                   _builder_2.append("}");
@@ -616,6 +635,10 @@ public class SDFActorSrc implements ActorTemplate {
                     _builder_1.newLineIfNotEmpty();
                   }
                 }
+                {
+                  if ((Generator.fifoType == 3)) {
+                  }
+                }
                 ret = (_ret_1 + _builder_1);
               } else {
                 String _ret_2 = ret;
@@ -669,6 +692,10 @@ public class SDFActorSrc implements ActorTemplate {
                     _builder_2.append(outport, "\t");
                     _builder_2.append("[i]);\t\t");
                     _builder_2.newLineIfNotEmpty();
+                  }
+                }
+                {
+                  if ((Generator.fifoType == 3)) {
                   }
                 }
                 _builder_2.append("}");

@@ -16,7 +16,9 @@ import forsyde.io.java.typed.viewers.values.IntegerValue
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SubsystemTemplateSrc implements SubsystemTemplate {
-
+	override savePath() {
+		return "/tile/subsystem.c"
+	}
 	override String create(Schedule s) {
 		var model = Generator.model
 		var sdfcomb = model.vertexSet().stream().filter([v|SDFActor.conforms(v)]).collect(Collectors.toSet())
@@ -26,13 +28,13 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 		.map([v|IntegerValue.safeCast(v).get()])
 		.collect(Collectors.toSet())
 		'''
-			#include "../inc/subsystem.h"
+			#include "subsystem.h"
 			#include <stdio.h>
 			«FOR v : sdfcomb»
-				#include "../inc/sdfcomb_«v.getIdentifier()».h"
+				#include "./sdfactor/sdfactor_«v.getIdentifier()».h"
 			«ENDFOR»
-			#include "../inc/datatype_definition.h"
-			#include "../inc/circular_fifo_lib.h"
+			#include "../datatype/datatype_definition.h"
+			#include "../circular_fifo_lib/circular_fifo_lib.h"
 			/*
 			==============================================
 				Subsystem Function
@@ -122,8 +124,5 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 			«ENDFOR»
 		'''
 	}	
-	override getFileName() {
-		return "subsystem"
-	}
 
 }

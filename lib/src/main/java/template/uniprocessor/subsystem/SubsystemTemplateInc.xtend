@@ -21,8 +21,8 @@ class SubsystemTemplateInc implements SubsystemTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "subsystem"
+	override savePath() {
+		return "/tile/subsystem.h"
 	}
 	
 }

@@ -39,10 +39,13 @@ public class FIFOSrc1 implements InitTemplate {
   }
   
   @Override
+  public String savePath() {
+    return "/circular_fifo_lib/circular_fifo_lib.c";
+  }
+  
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append("\t\t");
-    _builder.append("#include \"../inc/config.h\"");
     _builder.newLine();
     _builder.append("\t\t");
     _builder.newLine();
@@ -98,10 +101,10 @@ public class FIFOSrc1 implements InitTemplate {
     _builder.append("*/");
     _builder.newLine();
     _builder.append("\t\t");
-    _builder.append("#include \"../inc/datatype_definition.h\"");
+    _builder.append("#include \"../datatype/datatype_definition.h\"");
     _builder.newLine();
     _builder.append("\t\t");
-    _builder.append("#include \"../inc/circular_fifo_lib.h\"");
+    _builder.append("#include \"circular_fifo_lib.h\"");
     _builder.newLine();
     _builder.append("\t\t");
     _builder.append("#include <string.h>");
@@ -951,11 +954,6 @@ public class FIFOSrc1 implements InitTemplate {
     }
     _builder.newLine();
     return _builder;
-  }
-  
-  @Override
-  public String getFileName() {
-    return "circular_fifo_lib";
   }
   
   public boolean isOneDimension(final Vertex v) {

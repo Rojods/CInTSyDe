@@ -24,8 +24,8 @@ class FireAllSrc implements InitTemplate  {
 		'''
 	}
 	
-	override getFileName() {
-		return "fire_all"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 }

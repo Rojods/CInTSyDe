@@ -11,7 +11,7 @@ import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import java.util.HashMap
 import forsyde.io.java.typed.viewers.values.IntegerValue
 import java.util.stream.Collectors
-
+@Deprecated
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SubsystemInitSrc implements InitTemplate{
 	
@@ -86,8 +86,8 @@ class SubsystemInitSrc implements InitTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "subsystem_init"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 }

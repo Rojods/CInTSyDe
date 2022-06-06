@@ -26,6 +26,7 @@ class Generator {
 	public static int PC=1
 	public static int NUCLEO=0
 	public static int fifoType=2
+	public static int platform=0
 	Set<ModuleInterface> modules = new HashSet
 
 	new(ForSyDeSystemGraph model, String root) {

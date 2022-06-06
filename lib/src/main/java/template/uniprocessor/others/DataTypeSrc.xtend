@@ -9,7 +9,9 @@ import template.templateInterface.InitTemplate
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class DataTypeSrc implements InitTemplate {
-	
+	override savePath() {
+		return "/datatype/datatype_definition.c"
+	}	
 	override create() {
 		var model=Generator.model
 		var integerValues = model.vertexSet().stream()
@@ -19,7 +21,7 @@ class DataTypeSrc implements InitTemplate {
 		
 		
 		'''
-			#include "../inc/datatype_definition.h"
+			#include "datatype_definition.h"
 			
 			«FOR value:integerValues »
 				int «value.getIdentifier()»=«value.getIntValue()»;
@@ -27,8 +29,6 @@ class DataTypeSrc implements InitTemplate {
 		'''
 	}
 	
-	override getFileName() {
-		return "data_definition"
-	}
+
 	
 }

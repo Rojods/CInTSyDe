@@ -7,7 +7,7 @@ import fileAnnotation.FileTypeAnno
 import fileAnnotation.FileType
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import java.util.stream.Collectors
-
+@Deprecated
 @FileTypeAnno(type=FileType.C_INCLUDE)
 class Config implements InitTemplate {
 
@@ -33,8 +33,9 @@ class Config implements InitTemplate {
 		'''
 	}
 
-	override getFileName() {
-		return "config"
+	override savePath() {			
+		return "/tile/config.h"
+	
 	}
 
 }

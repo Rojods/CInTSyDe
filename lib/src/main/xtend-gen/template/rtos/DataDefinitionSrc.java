@@ -51,7 +51,7 @@ public class DataDefinitionSrc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "data_definition";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

@@ -1,0 +1,6 @@
+#ifndef  GRAYSCALETOGETPX_h_ 
+#define GRAYSCALETOGETPX_h_ 
+
+#define GRAYSCALETOGETPX_BLOCKING 0
+
+#endif

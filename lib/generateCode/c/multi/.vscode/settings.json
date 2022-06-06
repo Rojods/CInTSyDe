@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "circular_fifo_lib.h": "c",
-        "spinlock.h": "c",
-        "string.h": "c"
-    }
-}

@@ -6,5 +6,5 @@ import generator.Schedule;
 public interface SubsystemTemplate {
   String create(final Schedule s);
   
-  String getFileName();
+  String savePath();
 }

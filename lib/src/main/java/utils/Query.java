@@ -40,8 +40,13 @@ import java.lang.Math;
 public class Query {
 
 	public static boolean isOnOneCoreChannel(ForSyDeSystemGraph model,Vertex channel) {
-		var inputActor=VertexAcessor.getNamedPort(model,channel,"producer" , VertexTrait.MOC_SDF_SDFACTOR).get();
-		var outputActor = VertexAcessor.getNamedPort(model,channel,"consumer" , VertexTrait.MOC_SDF_SDFACTOR).get();
+		var inputActor=VertexAcessor.getNamedPort(model,channel,"producer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
+		var outputActor = VertexAcessor.getNamedPort(model,channel,"consumer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
+		if(inputActor==null||outputActor==null) {
+			return true;
+		}
+		
+		
 		Set<Vertex> tiles = model.vertexSet().stream()
 				.filter(v->GenericProcessingModule.conforms(v))
 				.collect(Collectors.toSet());
@@ -68,6 +73,31 @@ public class Query {
 		}
 		return false;
 	}
+	
+	public static Vertex findTile(ForSyDeSystemGraph model,Vertex vertex) {
+		
+		if(SDFActor.conforms(vertex)) {
+			Set<Vertex> tiles = model.vertexSet().stream()
+					.filter(v->GenericProcessingModule.conforms(v))
+					.collect(Collectors.toSet());
+			BFSShortestPath<Vertex,EdgeInfo> bfs = new BFSShortestPath<>(model);
+			
+			Vertex targetTile=null;
+			for(Vertex tile:tiles) {
+				var a=	bfs.getPath(tile,vertex);
+				if(a!=null&&a.getLength()==2) {
+					targetTile = tile;
+					return targetTile;
+				}
+			}		
+		}
+		
+			
+		return null;
+		
+	}
+	
+	
 	public static Set<Vertex> findAllExternalDataBlocks(ForSyDeSystemGraph model) {
 		return model.vertexSet().stream().filter(v -> DataBlock.conforms(v) && !SDFChannel.conforms(v))
 				.collect(Collectors.toSet());

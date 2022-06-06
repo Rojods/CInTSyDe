@@ -25,14 +25,17 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 			IntegerValue.safeCast(v).get()
 		]).collect(Collectors.toSet())
 		'''
-			#include "../inc/subsystem_«s.tile.getIdentifier()».h"
-			#include "../inc/datatype_definition.h"
+			#include "subsystem_«s.tile.getIdentifier()».h"
+			#include "../datatype/datatype_definition.h"
+			#include "../circular_fifo_lib/circular_fifo_lib.h"
 			#include <cheap_s.h>
 			void subsystem_«tile.getIdentifier()»(){
 			«FOR actor : schedule.slots SEPARATOR "" AFTER ""»
 				«var tmp =1»
 					«IF actor!==null»
+						xil_printf("fire actor «actor.getIdentifier()»\n");
 						actor_«Name.name(actor)»();
+						xil_printf("actor «actor.getIdentifier()» ends\n");
 					«ENDIF»
 			«ENDFOR»
 			}	
@@ -133,8 +136,8 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 		'''
 	}
 
-	override getFileName() {
-		return "subsystem_tile_" + s.tile.getIdentifier()
+	override savePath() {
+		return "/"+s.tile.getIdentifier()+"/subsystem_"+s.tile.getIdentifier()+".c"
 	}
 
 	def help(HashMap<String, Integer> ordering) {

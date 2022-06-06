@@ -37,7 +37,7 @@ public class SubsystemTemplateInc implements SubsystemTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "subsystem";
+  public String savePath() {
+    return "/tile/subsystem.h";
   }
 }

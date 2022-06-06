@@ -14,6 +14,9 @@ import utils.Query
 
 @FileTypeAnno(type=FileType.C_SOURCE)
 class StartTaskTemplateSrcRTOS implements InitTemplate {
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
 	override String create() {
 		var model= Generator.model
 		var integerValues = model.vertexSet().stream()
@@ -151,8 +154,6 @@ class StartTaskTemplateSrcRTOS implements InitTemplate {
 		'''
 	}
 
-	override getFileName() {
-		return "init_subsystem"
-	}
+
 
 }

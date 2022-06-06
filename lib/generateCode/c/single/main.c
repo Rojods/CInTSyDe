@@ -1,7 +1,6 @@
-#include "./single/inc/circular_fifo_lib.h"
-#include "./single/inc/config.h"
-#include "./single/inc/subsystem.h"
-
+#include <stdio.h>
+#include "./single/tile/subsystem.h"
+#include "./single/datatype/datatype_definition.h"
 #define X 5
 #define Y 5
 UInt16 dimX_global=X;

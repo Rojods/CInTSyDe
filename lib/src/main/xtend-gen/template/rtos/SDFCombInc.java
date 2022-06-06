@@ -10,6 +10,11 @@ import template.templateInterface.ActorTemplate;
 @SuppressWarnings("all")
 public class SDFCombInc implements ActorTemplate {
   @Override
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
+  }
+  
+  @Override
   public String create(final Vertex vertex) {
     String _xblockexpression = null;
     {

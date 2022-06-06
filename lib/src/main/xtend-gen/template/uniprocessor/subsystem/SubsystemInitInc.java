@@ -81,7 +81,7 @@ public class SubsystemInitInc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "subsystem_init";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

@@ -4,4 +4,5 @@ import forsyde.io.java.core.Vertex
 
 interface ChannelTemplate {
 	def String create(Vertex vertex)
+	def String savePath()
 }

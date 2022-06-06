@@ -26,12 +26,12 @@ class SubsystemMultiprocessorModule implements ModuleInterface {
 			var anno = t.getClass().getAnnotation(FileTypeAnno)
 
 			if (anno.type() == FileType.C_INCLUDE) {
-				Save.save(Generator.root + "/inc/subsystem_" + schedule.tile.getIdentifier() + ".h",
-					t.create(schedule));
+				
+				Save.save(t.create(schedule),Generator.root +t.savePath());
 			}
 
 			if (anno.type() == FileType.C_SOURCE) {
-				Save.save(Generator.root + "/src/subsystem_" + schedule.tile.getIdentifier() + ".c", t.create(schedule))
+				Save.save(t.create(schedule),Generator.root +t.savePath())
 			}
 
 		])

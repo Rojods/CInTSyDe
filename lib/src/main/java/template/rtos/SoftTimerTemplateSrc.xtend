@@ -35,8 +35,8 @@ class SoftTimerTemplateSrc implements InitTemplate {
 		'''
 	}
 	
-	override getFileName() {
-		return "soft_timer"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 }

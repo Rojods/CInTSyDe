@@ -8,14 +8,16 @@ import template.templateInterface.InitTemplate
 class FIFOInc3 implements InitTemplate{
 	new() {		
 	}
-
+	override savePath() {
+		return "/circular_fifo_lib/circular_fifo_lib.h"
+	}
 	override create() {
 		'''
 			#ifndef CIRCULAR_FIFO_LIB_H_
 			#define CIRCULAR_FIFO_LIB_H_
-			#include "config.h"			
-			#include "datatype_definition.h"
-			#include "spinlock.h"	
+		
+			#include "../datatype/datatype_definition.h"
+			#include "../circular_fifo_lib/spinlock.h"	
 			#include <string.h>
 			/*
 			*******************************************************
@@ -39,7 +41,5 @@ class FIFOInc3 implements InitTemplate{
 		'''
 	}
 
-	override getFileName() {
-		return "circular_fifo_lib"
-	}	
+
 }

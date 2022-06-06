@@ -21,6 +21,11 @@ import utils.Query;
 @SuppressWarnings("all")
 public class StartTaskTemplateSrcRTOS implements InitTemplate {
   @Override
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
+  }
+  
+  @Override
   public String create() {
     String _xblockexpression = null;
     {
@@ -468,10 +473,5 @@ public class StartTaskTemplateSrcRTOS implements InitTemplate {
       _xblockexpression = _builder.toString();
     }
     return _xblockexpression;
-  }
-  
-  @Override
-  public String getFileName() {
-    return "init_subsystem";
   }
 }

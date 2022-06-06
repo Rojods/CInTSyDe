@@ -7,7 +7,9 @@ import template.templateInterface.ActorTemplate
 
 @FileTypeAnno(type=FileType.C_INCLUDE)
 class SDFCombInc implements ActorTemplate{
-	
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}	
 	override create(Vertex vertex) {
 		var name=vertex.getIdentifier()
 		'''

@@ -30,8 +30,8 @@ public class DataTypeInc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "datatype_definition";
+  public String savePath() {
+    return "/datatype/datatype_definition.h";
   }
   
   @Override

@@ -8,6 +8,7 @@ import utils.Query
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import java.util.HashMap
 @FileTypeAnno(type=FileType.C_INCLUDE)
+@Deprecated
 class SubsystemInitInc implements InitTemplate{
 	
 	override create() {
@@ -19,8 +20,7 @@ class SubsystemInitInc implements InitTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "subsystem_init"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
-	
 }

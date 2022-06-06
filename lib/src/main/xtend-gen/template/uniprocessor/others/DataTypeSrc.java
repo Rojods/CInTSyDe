@@ -17,6 +17,11 @@ import template.templateInterface.InitTemplate;
 @SuppressWarnings("all")
 public class DataTypeSrc implements InitTemplate {
   @Override
+  public String savePath() {
+    return "/datatype/datatype_definition.c";
+  }
+  
+  @Override
   public String create() {
     String _xblockexpression = null;
     {
@@ -29,7 +34,7 @@ public class DataTypeSrc implements InitTemplate {
       };
       Set<IntegerValue> integerValues = model.vertexSet().stream().filter(_function).<IntegerValue>map(_function_1).collect(Collectors.<IntegerValue>toSet());
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("#include \"../inc/datatype_definition.h\"");
+      _builder.append("#include \"datatype_definition.h\"");
       _builder.newLine();
       _builder.newLine();
       {
@@ -47,10 +52,5 @@ public class DataTypeSrc implements InitTemplate {
       _xblockexpression = _builder.toString();
     }
     return _xblockexpression;
-  }
-  
-  @Override
-  public String getFileName() {
-    return "data_definition";
   }
 }

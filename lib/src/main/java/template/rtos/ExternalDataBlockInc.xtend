@@ -40,8 +40,8 @@ class ExternalDataBlockInc implements InitTemplate {
 		'''
 	}
 	
-	override getFileName() {
-		return "extern_datablock"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 }

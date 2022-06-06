@@ -25,8 +25,8 @@ class DataTypeInc implements InitTemplate {
 	new() {
 	}
 
-	override getFileName() {
-		return "datatype_definition"
+	override savePath() {
+		return "/datatype/datatype_definition.h"
 	}
 
 	override create() {

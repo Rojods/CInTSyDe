@@ -36,6 +36,8 @@ public class Generator {
   
   public static int fifoType = 2;
   
+  public static int platform = 0;
+  
   private Set<ModuleInterface> modules = new HashSet<ModuleInterface>();
   
   public Generator(final ForSyDeSystemGraph model, final String root) {

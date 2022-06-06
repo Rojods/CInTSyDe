@@ -15,19 +15,26 @@ import utils.Query
  */
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFChannelTemplateSrc implements ChannelTemplate {
-
+	Vertex sdfchannel
+	override savePath() {
+		return "/sdfchannel/sdfchannel_"+sdfchannel.getIdentifier()+".c"
+	}
 	override create(Vertex sdfchannel) {
 		var model=Generator.model
+		this.sdfchannel=sdfchannel
+		
+		
 		var type = Query.findSDFChannelDataType(Generator.model, sdfchannel)
 		var properties = sdfchannel.getProperties()
 		'''	
-			#include "../inc/config.h"
-			#include "../inc/spinlock.h"
-			#include "../inc/datatype_definition.h"
+			
+			#include "../../circular_fifo_lib/spinlock.h"
+			#include "../../datatype/datatype_definition.h"
 			«var channelname=sdfchannel.getIdentifier()»
-			#include "../inc/circular_fifo_lib.h"
+			#include "../../circular_fifo_lib/circular_fifo_lib.h"
+			#include "sdfchannel_«channelname».h"
 			#include <cheap_s.h>
-			#define tile0_comm1 0x80020000
+			
 				«IF BoundedSDFChannel.conforms(sdfchannel)»
 					«var viewer = new BoundedSDFChannelViewer(sdfchannel)»
 					«var maximumTokens =viewer.getMaximumTokens()»
@@ -43,7 +50,9 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 					 volatile cheap const fifo_admin_«channelname»=(cheap) «channelname.toUpperCase()»_ADDR;
 					 volatile «type» * const fifo_data_«channelname»=(«type»  *)((cheap) «channelname.toUpperCase()»_ADDR +1);			 
 					 unsigned int buffer_«channelname»_size=«Query.getBufferSize(sdfchannel)»;
-					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»	;
+					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»;
+					 
+«««					 «Query.getTokenSize(sdfchannel)»	;
 ««« 					 volatile «type» buffer_«channelname»[«maximumTokens»];			
 					«ENDIF»
 				«ELSE»
@@ -60,7 +69,8 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
  					 volatile cheap const fifo_admin_«channelname»=(cheap) «channelname.toUpperCase()»_ADDR;
  					 volatile «type» * const fifo_data_«channelname»=(«type»  *)((cheap) «channelname.toUpperCase()»_ADDR +1); 					 
  					 unsigned int buffer_«channelname»_size=1;
- 					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»	;
+ 					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»;
+««« 					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»	;
 ««« 					 volatile «type» buffer_«channelname»[1];							
 					«ENDIF»
 				«ENDIF»			

@@ -24,7 +24,7 @@ public class FireAllInc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "fire_all";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

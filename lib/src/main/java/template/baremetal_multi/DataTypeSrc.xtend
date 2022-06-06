@@ -19,16 +19,15 @@ class DataTypeSrc implements InitTemplate {
 		
 		
 		'''
-			#include "../inc/datatype_definition.h"
-			
+		#include "datatype_definition.h"
 			«FOR value:integerValues »
 				int «value.getIdentifier()»=«value.getIntValue()»;
 			«ENDFOR»
 		'''
 	}
 	
-	override getFileName() {
-		return "data_definition"
+	override savePath() {
+		return "/datatype/datatype_definition.c"
 	}
 	
 }

@@ -76,7 +76,7 @@ public class SoftTimerTemplateSrc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "soft_timer";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

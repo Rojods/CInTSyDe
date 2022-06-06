@@ -23,7 +23,7 @@ public class StartTaskInc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "init_subsystem";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

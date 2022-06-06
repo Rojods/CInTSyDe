@@ -34,8 +34,8 @@ class ConfigRTOSInc implements InitTemplate {
 		'''
 	}
 
-	override getFileName() {
-		return "config"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
 }

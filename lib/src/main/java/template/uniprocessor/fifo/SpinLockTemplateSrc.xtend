@@ -9,7 +9,7 @@ class SpinLockTemplateSrc implements InitTemplate{
 	
 	override create() {
 		'''
-			#include "../inc/spinlock.h"
+			#include "spinlock.h"
 				#if defined(WINDOWS)
 				#define ATOMIC_TEST_AND_SET   _InterlockedExchange
 				#endif
@@ -19,18 +19,18 @@ class SpinLockTemplateSrc implements InitTemplate{
 				#endif
 				
 				void spinlock_get(spinlock* lock){
-					while(ATOMIC_TEST_AND_SET(&lock->flag,1)==1){
+				//	while(ATOMIC_TEST_AND_SET(&lock->flag,1)==1){
 						
-					}
+				//	}
 				}
 				void spinlock_release(spinlock* lock){
-					ATOMIC_TEST_AND_SET(&lock->flag,0);
+				//	ATOMIC_TEST_AND_SET(&lock->flag,0);
 				}	
 			
 		'''
 	}
 	
-	override getFileName() {
-		return "spinlock"
+	override savePath() {
+		return "/circular_fifo_lib/spinlock.c"
 	}
 }

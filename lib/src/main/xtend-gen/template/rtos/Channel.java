@@ -88,7 +88,7 @@ public class Channel implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "sdfchannel";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

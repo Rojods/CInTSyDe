@@ -23,12 +23,14 @@ class SDFActorSrc implements ActorTemplate {
 	Set<Vertex> implActorSet
 	Set<Vertex> inputSDFChannelSet
 	Set<Vertex> outputSDFChannelSet
-
+	Vertex actor
+	override savePath() {
+		return "/sdfactor/sdfactor_"+actor.getIdentifier()+".c"
+	}
 	override create(Vertex actor) {
 		val model = Generator.model
+		this.actor=actor
 
-//		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions",
-//			VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING)
 		implActorSet = SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().map([v|v.getViewedVertex()]).
 			collect(Collectors.toSet())
 		this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor)
@@ -41,10 +43,10 @@ class SDFActorSrc implements ActorTemplate {
 		'''
 			«var name = actor.getIdentifier()»
 			/* Includes */
-			#include "../inc/config.h"
-			#include "../inc/datatype_definition.h"
-			#include "../inc/circular_fifo_lib.h"
-			#include "../inc/sdfcomb_«name».h"
+
+			#include "../../datatype/datatype_definition.h"
+			#include "../../circular_fifo_lib/circular_fifo_lib.h"
+			#include "sdfactor_«name».h"
 			
 			/*
 			========================================
@@ -196,7 +198,8 @@ class SDFActorSrc implements ActorTemplate {
 							ret += '''
 								Consumption in «actor.getIdentifier()» Not Specified!
 							'''
-						} else if (consumption == 1) {
+						} 
+						else if (consumption == 1) {
 							ret += '''
 								«IF Generator.fifoType==1»
 								#if «sdfchannelName.toUpperCase()»_BLOCKING==0
@@ -216,9 +219,12 @@ class SDFActorSrc implements ActorTemplate {
 									«port»= *((«datatype» *)tmp_addr);
 								}
 								«ENDIF»
+								«IF Generator.fifoType==3»
 								
+								«ENDIF»
 							'''
-						} else {
+						} 
+						else {
 							ret += '''
 								for(int i=0;i<«consumption»;++i){
 									«IF Generator.fifoType==1»
@@ -235,6 +241,9 @@ class SDFActorSrc implements ActorTemplate {
 									void* tmp_addr;
 									read_non_blocking(&fifo_«sdfchannelName»,&tmp_addr);
 									«port»[i]= *((«datatype» *)tmp_addr);
+									«ENDIF»
+									«IF Generator.fifoType==3»
+									
 									«ENDIF»
 								}
 								
@@ -288,7 +297,9 @@ class SDFActorSrc implements ActorTemplate {
 							«ENDIF»
 							«IF Generator.fifoType==2»
 							write_non_blocking(&fifo_«sdfchannelName»,(void*)&«outport»);
-							«ENDIF»						
+							«ENDIF»	
+							«IF Generator.fifoType==3»
+							«ENDIF»					
 						'''
 					} else {
 						ret += '''
@@ -303,6 +314,8 @@ class SDFActorSrc implements ActorTemplate {
 								«IF Generator.fifoType==2»
 								write_non_blocking(&fifo_«sdfchannelName»,(void*)&«outport»[i]);		
 								«ENDIF»							
+								«IF Generator.fifoType==3»
+								«ENDIF»
 							}
 							
 						'''

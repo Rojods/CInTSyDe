@@ -12,8 +12,6 @@ class SpinLockTemplateInc implements InitTemplate{
 		'''
 			#ifndef SPINLOCK_H_
 			#define SPINLOCK_H_
-			#include "config.h"
-			
 			
 				#define ARM
 				typedef struct{
@@ -28,8 +26,8 @@ class SpinLockTemplateInc implements InitTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "spinlock"
+	override savePath() {
+		return "/circular_fifo_lib/spinlock.h"
 	}
 	
 }

@@ -29,17 +29,17 @@ public class DataTypeSrc implements InitTemplate {
       };
       Set<IntegerValue> integerValues = model.vertexSet().stream().filter(_function).<IntegerValue>map(_function_1).collect(Collectors.<IntegerValue>toSet());
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("#include \"../inc/datatype_definition.h\"");
-      _builder.newLine();
+      _builder.append("#include \"datatype_definition.h\"");
       _builder.newLine();
       {
         for(final IntegerValue value : integerValues) {
+          _builder.append("\t");
           _builder.append("int ");
           String _identifier = value.getIdentifier();
-          _builder.append(_identifier);
+          _builder.append(_identifier, "\t");
           _builder.append("=");
           Integer _intValue = value.getIntValue();
-          _builder.append(_intValue);
+          _builder.append(_intValue, "\t");
           _builder.append(";");
           _builder.newLineIfNotEmpty();
         }
@@ -50,7 +50,7 @@ public class DataTypeSrc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "data_definition";
+  public String savePath() {
+    return "/datatype/datatype_definition.c";
   }
 }

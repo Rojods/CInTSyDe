@@ -21,7 +21,9 @@ class SDFCombTemplateSrcRTOS implements ActorTemplate {
 	Set<Vertex> implActorSet
 	Set<Vertex> inputSDFChannelSet
 	Set<Vertex> outputSDFChannelSet
-
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
 	override create(Vertex actor) {
 		var model = Generator.model
 		implActorSet = VertexAcessor.getMultipleNamedPort(Generator.model, actor, "combFunctions",

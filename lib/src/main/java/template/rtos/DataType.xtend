@@ -26,10 +26,9 @@ class DataType implements InitTemplate {
 	new() {
 	}
 
-	override getFileName() {
-		return "datatype_definition"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
-
 	override create() {
 		var model = Generator.model
 		var outset = model.vertexSet().stream().filter([ v |

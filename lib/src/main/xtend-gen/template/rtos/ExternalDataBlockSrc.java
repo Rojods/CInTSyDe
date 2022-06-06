@@ -73,7 +73,7 @@ public class ExternalDataBlockSrc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "extern_datablock";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

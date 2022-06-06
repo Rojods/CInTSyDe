@@ -20,6 +20,11 @@ import utils.Query;
 public class FIFOInc1 implements InitTemplate {
   private Set<Vertex> typeVertexSet;
   
+  @Override
+  public String savePath() {
+    return "/circular_fifo_lib/circular_fifo_lib.h";
+  }
+  
   public FIFOInc1() {
     final ForSyDeSystemGraph model = Generator.model;
     final Predicate<Vertex> _function = (Vertex v) -> {
@@ -45,7 +50,6 @@ public class FIFOInc1 implements InitTemplate {
     _builder.newLine();
     _builder.append("#define CIRCULAR_FIFO_LIB_H_");
     _builder.newLine();
-    _builder.append("#include \"config.h\"");
     _builder.newLine();
     _builder.newLine();
     _builder.append("/*");
@@ -62,7 +66,7 @@ public class FIFOInc1 implements InitTemplate {
     _builder.newLine();
     _builder.newLine();
     _builder.newLine();
-    _builder.append("#include \"datatype_definition.h\"");
+    _builder.append("#include \"../datatype/datatype_definition.h\"");
     _builder.newLine();
     _builder.newLine();
     _builder.append("#include \"spinlock.h\"\t");
@@ -95,11 +99,6 @@ public class FIFOInc1 implements InitTemplate {
     _builder.append("#endif");
     _builder.newLine();
     return _builder.toString();
-  }
-  
-  @Override
-  public String getFileName() {
-    return "circular_fifo_lib";
   }
   
   public String foo(final Vertex v) {

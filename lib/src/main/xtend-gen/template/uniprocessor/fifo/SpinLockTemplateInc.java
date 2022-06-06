@@ -15,9 +15,6 @@ public class SpinLockTemplateInc implements InitTemplate {
     _builder.newLine();
     _builder.append("#define SPINLOCK_H_");
     _builder.newLine();
-    _builder.append("#include \"config.h\"");
-    _builder.newLine();
-    _builder.newLine();
     _builder.newLine();
     _builder.append("\t");
     _builder.append("#define ARM");
@@ -47,7 +44,7 @@ public class SpinLockTemplateInc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "spinlock";
+  public String savePath() {
+    return "/circular_fifo_lib/spinlock.h";
   }
 }

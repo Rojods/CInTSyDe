@@ -16,6 +16,7 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.InitTemplate;
 import utils.Query;
 
+@Deprecated
 @FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class SubsystemInitSrc implements InitTemplate {
@@ -240,7 +241,7 @@ public class SubsystemInitSrc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "subsystem_init";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

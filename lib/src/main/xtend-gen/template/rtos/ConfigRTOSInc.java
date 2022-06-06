@@ -67,7 +67,7 @@ public class ConfigRTOSInc implements InitTemplate {
   }
   
   @Override
-  public String getFileName() {
-    return "config";
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

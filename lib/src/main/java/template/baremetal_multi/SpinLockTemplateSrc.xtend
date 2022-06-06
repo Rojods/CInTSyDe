@@ -13,7 +13,7 @@ class SpinLockTemplateSrc implements InitTemplate{
 	override create() {
 
 		'''
-			#include "../inc/spinlock.h"
+			#include "spinlock.h"
 
 				#if defined(WINDOWS)
 				#define ATOMIC_TEST_AND_SET   _InterlockedExchange
@@ -35,7 +35,7 @@ class SpinLockTemplateSrc implements InitTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "spinlock"
+	override savePath() {
+	return "/circular_fifo_lib/spinlock.c"
 	}
 }

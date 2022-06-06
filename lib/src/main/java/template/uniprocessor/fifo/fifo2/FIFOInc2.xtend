@@ -9,13 +9,15 @@ class FIFOInc2 implements InitTemplate{
 
 	new() {		
 	}
-
+	override savePath() {
+		return "/circular_fifo_lib/circular_fifo_lib.h"
+	}
 	override create() {
 		'''
 			#ifndef CIRCULAR_FIFO_LIB_H_
 			#define CIRCULAR_FIFO_LIB_H_
-			#include "config.h"			
-			#include "datatype_definition.h"
+		
+			#include "../datatype/datatype_definition.h"
 			#include "spinlock.h"	
 			/*
 			*******************************************************
@@ -38,9 +40,7 @@ class FIFOInc2 implements InitTemplate{
 		'''
 	}
 
-	override getFileName() {
-		return "circular_fifo_lib"
-	}
+
 
 		
 }

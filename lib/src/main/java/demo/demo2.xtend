@@ -7,6 +7,12 @@ import template.baremetal_multi.*
 import generator.SDFCombProcessingModule
 import generator.SubsystemMultiprocessorModule
 import generator.InitProcessingModule
+import template.uniprocessor.fifo.fifo1.FIFOInc1
+import template.uniprocessor.fifo.fifo1.FIFOSrc1
+import template.uniprocessor.fifo.fifo2.FIFOInc2
+import template.uniprocessor.fifo.fifo2.FIFOSrc2
+import template.uniprocessor.fifo.fifo3.FIFOInc3
+import template.uniprocessor.fifo.fifo3.FIFOSrc3
 
 /**
  * multi cores
@@ -21,23 +27,30 @@ class demo2 {
 //		model.mergeInPlace(loader.loadModel(path2))
 		
 		
-		
-		val path = "example1.fiodl"
-		val root = "generateCode/c/multi"
+		/* testing example1.fiodl*/
+		val path = "example1-2cores.fiodl"
+		val root = "generateCode/c/multi_example1"
 		var loader = (new ForSyDeModelHandler)
 		var model = loader.loadModel(path)		
 		
-	
+//		/* testing  test2.fiodl */
 //		val path = "test2.fiodl"
-//		val root = "generateCode/c/multi3"
+//		val root = "generateCode/c/multi_test2"
 //		var loader = (new ForSyDeModelHandler)
 //		var model = loader.loadModel(path)		
 		
 		
 		var Generator gen = new Generator(model, root)
-
+		Generator.fifoType=1
+		Generator.platform=2
 		var sdfchannelModule = new SDFChannelProcessingModule
 		sdfchannelModule.add(new SDFChannelTemplateSrc)
+		sdfchannelModule.add(new SDFChannelInc)
+	
+		
+		
+		
+		
 		gen.add(sdfchannelModule)
 
 		var actorModule = new SDFCombProcessingModule
@@ -48,16 +61,37 @@ class demo2 {
 		var subsystem = new SubsystemMultiprocessorModule
 		subsystem.add(new SubsystemTemplateSrcMulti)
 		subsystem.add(new SubsystemTemplateIncMulti)
+
+		
 		gen.add(subsystem)
 
 		var initModule = new InitProcessingModule
 		initModule.add(new DataTypeInc)
 		initModule.add(new DataTypeSrc)
-		initModule.add(new CircularFIFOTemplateInc)
-		initModule.add(new CircularFIFOTemplateSrc)
+		
+		
+//		initModule.add(new CircularFIFOTemplateInc)
+//		initModule.add(new CircularFIFOTemplateSrc)
+		
+		if(Generator.fifoType==1){
+			initModule.add(new FIFOInc1)
+			initModule.add(new FIFOSrc1)
+		}
+		
+		
+		if(Generator.fifoType==2){
+			initModule.add(new FIFOInc2)
+			initModule.add(new FIFOSrc2)
+		}
+		if(Generator.fifoType==3){
+			initModule.add(new FIFOInc3)
+			initModule.add(new FIFOSrc3)
+		}		
+		
+		
 		initModule.add(new SpinLockTemplateInc)
 		initModule.add(new SpinLockTemplateSrc)
-		initModule.add(new Config)
+		//initModule.add(new Config)
 //		initModule.add(new SubsystemInitInc)
 //		initModule.add(new SubsystemInitSrc)
 		

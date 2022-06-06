@@ -40,8 +40,8 @@ class Channel implements InitTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "sdfchannel"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 }

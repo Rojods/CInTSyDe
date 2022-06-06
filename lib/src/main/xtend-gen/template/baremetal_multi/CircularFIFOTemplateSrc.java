@@ -39,6 +39,11 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
   }
   
   @Override
+  public String savePath() {
+    return "/circular_fifo_lib/circular_fifo_lib.c";
+  }
+  
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("#include \"../inc/config.h\"");
@@ -936,11 +941,6 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
     }
     _builder.newLine();
     return _builder;
-  }
-  
-  @Override
-  public String getFileName() {
-    return "circular_fifo_lib";
   }
   
   public boolean isOneDimension(final Vertex v) {

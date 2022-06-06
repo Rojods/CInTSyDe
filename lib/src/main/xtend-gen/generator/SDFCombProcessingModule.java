@@ -1,8 +1,6 @@
 package generator;
 
-import com.google.common.base.Objects;
-import fileAnnotation.FileType;
-import fileAnnotation.FileTypeAnno;
+import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFActor;
 import java.util.HashSet;
@@ -10,7 +8,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import template.templateInterface.ActorTemplate;
-import utils.Name;
+import utils.Query;
 import utils.Save;
 
 @SuppressWarnings("all")
@@ -35,28 +33,40 @@ public class SDFCombProcessingModule implements ModuleInterface {
   
   public void process(final Vertex v) {
     final Consumer<ActorTemplate> _function = (ActorTemplate t) -> {
-      FileTypeAnno anno = t.getClass().<FileTypeAnno>getAnnotation(FileTypeAnno.class);
-      FileType _type = anno.type();
-      boolean _equals = Objects.equal(_type, FileType.C_INCLUDE);
-      if (_equals) {
-        String _name = Name.name(v);
-        String _plus = ((Generator.root + "/inc/sdfcomb_") + _name);
-        String _plus_1 = (_plus + ".h");
-        Save.save(_plus_1, t.create(v));
-      }
-      FileType _type_1 = anno.type();
-      boolean _equals_1 = Objects.equal(_type_1, FileType.C_SOURCE);
-      if (_equals_1) {
-        String _name_1 = Name.name(v);
-        String _plus_2 = ((Generator.root + "/src/sdfcomb_") + _name_1);
-        String _plus_3 = (_plus_2 + ".c");
-        Save.save(_plus_3, t.create(v));
-      }
+      this.save(Generator.model, v, t);
     };
     this.templates.stream().forEach(_function);
   }
   
   public void add(final ActorTemplate t) {
     this.templates.add(t);
+  }
+  
+  public boolean save(final ForSyDeSystemGraph model, final Vertex actor, final ActorTemplate t) {
+    boolean _xifexpression = false;
+    if ((Generator.platform != 2)) {
+      String _create = t.create(actor);
+      String _savePath = t.savePath();
+      String _plus = ((Generator.root + "/tile/") + _savePath);
+      _xifexpression = Save.save(_create, _plus);
+    } else {
+      boolean _xblockexpression = false;
+      {
+        Vertex tile = Query.findTile(Generator.model, actor);
+        boolean _xifexpression_1 = false;
+        if ((tile != null)) {
+          String _create_1 = t.create(actor);
+          String _identifier = tile.getIdentifier();
+          String _plus_1 = ((Generator.root + "/") + _identifier);
+          String _plus_2 = (_plus_1 + "/");
+          String _savePath_1 = t.savePath();
+          String _plus_3 = (_plus_2 + _savePath_1);
+          _xifexpression_1 = Save.save(_create_1, _plus_3);
+        }
+        _xblockexpression = _xifexpression_1;
+      }
+      _xifexpression = _xblockexpression;
+    }
+    return _xifexpression;
   }
 }

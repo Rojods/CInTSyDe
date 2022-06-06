@@ -71,8 +71,8 @@ class SubsystemInitSrc implements InitTemplate{
 			«ENDFOR»
 		'''
 	}	
-	override getFileName() {
-		return "subsystem_init"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 }

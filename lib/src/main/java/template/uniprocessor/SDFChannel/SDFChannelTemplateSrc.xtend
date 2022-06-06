@@ -15,15 +15,20 @@ import utils.Query
  */
 @FileTypeAnno(type=FileType.C_SOURCE)
 class SDFChannelTemplateSrc implements ChannelTemplate {
-
+	Vertex sdfchannel
+	override savePath() {
+		return "/sdfchannel/sdfchannel_"+this.sdfchannel.getIdentifier()+".c"
+	}
 	override create(Vertex sdfchannel) {
 		var model=Generator.model
+		this.sdfchannel=sdfchannel
 		var type = Query.findSDFChannelDataType(Generator.model, sdfchannel)
 		var properties = sdfchannel.getProperties()
 		'''	
-			#include "../inc/config.h"
+			
 			«var sdfname=sdfchannel.getIdentifier()»
-			#include "../inc/circular_fifo_lib.h"
+			#include "sdfchannel_«sdfname».h"
+			#include "../../circular_fifo_lib/circular_fifo_lib.h"
 				«IF BoundedSDFChannel.conforms(sdfchannel)»
 					«var viewer = new BoundedSDFChannelViewer(sdfchannel)»
 					«var maximumTokens =viewer.getMaximumTokens()»

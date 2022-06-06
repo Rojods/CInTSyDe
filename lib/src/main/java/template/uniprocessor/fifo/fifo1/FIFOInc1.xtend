@@ -15,6 +15,9 @@ import utils.Query
 class FIFOInc1 implements InitTemplate {
 
 	Set<Vertex> typeVertexSet
+	override savePath() {
+		return "/circular_fifo_lib/circular_fifo_lib.h"
+	}
 	new() {		
 		val model = Generator.model
 
@@ -33,7 +36,7 @@ class FIFOInc1 implements InitTemplate {
 		'''
 			#ifndef CIRCULAR_FIFO_LIB_H_
 			#define CIRCULAR_FIFO_LIB_H_
-			#include "config.h"
+
 			
 			/*
 			************************************************************
@@ -43,7 +46,7 @@ class FIFOInc1 implements InitTemplate {
 			*/
 			
 			
-			#include "datatype_definition.h"
+			#include "../datatype/datatype_definition.h"
 			
 			#include "spinlock.h"	
 			
@@ -58,9 +61,7 @@ class FIFOInc1 implements InitTemplate {
 		'''
 	}
 
-	override getFileName() {
-		return "circular_fifo_lib"
-	}
+
 	def String foo(Vertex v){
 		'''
 		«val type=v.getIdentifier()»

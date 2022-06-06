@@ -23,6 +23,11 @@ import utils.Query;
 @SuppressWarnings("all")
 public class SubsystemTemplateSrc implements SubsystemTemplate {
   @Override
+  public String savePath() {
+    return "/tile/subsystem.c";
+  }
+  
+  @Override
   public String create(final Schedule s) {
     String _xblockexpression = null;
     {
@@ -39,22 +44,22 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
       };
       Set<IntegerValue> integerValues = model.vertexSet().stream().filter(_function_1).<IntegerValue>map(_function_2).collect(Collectors.<IntegerValue>toSet());
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("#include \"../inc/subsystem.h\"");
+      _builder.append("#include \"subsystem.h\"");
       _builder.newLine();
       _builder.append("#include <stdio.h>");
       _builder.newLine();
       {
         for(final Vertex v : sdfcomb) {
-          _builder.append("#include \"../inc/sdfcomb_");
+          _builder.append("#include \"./sdfactor/sdfactor_");
           String _identifier = v.getIdentifier();
           _builder.append(_identifier);
           _builder.append(".h\"");
           _builder.newLineIfNotEmpty();
         }
       }
-      _builder.append("#include \"../inc/datatype_definition.h\"");
+      _builder.append("#include \"../datatype/datatype_definition.h\"");
       _builder.newLine();
-      _builder.append("#include \"../inc/circular_fifo_lib.h\"");
+      _builder.append("#include \"../circular_fifo_lib/circular_fifo_lib.h\"");
       _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
@@ -310,10 +315,5 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
       }
     }
     return _builder.toString();
-  }
-  
-  @Override
-  public String getFileName() {
-    return "subsystem";
   }
 }

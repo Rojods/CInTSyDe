@@ -15,10 +15,13 @@ import template.templateInterface.ActorTemplate;
 public class SDFActorInc implements ActorTemplate {
   private Set<Executable> a;
   
+  private Vertex actor;
+  
   @Override
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
+      this.actor = actor;
       this.a = new SDFActorViewer(actor).getCombFunctionsPort(Generator.model);
       StringConcatenation _builder = new StringConcatenation();
       String name = actor.getIdentifier();
@@ -42,5 +45,12 @@ public class SDFActorInc implements ActorTemplate {
       _xblockexpression = _builder.toString();
     }
     return _xblockexpression;
+  }
+  
+  @Override
+  public String savePath() {
+    String _identifier = this.actor.getIdentifier();
+    String _plus = ("/sdfactor/sdfactor_" + _identifier);
+    return (_plus + ".h");
   }
 }

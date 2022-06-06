@@ -27,6 +27,7 @@ import template.uniprocessor.fifo.fifo2.FIFOInc2
 import template.uniprocessor.fifo.fifo2.FIFOSrc2
 import template.uniprocessor.fifo.fifo3.FIFOInc3
 import template.uniprocessor.fifo.fifo3.FIFOSrc3
+import template.uniprocessor.SDFChannel.SDFChannelInc
 
 /**
  * one core
@@ -50,10 +51,12 @@ class demo1 {
 		
 		var Generator gen = new Generator(model, root)
 		Generator.fifoType=2
-		
+		Generator.platform=1
 		 
 		var sdfchannelModule = new SDFChannelProcessingModule
 		sdfchannelModule.add(new SDFChannelTemplateSrc)
+		sdfchannelModule.add(new SDFChannelInc)
+		
 		gen.add(sdfchannelModule)
 
 		var actorModule = new SDFCombProcessingModule
@@ -89,7 +92,7 @@ class demo1 {
 		
 		initModule.add(new SpinLockTemplateInc)
 		initModule.add(new SpinLockTemplateSrc)
-		initModule.add(new Config)
+		//initModule.add(new Config)
 		
 
 		
@@ -99,50 +102,5 @@ class demo1 {
 
 		println("end!")
 	}
-	
-//	def static void test(String path){
-//		
-//		var root = "generateCode/c/test1"
-//		var loader = (new ForSyDeModelHandler)
-//		var model = loader.loadModel(path)
-//		
-//		
-//		
-//		model.mergeInPlace(loader.loadModel(path))
-//		var Generator gen = new Generator(model, root)
-//
-//		var sdfchannelModule = new SDFChannelProcessingModule
-//		sdfchannelModule.add(new SDFChannelTemplateSrc)
-//		gen.add(sdfchannelModule)
-//
-//		var actorModule = new SDFCombProcessingModule
-//		actorModule.add(new SDFActorSrc)
-//		actorModule.add(new SDFActorInc)
-//		gen.add(actorModule)
-//
-//		var subsystem = new SubsystemUniprocessorModule
-//		subsystem.add(new SubsystemTemplateSrc)
-//		
-//		subsystem.add(new SubsystemTemplateInc)
-//		gen.add(subsystem)
-//
-//		var initModule = new InitProcessingModule
-//		initModule.add(new DataTypeInc)
-//		initModule.add(new DataTypeSrc)
-//
-//		initModule.add(new CircularFIFOTemplateInc1)
-//		initModule.add(new CircularFIFOTemplateSrc1)
-//		initModule.add(new SpinLockTemplateInc)
-//		initModule.add(new SpinLockTemplateSrc)
-//		initModule.add(new Config)
-//		
-//		//initModule.add(new SubsystemInitInc)
-//		//initModule.add(new SubsystemInitSrc)
-//		
-//		gen.add(initModule)
-//
-//		gen.create()
-//
-//		println("end!")		
-//	}
+
 }

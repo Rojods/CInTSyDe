@@ -38,8 +38,8 @@ class DataDefinitionSrc implements InitTemplate {
 		'''
 	}
 	
-	override getFileName() {
-		return "data_definition"
+	override savePath() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 }
