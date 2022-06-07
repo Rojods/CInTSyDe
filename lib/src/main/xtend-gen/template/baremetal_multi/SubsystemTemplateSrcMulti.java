@@ -24,31 +24,31 @@ import utils.Query;
 public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
   private Schedule s;
   
+  @Override
   public String create(final Schedule schedule) {
     String _xblockexpression = null;
     {
       this.s = schedule;
       Vertex tile = schedule.tile;
       ForSyDeSystemGraph model = Generator.model;
-      final Predicate<Vertex> _function = new Predicate<Vertex>() {
-        public boolean test(final Vertex v) {
-          return (IntegerValue.conforms(v)).booleanValue();
-        }
+      final Predicate<Vertex> _function = (Vertex v) -> {
+        return (IntegerValue.conforms(v)).booleanValue();
       };
-      final Function<Vertex, IntegerValue> _function_1 = new Function<Vertex, IntegerValue>() {
-        public IntegerValue apply(final Vertex v) {
-          return IntegerValue.safeCast(v).get();
-        }
+      final Function<Vertex, IntegerValue> _function_1 = (Vertex v) -> {
+        return IntegerValue.safeCast(v).get();
       };
       Set<IntegerValue> integerValues = model.vertexSet().stream().filter(_function).<IntegerValue>map(_function_1).collect(Collectors.<IntegerValue>toSet());
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("#include \"../inc/subsystem_");
+      _builder.append("#include \"subsystem_");
       String _identifier = this.s.tile.getIdentifier();
       _builder.append(_identifier);
       _builder.append(".h\"");
       _builder.newLineIfNotEmpty();
-      _builder.append("#include \"../inc/datatype_definition.h\"");
+      _builder.append("#include \"../datatype/datatype_definition.h\"");
       _builder.newLine();
+      _builder.append("#include \"../circular_fifo_lib/circular_fifo_lib.h\"");
+      _builder.newLine();
+      _builder.append("#include <cheap_s.h>");
       _builder.newLine();
       _builder.append("void subsystem_");
       String _identifier_1 = tile.getIdentifier();
@@ -68,10 +68,22 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
           {
             if ((actor != null)) {
               _builder.append("\t");
+              _builder.append("xil_printf(\"fire actor ");
+              String _identifier_2 = actor.getIdentifier();
+              _builder.append(_identifier_2, "\t");
+              _builder.append("\\n\");");
+              _builder.newLineIfNotEmpty();
+              _builder.append("\t");
               _builder.append("actor_");
               String _name = Name.name(actor);
               _builder.append(_name, "\t");
               _builder.append("();");
+              _builder.newLineIfNotEmpty();
+              _builder.append("\t");
+              _builder.append("xil_printf(\"actor ");
+              String _identifier_3 = actor.getIdentifier();
+              _builder.append(_identifier_3, "\t");
+              _builder.append(" ends\\n\");");
               _builder.newLineIfNotEmpty();
             }
           }
@@ -84,16 +96,19 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
       _builder.newLine();
       _builder.newLine();
       _builder.append("int init_");
-      String _identifier_2 = tile.getIdentifier();
-      _builder.append(_identifier_2);
+      String _identifier_4 = tile.getIdentifier();
+      _builder.append(_identifier_4);
       _builder.append("(){");
       _builder.newLineIfNotEmpty();
+      _builder.append("\t");
+      _builder.append("xil_printf(\"tile initialization starts\\n\");");
+      _builder.newLine();
       {
         for(final IntegerValue value : integerValues) {
           _builder.append("\t");
           _builder.append("extern int ");
-          String _identifier_3 = value.getIdentifier();
-          _builder.append(_identifier_3, "\t");
+          String _identifier_5 = value.getIdentifier();
+          _builder.append(_identifier_5, "\t");
           _builder.append(";");
           _builder.newLineIfNotEmpty();
         }
@@ -244,6 +259,8 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
               _builder.newLineIfNotEmpty();
             } else {
               _builder.append("\t");
+              _builder.newLine();
+              _builder.append("\t");
               _builder.append("if (cheap_init_r (fifo_admin_");
               _builder.append(channelname, "\t");
               _builder.append(", (void *) fifo_data_");
@@ -305,8 +322,8 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
                           String _findSDFChannelDataType_1 = Query.findSDFChannelDataType(Generator.model, channel_3);
                           _builder.append(_findSDFChannelDataType_1, "\t");
                           _builder.append("(&fifo_");
-                          String _identifier_4 = sdfchannel.getIdentifier();
-                          _builder.append(_identifier_4, "\t");
+                          String _identifier_6 = sdfchannel.getIdentifier();
+                          _builder.append(_identifier_6, "\t");
                           _builder.append(",");
                           _builder.append(valueName, "\t");
                           _builder.append(");");
@@ -405,12 +422,15 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
         for(final Vertex channel_4 : schedule.incomingchannels) {
           _builder.append("\t");
           _builder.append("while (cheap_get_buffer_capacity (fifo_admin_");
-          String _identifier_5 = channel_4.getIdentifier();
-          _builder.append(_identifier_5, "\t");
+          String _identifier_7 = channel_4.getIdentifier();
+          _builder.append(_identifier_7, "\t");
           _builder.append(") == 0); ");
           _builder.newLineIfNotEmpty();
         }
       }
+      _builder.append("\t");
+      _builder.append("xil_printf(\"tile initialization ends\\n\");\t\t\t\t");
+      _builder.newLine();
       _builder.append("\t");
       _builder.append("return 0;\t");
       _builder.newLine();
@@ -421,9 +441,14 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
     return _xblockexpression;
   }
   
-  public String getFileName() {
+  @Override
+  public String savePath() {
     String _identifier = this.s.tile.getIdentifier();
-    return ("subsystem_tile_" + _identifier);
+    String _plus = ("/" + _identifier);
+    String _plus_1 = (_plus + "/subsystem_");
+    String _identifier_1 = this.s.tile.getIdentifier();
+    String _plus_2 = (_plus_1 + _identifier_1);
+    return (_plus_2 + ".c");
   }
   
   public ArrayList<String> help(final HashMap<String, Integer> ordering) {

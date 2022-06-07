@@ -4,7 +4,7 @@ import fileAnnotation.FileType;
 import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.typed.viewers.impl.Executable;
-import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActorViewer;
 import generator.Generator;
 import java.util.Set;
 import org.eclipse.xtend2.lib.StringConcatenation;
@@ -15,10 +15,14 @@ import template.templateInterface.ActorTemplate;
 public class SDFActorInc implements ActorTemplate {
   private Set<Executable> a;
   
+  private Vertex actor;
+  
+  @Override
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
-      this.a = new SDFCombViewer(actor).getCombFunctionsPort(Generator.model);
+      this.actor = actor;
+      this.a = new SDFActorViewer(actor).getCombFunctionsPort(Generator.model);
       StringConcatenation _builder = new StringConcatenation();
       String name = actor.getIdentifier();
       _builder.newLineIfNotEmpty();
@@ -41,5 +45,12 @@ public class SDFActorInc implements ActorTemplate {
       _xblockexpression = _builder.toString();
     }
     return _xblockexpression;
+  }
+  
+  @Override
+  public String savePath() {
+    String _identifier = this.actor.getIdentifier();
+    String _plus = ("/sdfactor/sdfactor_" + _identifier);
+    return (_plus + ".h");
   }
 }

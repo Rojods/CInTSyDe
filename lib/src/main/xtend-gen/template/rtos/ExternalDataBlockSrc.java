@@ -13,6 +13,7 @@ import utils.Query;
 @FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class ExternalDataBlockSrc implements InitTemplate {
+  @Override
   public String create() {
     String _xblockexpression = null;
     {
@@ -71,7 +72,8 @@ public class ExternalDataBlockSrc implements InitTemplate {
     return _xblockexpression;
   }
   
-  public String getFileName() {
-    return "extern_datablock";
+  @Override
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

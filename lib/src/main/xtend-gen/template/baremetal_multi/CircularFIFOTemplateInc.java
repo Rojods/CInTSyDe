@@ -22,20 +22,14 @@ public class CircularFIFOTemplateInc implements InitTemplate {
   
   public CircularFIFOTemplateInc() {
     final ForSyDeSystemGraph model = Generator.model;
-    final Predicate<Vertex> _function = new Predicate<Vertex>() {
-      public boolean test(final Vertex v) {
-        return (SDFChannel.conforms(v)).booleanValue();
-      }
+    final Predicate<Vertex> _function = (Vertex v) -> {
+      return (SDFChannel.conforms(v)).booleanValue();
     };
-    final Function<Vertex, String> _function_1 = new Function<Vertex, String>() {
-      public String apply(final Vertex v) {
-        return Query.findSDFChannelDataType(model, v);
-      }
+    final Function<Vertex, String> _function_1 = (Vertex v) -> {
+      return Query.findSDFChannelDataType(model, v);
     };
-    final Function<String, Vertex> _function_2 = new Function<String, Vertex>() {
-      public Vertex apply(final String s) {
-        return Query.findVertexByName(model, s);
-      }
+    final Function<String, Vertex> _function_2 = (String s) -> {
+      return Query.findVertexByName(model, s);
     };
     this.typeVertexSet = model.vertexSet().stream().filter(_function).<String>map(_function_1).<Vertex>map(_function_2).collect(Collectors.<Vertex>toSet());
     boolean _contains = this.typeVertexSet.contains(null);
@@ -44,6 +38,12 @@ public class CircularFIFOTemplateInc implements InitTemplate {
     }
   }
   
+  @Override
+  public String savePath() {
+    return "/circular_fifo_lib/circular_fifo_lib.h";
+  }
+  
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("\t");
@@ -52,8 +52,6 @@ public class CircularFIFOTemplateInc implements InitTemplate {
     _builder.append("\t");
     _builder.append("#define CIRCULAR_FIFO_LIB_H_");
     _builder.newLine();
-    _builder.append("\t");
-    _builder.append("#include \"config.h\"");
     _builder.newLine();
     _builder.newLine();
     _builder.append("\t");
@@ -79,7 +77,7 @@ public class CircularFIFOTemplateInc implements InitTemplate {
     _builder.append("\t");
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("#include \"datatype_definition.h\"");
+    _builder.append("#include \"../datatype/datatype_definition.h\"");
     _builder.newLine();
     _builder.append("\t");
     _builder.newLine();
@@ -118,10 +116,6 @@ public class CircularFIFOTemplateInc implements InitTemplate {
     _builder.append("#endif");
     _builder.newLine();
     return _builder.toString();
-  }
-  
-  public String getFileName() {
-    return "circular_fifo_lib";
   }
   
   public String foo(final Vertex v) {

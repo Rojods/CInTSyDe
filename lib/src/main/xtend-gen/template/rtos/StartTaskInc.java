@@ -8,6 +8,7 @@ import template.templateInterface.InitTemplate;
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class StartTaskInc implements InitTemplate {
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("#ifndef  SUBSYSTEM_H_");
@@ -21,7 +22,8 @@ public class StartTaskInc implements InitTemplate {
     return _builder.toString();
   }
   
-  public String getFileName() {
-    return "init_subsystem";
+  @Override
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

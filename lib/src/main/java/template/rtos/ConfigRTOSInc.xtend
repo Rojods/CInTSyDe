@@ -2,11 +2,10 @@ package template.rtos
 
 import template.templateInterface.InitTemplate
 
-import generator.Generator
-import fileAnnotation.FileTypeAnno
-import fileAnnotation.FileType
 
-@FileTypeAnno(type=FileType.C_INCLUDE)
+import generator.Generator
+
+
 class ConfigRTOSInc implements InitTemplate {
 
 	override create() {
@@ -14,10 +13,7 @@ class ConfigRTOSInc implements InitTemplate {
 		'''	
 			#ifndef CONFIG_H_
 			#define CONFIG_H_
-			#define TESTING
-			#if defined(TESTING)
-			#include "main.h"
-			#endif
+
 			
 			/*
 			************************************************
@@ -34,8 +30,8 @@ class ConfigRTOSInc implements InitTemplate {
 		'''
 	}
 
-	override getFileName() {
-		return "config"
+	override savePath() {
+		return "/configRTOS.h"
 	}
 
 }

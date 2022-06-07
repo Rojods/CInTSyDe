@@ -1,10 +1,9 @@
 package template.rtos
 
 import template.templateInterface.InitTemplate
-import fileAnnotation.FileTypeAnno
-import fileAnnotation.FileType
 
-@FileTypeAnno(type=FileType.C_INCLUDE)
+
+
 class StartTaskInc implements InitTemplate{
 	
 	override create() {
@@ -16,8 +15,8 @@ class StartTaskInc implements InitTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "init_subsystem"
+	override savePath() {
+		return "/start_task.h"
 	}
 	
 }

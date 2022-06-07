@@ -2,5 +2,5 @@ package template.templateInterface
 
 interface InitTemplate {
 	def String create()
-	def String getFileName()
+	def String savePath()
 }

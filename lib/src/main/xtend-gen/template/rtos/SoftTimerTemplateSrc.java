@@ -10,6 +10,7 @@ import template.templateInterface.InitTemplate;
 @FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class SoftTimerTemplateSrc implements InitTemplate {
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("#include \"FreeRTOS.h\"");
@@ -74,7 +75,8 @@ public class SoftTimerTemplateSrc implements InitTemplate {
     return _builder.toString();
   }
   
-  public String getFileName() {
-    return "soft_timer";
+  @Override
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

@@ -22,20 +22,14 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
   
   public CircularFIFOTemplateSrc() {
     final ForSyDeSystemGraph model = Generator.model;
-    final Predicate<Vertex> _function = new Predicate<Vertex>() {
-      public boolean test(final Vertex v) {
-        return (SDFChannel.conforms(v)).booleanValue();
-      }
+    final Predicate<Vertex> _function = (Vertex v) -> {
+      return (SDFChannel.conforms(v)).booleanValue();
     };
-    final Function<Vertex, String> _function_1 = new Function<Vertex, String>() {
-      public String apply(final Vertex v) {
-        return Query.findSDFChannelDataType(model, v);
-      }
+    final Function<Vertex, String> _function_1 = (Vertex v) -> {
+      return Query.findSDFChannelDataType(model, v);
     };
-    final Function<String, Vertex> _function_2 = new Function<String, Vertex>() {
-      public Vertex apply(final String s) {
-        return Query.findVertexByName(model, s);
-      }
+    final Function<String, Vertex> _function_2 = (String s) -> {
+      return Query.findVertexByName(model, s);
     };
     this.typeVertexSet = model.vertexSet().stream().filter(_function).<String>map(_function_1).<Vertex>map(_function_2).collect(Collectors.<Vertex>toSet());
     boolean _contains = this.typeVertexSet.contains(null);
@@ -44,6 +38,12 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
     }
   }
   
+  @Override
+  public String savePath() {
+    return "/circular_fifo_lib/circular_fifo_lib.c";
+  }
+  
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("#include \"../inc/config.h\"");
@@ -941,10 +941,6 @@ public class CircularFIFOTemplateSrc implements InitTemplate {
     }
     _builder.newLine();
     return _builder;
-  }
-  
-  public String getFileName() {
-    return "circular_fifo_lib";
   }
   
   public boolean isOneDimension(final Vertex v) {

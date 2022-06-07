@@ -8,6 +8,7 @@ import template.templateInterface.InitTemplate;
 @FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class FireAllSrc implements InitTemplate {
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("#include \"../inc/fire_all.h\"");
@@ -38,7 +39,8 @@ public class FireAllSrc implements InitTemplate {
     return _builder.toString();
   }
   
-  public String getFileName() {
-    return "fire_all";
+  @Override
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }

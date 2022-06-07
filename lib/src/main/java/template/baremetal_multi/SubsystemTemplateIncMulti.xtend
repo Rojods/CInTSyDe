@@ -1,11 +1,10 @@
 package template.baremetal_multi
 
 import template.templateInterface.SubsystemTemplate
-import generator.Schedule
-import fileAnnotation.FileType
-import fileAnnotation.FileTypeAnno
 
-@FileTypeAnno(type=FileType.C_INCLUDE)
+import processingModule.Schedule
+
+
 class SubsystemTemplateIncMulti implements SubsystemTemplate{
 	Schedule s
 	override create(Schedule s) {
@@ -23,8 +22,8 @@ class SubsystemTemplateIncMulti implements SubsystemTemplate{
 		'''
 	}
 	
-	override getFileName() {
-		return "subsystem_tile_"+s.tile.getIdentifier()
+	override savePath() {
+		
+		return "/"+s.tile.getIdentifier()+"/subsystem_"+s.tile.getIdentifier()+".h"
 	}
-	
 }

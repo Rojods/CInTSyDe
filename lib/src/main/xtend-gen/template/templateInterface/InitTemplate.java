@@ -4,5 +4,5 @@ package template.templateInterface;
 public interface InitTemplate {
   String create();
   
-  String getFileName();
+  String savePath();
 }

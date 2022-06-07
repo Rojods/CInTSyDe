@@ -8,9 +8,10 @@ import template.templateInterface.InitTemplate;
 @FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class SpinLockTemplateSrc implements InitTemplate {
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append("#include \"../inc/spinlock.h\"");
+    _builder.append("#include \"spinlock.h\"");
     _builder.newLine();
     _builder.newLine();
     _builder.append("\t");
@@ -38,13 +39,13 @@ public class SpinLockTemplateSrc implements InitTemplate {
     _builder.append("\t");
     _builder.append("void spinlock_get(spinlock* lock){");
     _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("while(ATOMIC_TEST_AND_SET(&lock->flag,1)==1){");
+    _builder.append("\t");
+    _builder.append("//\twhile(ATOMIC_TEST_AND_SET(&lock->flag,1)==1){");
     _builder.newLine();
     _builder.append("\t\t\t");
     _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("}");
+    _builder.append("\t");
+    _builder.append("//\t}");
     _builder.newLine();
     _builder.append("\t");
     _builder.append("}");
@@ -52,8 +53,8 @@ public class SpinLockTemplateSrc implements InitTemplate {
     _builder.append("\t");
     _builder.append("void spinlock_release(spinlock* lock){");
     _builder.newLine();
-    _builder.append("\t\t");
-    _builder.append("ATOMIC_TEST_AND_SET(&lock->flag,0);");
+    _builder.append("\t");
+    _builder.append("//\tATOMIC_TEST_AND_SET(&lock->flag,0);");
     _builder.newLine();
     _builder.append("\t");
     _builder.append("}\t");
@@ -62,7 +63,8 @@ public class SpinLockTemplateSrc implements InitTemplate {
     return _builder.toString();
   }
   
-  public String getFileName() {
-    return "spinlock";
+  @Override
+  public String savePath() {
+    return "/circular_fifo_lib/spinlock.c";
   }
 }

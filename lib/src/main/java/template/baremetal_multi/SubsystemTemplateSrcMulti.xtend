@@ -1,8 +1,7 @@
 package template.baremetal_multi
 
-import fileAnnotation.FileType
-import fileAnnotation.FileTypeAnno
-import generator.Schedule
+
+
 import template.templateInterface.SubsystemTemplate
 import utils.Name
 import generator.Generator
@@ -12,8 +11,9 @@ import utils.Query
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import java.util.HashMap
 import java.util.ArrayList
+import processingModule.Schedule
 
-@FileTypeAnno(type=FileType.C_SOURCE)
+
 class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 	Schedule s
 
@@ -25,19 +25,23 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 			IntegerValue.safeCast(v).get()
 		]).collect(Collectors.toSet())
 		'''
-			#include "../inc/subsystem_«s.tile.getIdentifier()».h"
-			#include "../inc/datatype_definition.h"
-			
+			#include "subsystem_«s.tile.getIdentifier()».h"
+			#include "../datatype/datatype_definition.h"
+			#include "../circular_fifo_lib/circular_fifo_lib.h"
+			#include <cheap_s.h>
 			void subsystem_«tile.getIdentifier()»(){
 			«FOR actor : schedule.slots SEPARATOR "" AFTER ""»
 				«var tmp =1»
 					«IF actor!==null»
+						xil_printf("fire actor «actor.getIdentifier()»\n");
 						actor_«Name.name(actor)»();
+						xil_printf("actor «actor.getIdentifier()» ends\n");
 					«ENDIF»
 			«ENDFOR»
 			}	
 			
 			int init_«tile.getIdentifier()»(){
+				xil_printf("tile initialization starts\n");
 				«FOR value : integerValues»
 				extern int «value.getIdentifier()»;
 			«ENDFOR»	
@@ -78,6 +82,7 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 					«IF Query.isOnOneCoreChannel(model,channel)»
 						init_channel_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size);
 					«ELSE»
+						
 						if (cheap_init_r (fifo_admin_«channelname», (void *) fifo_data_«channelname», buffer_«channelname»_size, token_«channelname»_size) == NULL) {
 							//xil_printf("%04u/%010u: cheap_init_r failed\n", (uint32_t)(t>>32),(uint32_t)t);
 							return 1;
@@ -124,14 +129,15 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 				/* wait util other channels are created*/
 				«FOR channel : schedule.incomingchannels»
 					while (cheap_get_buffer_capacity (fifo_admin_«channel.getIdentifier()») == 0); 
-				«ENDFOR»					
+				«ENDFOR»	
+				xil_printf("tile initialization ends\n");				
 				return 0;	
 			}
 		'''
 	}
 
-	override getFileName() {
-		return "subsystem_tile_" + s.tile.getIdentifier()
+	override savePath() {
+		return "/"+s.tile.getIdentifier()+"/subsystem_"+s.tile.getIdentifier()+".c"
 	}
 
 	def help(HashMap<String, Integer> ordering) {

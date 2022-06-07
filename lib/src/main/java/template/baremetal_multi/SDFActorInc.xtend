@@ -1,25 +1,21 @@
 package template.baremetal_multi
 
-import forsyde.io.java.core.Vertex
 
-import forsyde.io.java.core.VertexAcessor
-import forsyde.io.java.core.VertexAcessor.VertexPortDirection
-import forsyde.io.java.core.VertexTrait
+import forsyde.io.java.core.Vertex
+import forsyde.io.java.typed.viewers.impl.Executable
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActorViewer
 import generator.Generator
 import java.util.Set
 import template.templateInterface.ActorTemplate
-import utils.Name
-import fileAnnotation.FileTypeAnno
-import fileAnnotation.FileType
-import forsyde.io.java.typed.viewers.moc.sdf.SDFCombViewer
-import forsyde.io.java.typed.viewers.impl.Executable
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb
+import utils.Query
 
-@FileTypeAnno(type=FileType.C_INCLUDE)
+
 class SDFActorInc implements ActorTemplate{
 	Set<Executable> a
+	Vertex actor
 	override create(Vertex actor) {
-		this.a=   (new SDFCombViewer(actor)).getCombFunctionsPort(Generator.model)
+		this.actor=actor
+		this.a=   (new SDFActorViewer(actor)).getCombFunctionsPort(Generator.model)
 		'''
 			«var name = actor.getIdentifier()»
 			«var tmp=name.toUpperCase()+"_H_"»
@@ -29,6 +25,10 @@ class SDFActorInc implements ActorTemplate{
 			#endif
 		'''
 		
+	}
+	
+	override savePath() {
+		return "/sdfactor/sdfactor_"+actor.getIdentifier()+".h"
 	}
 	
 }

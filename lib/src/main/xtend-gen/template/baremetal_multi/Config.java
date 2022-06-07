@@ -11,18 +11,24 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.InitTemplate;
+import utils.Query;
 
+@Deprecated
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class Config implements InitTemplate {
+  @Override
+  public String savePath() {
+    return "/sdfchannel/config.h";
+  }
+  
+  @Override
   public String create() {
     String _xblockexpression = null;
     {
       ForSyDeSystemGraph model = Generator.model;
-      final Predicate<Vertex> _function = new Predicate<Vertex>() {
-        public boolean test(final Vertex v) {
-          return (SDFChannel.conforms(v)).booleanValue();
-        }
+      final Predicate<Vertex> _function = (Vertex v) -> {
+        return (SDFChannel.conforms(v)).booleanValue();
       };
       Set<Vertex> channels = model.vertexSet().stream().filter(_function).collect(Collectors.<Vertex>toSet());
       StringConcatenation _builder = new StringConcatenation();
@@ -30,6 +36,7 @@ public class Config implements InitTemplate {
       _builder.newLine();
       _builder.append("#define CONFIG_H_");
       _builder.newLine();
+      _builder.append("#include <cheap_s.h>");
       _builder.newLine();
       _builder.append("/*");
       _builder.newLine();
@@ -44,21 +51,23 @@ public class Config implements InitTemplate {
       _builder.newLine();
       {
         for(final Vertex c : channels) {
-          _builder.append("#define ");
-          String _upperCase = c.getIdentifier().toUpperCase();
-          _builder.append(_upperCase);
-          _builder.append("_BLOCKING 0");
-          _builder.newLineIfNotEmpty();
+          {
+            boolean _isOnOneCoreChannel = Query.isOnOneCoreChannel(model, c);
+            if (_isOnOneCoreChannel) {
+              _builder.append("#define ");
+              String _upperCase = c.getIdentifier().toUpperCase();
+              _builder.append(_upperCase);
+              _builder.append("_BLOCKING 0");
+              _builder.newLineIfNotEmpty();
+            }
+          }
         }
       }
+      _builder.newLine();
       _builder.append("#endif\t\t");
       _builder.newLine();
       _xblockexpression = _builder.toString();
     }
     return _xblockexpression;
-  }
-  
-  public String getFileName() {
-    return "config";
   }
 }

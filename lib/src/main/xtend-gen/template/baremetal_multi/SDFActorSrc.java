@@ -6,7 +6,7 @@ import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.typed.viewers.impl.Executable;
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActor;
 import forsyde.io.java.typed.viewers.typing.TypedDataBlockViewer;
 import forsyde.io.java.typed.viewers.typing.TypedOperation;
 import forsyde.io.java.typed.viewers.typing.datatypes.DataType;
@@ -34,20 +34,29 @@ public class SDFActorSrc implements ActorTemplate {
   
   private Set<Vertex> outputSDFChannelSet;
   
+  private Vertex actor;
+  
+  @Override
+  public String savePath() {
+    String _identifier = this.actor.getIdentifier();
+    String _plus = ("/sdfactor/sdfactor_" + _identifier);
+    return (_plus + ".c");
+  }
+  
+  @Override
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
       final ForSyDeSystemGraph model = Generator.model;
-      final Function<Executable, Vertex> _function = new Function<Executable, Vertex>() {
-        public Vertex apply(final Executable v) {
-          return v.getViewedVertex();
-        }
+      this.actor = actor;
+      final Function<Executable, Vertex> _function = (Executable v) -> {
+        return v.getViewedVertex();
       };
-      this.implActorSet = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
+      this.implActorSet = SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
       this.inputSDFChannelSet = Query.findInputSDFChannels(model, actor);
       this.outputSDFChannelSet = Query.findOutputSDFChannels(model, actor);
       Set<Vertex> datablock = null;
-      datablock = Query.findAllExternalDataBlocks(model, SDFComb.safeCast(actor).get());
+      datablock = Query.findAllExternalDataBlocks(model, SDFActor.safeCast(actor).get());
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("\t");
       String name = actor.getIdentifier();
@@ -56,19 +65,18 @@ public class SDFActorSrc implements ActorTemplate {
       _builder.append("/* Includes-------------------------- */");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("#include \"../inc/config.h\"");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("#include \"../inc/datatype_definition.h\"");
+      _builder.append("#include \"../../datatype/datatype_definition.h\"");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("#include \"../inc/circular_fifo_lib.h\"");
+      _builder.append("#include \"../../circular_fifo_lib/circular_fifo_lib.h\"");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("#include <cheap_s.h>");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("#include \"../inc/sdfcomb_");
+      _builder.append("#include \"sdfactor_");
       _builder.append(name, "\t");
       _builder.append(".h\"");
       _builder.newLineIfNotEmpty();
@@ -229,17 +237,17 @@ public class SDFActorSrc implements ActorTemplate {
                   _builder.append("\t\t\t\t");
                   _builder.newLine();
                 } else {
-                  _builder.append("circular_fifo_");
+                  _builder.append("extern circular_fifo_");
                   _builder.append(type);
                   _builder.append(" fifo_");
                   String _identifier_2 = sdfchannel.getIdentifier();
                   _builder.append(_identifier_2);
                   _builder.append(";");
                   _builder.newLineIfNotEmpty();
-                  _builder.append("spinlock spinlock_");
+                  _builder.append("extern spinlock spinlock_");
                   String _identifier_3 = sdfchannel.getIdentifier();
                   _builder.append(_identifier_3);
-                  _builder.append("={.flag=0};");
+                  _builder.append(";");
                   _builder.newLineIfNotEmpty();
                   _builder.newLine();
                 }
@@ -288,17 +296,17 @@ public class SDFActorSrc implements ActorTemplate {
                   _builder.append("\t\t\t\t");
                   _builder.newLine();
                 } else {
-                  _builder.append("circular_fifo_");
+                  _builder.append("extern circular_fifo_");
                   _builder.append(type_1);
                   _builder.append(" fifo_");
                   String _identifier_6 = sdfchannel_1.getIdentifier();
                   _builder.append(_identifier_6);
                   _builder.append(";");
                   _builder.newLineIfNotEmpty();
-                  _builder.append("spinlock spinlock_");
+                  _builder.append("extern spinlock spinlock_");
                   String _identifier_7 = sdfchannel_1.getIdentifier();
                   _builder.append(_identifier_7);
-                  _builder.append("={.flag=0};");
+                  _builder.append(";");
                   _builder.newLineIfNotEmpty();
                   _builder.newLine();
                 }
@@ -386,12 +394,10 @@ public class SDFActorSrc implements ActorTemplate {
   }
   
   public String read(final ForSyDeSystemGraph model, final Vertex actor) {
-    final Function<Executable, Vertex> _function = new Function<Executable, Vertex>() {
-      public Vertex apply(final Executable e) {
-        return e.getViewedVertex();
-      }
+    final Function<Executable, Vertex> _function = (Executable e) -> {
+      return e.getViewedVertex();
     };
-    Set<Vertex> impls = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
+    Set<Vertex> impls = SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
     Set<String> variableNameRecord = new HashSet<String>();
     String ret = "";
     for (final Vertex impl : impls) {
@@ -403,7 +409,7 @@ public class SDFActorSrc implements ActorTemplate {
               String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port);
               String sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName);
               String datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get());
-              Integer consumption = SDFComb.safeCast(actor).get().getConsumption().get(actorPortName);
+              Integer consumption = SDFActor.safeCast(actor).get().getConsumption().get(actorPortName);
               if ((consumption == null)) {
                 String _ret = ret;
                 StringConcatenation _builder = new StringConcatenation();
@@ -420,50 +426,81 @@ public class SDFActorSrc implements ActorTemplate {
                   {
                     boolean _isOnOneCoreChannel = Query.isOnOneCoreChannel(model, model.queryVertex(sdfchannelName).get());
                     if (_isOnOneCoreChannel) {
-                      _builder_1.append("#if ");
-                      String _upperCase = sdfchannelName.toUpperCase();
-                      _builder_1.append(_upperCase);
-                      _builder_1.append("_BLOCKING==0");
-                      _builder_1.newLineIfNotEmpty();
-                      _builder_1.append("ret=read_non_blocking_");
-                      _builder_1.append(datatype);
-                      _builder_1.append("(&fifo_");
-                      _builder_1.append(sdfchannelName);
-                      _builder_1.append(",&");
-                      _builder_1.append(port);
-                      _builder_1.append(");");
-                      _builder_1.newLineIfNotEmpty();
-                      _builder_1.append("if(ret==-1){");
-                      _builder_1.newLine();
-                      _builder_1.append("\t");
-                      _builder_1.append("printf(\"fifo_");
-                      _builder_1.append(sdfchannelName, "\t");
-                      _builder_1.append(" read error\\n\");");
-                      _builder_1.newLineIfNotEmpty();
-                      _builder_1.append("}");
-                      _builder_1.newLine();
-                      _builder_1.newLine();
-                      _builder_1.append("#else");
-                      _builder_1.newLine();
-                      _builder_1.append("read_blocking_");
-                      _builder_1.append(datatype);
-                      _builder_1.append("(&fifo_");
-                      _builder_1.append(sdfchannelName);
-                      _builder_1.append(",&");
-                      _builder_1.append(port);
-                      _builder_1.append(",&spinlock_");
-                      _builder_1.append(sdfchannelName);
-                      _builder_1.append(");");
-                      _builder_1.newLineIfNotEmpty();
-                      _builder_1.append("#endif");
-                      _builder_1.newLine();
+                      {
+                        if ((Generator.fifoType == 1)) {
+                          _builder_1.append("#if ");
+                          String _upperCase = sdfchannelName.toUpperCase();
+                          _builder_1.append(_upperCase);
+                          _builder_1.append("_BLOCKING==0");
+                          _builder_1.newLineIfNotEmpty();
+                          _builder_1.append("ret=read_non_blocking_");
+                          _builder_1.append(datatype);
+                          _builder_1.append("(&fifo_");
+                          _builder_1.append(sdfchannelName);
+                          _builder_1.append(",&");
+                          _builder_1.append(port);
+                          _builder_1.append(");");
+                          _builder_1.newLineIfNotEmpty();
+                          _builder_1.append("if(ret==-1){");
+                          _builder_1.newLine();
+                          _builder_1.append("\t");
+                          _builder_1.append("//printf(\"fifo_");
+                          _builder_1.append(sdfchannelName, "\t");
+                          _builder_1.append(" read error\\n\");");
+                          _builder_1.newLineIfNotEmpty();
+                          _builder_1.append("}");
+                          _builder_1.newLine();
+                          _builder_1.newLine();
+                          _builder_1.append("#else");
+                          _builder_1.newLine();
+                          _builder_1.append("read_blocking_");
+                          _builder_1.append(datatype);
+                          _builder_1.append("(&fifo_");
+                          _builder_1.append(sdfchannelName);
+                          _builder_1.append(",&");
+                          _builder_1.append(port);
+                          _builder_1.append(",&spinlock_");
+                          _builder_1.append(sdfchannelName);
+                          _builder_1.append(");");
+                          _builder_1.newLineIfNotEmpty();
+                          _builder_1.append("#endif");
+                          _builder_1.newLine();
+                        }
+                      }
+                      {
+                        if ((Generator.fifoType == 2)) {
+                          _builder_1.append("{");
+                          _builder_1.newLine();
+                          _builder_1.append("\t");
+                          _builder_1.append("void* tmp_addr;");
+                          _builder_1.newLine();
+                          _builder_1.append("\t");
+                          _builder_1.append("read_non_blocking(&fifo_");
+                          _builder_1.append(sdfchannelName, "\t");
+                          _builder_1.append(",&tmp_addr);");
+                          _builder_1.newLineIfNotEmpty();
+                          _builder_1.append("\t");
+                          _builder_1.append(port, "\t");
+                          _builder_1.append("= *((");
+                          _builder_1.append(datatype, "\t");
+                          _builder_1.append(" *)tmp_addr);");
+                          _builder_1.newLineIfNotEmpty();
+                          _builder_1.append("}");
+                          _builder_1.newLine();
+                        }
+                      }
+                      {
+                        if ((Generator.fifoType == 3)) {
+                          _builder_1.newLine();
+                        }
+                      }
                     } else {
                       _builder_1.append("{");
                       _builder_1.newLine();
                       _builder_1.append("\t");
                       _builder_1.append("volatile ");
                       _builder_1.append(datatype, "\t");
-                      _builder_1.append(" *tmp_ptrs;");
+                      _builder_1.append(" *tmp_ptrs[1];");
                       _builder_1.newLineIfNotEmpty();
                       _builder_1.append("\t");
                       _builder_1.append("while ((cheap_claim_tokens (fifo_admin_");
@@ -479,7 +516,7 @@ public class SDFActorSrc implements ActorTemplate {
                       _builder_1.newLine();
                       _builder_1.append("\t");
                       _builder_1.append(port, "\t");
-                      _builder_1.append("=fifo_ptrs[0];");
+                      _builder_1.append("=*tmp_ptrs[0];");
                       _builder_1.newLineIfNotEmpty();
                       _builder_1.append("\t");
                       _builder_1.append("cheap_release_spaces (fifo_admin_");
@@ -501,51 +538,67 @@ public class SDFActorSrc implements ActorTemplate {
                       _builder_2.append(consumption);
                       _builder_2.append(";++i){");
                       _builder_2.newLineIfNotEmpty();
-                      _builder_2.append("\t");
-                      _builder_2.newLine();
-                      _builder_2.append("\t");
-                      _builder_2.append("#if ");
-                      String _upperCase_1 = sdfchannelName.toUpperCase();
-                      _builder_2.append(_upperCase_1, "\t");
-                      _builder_2.append("_BLOCKING==0");
-                      _builder_2.newLineIfNotEmpty();
-                      _builder_2.append("\t");
-                      _builder_2.append("ret=read_non_blocking_");
-                      _builder_2.append(datatype, "\t");
-                      _builder_2.append("(&fifo_");
-                      _builder_2.append(sdfchannelName, "\t");
-                      _builder_2.append(",&");
-                      _builder_2.append(port, "\t");
-                      _builder_2.append("[i]);");
-                      _builder_2.newLineIfNotEmpty();
-                      _builder_2.append("\t");
-                      _builder_2.append("if(ret==-1){");
-                      _builder_2.newLine();
-                      _builder_2.append("\t\t");
-                      _builder_2.append("printf(\"fifo_");
-                      _builder_2.append(sdfchannelName, "\t\t");
-                      _builder_2.append(" read error\\n\");");
-                      _builder_2.newLineIfNotEmpty();
-                      _builder_2.append("\t");
-                      _builder_2.append("}");
-                      _builder_2.newLine();
-                      _builder_2.append("\t");
-                      _builder_2.append("#else");
-                      _builder_2.newLine();
-                      _builder_2.append("\t");
-                      _builder_2.append("read_blocking_");
-                      _builder_2.append(datatype, "\t");
-                      _builder_2.append("(&fifo_");
-                      _builder_2.append(sdfchannelName, "\t");
-                      _builder_2.append(",&");
-                      _builder_2.append(port, "\t");
-                      _builder_2.append("[i],&spinlock_");
-                      _builder_2.append(sdfchannelName, "\t");
-                      _builder_2.append(");");
-                      _builder_2.newLineIfNotEmpty();
-                      _builder_2.append("\t");
-                      _builder_2.append("#endif");
-                      _builder_2.newLine();
+                      {
+                        if ((Generator.fifoType == 1)) {
+                          _builder_2.append("#if ");
+                          String _upperCase_1 = sdfchannelName.toUpperCase();
+                          _builder_2.append(_upperCase_1);
+                          _builder_2.append("_BLOCKING==0");
+                          _builder_2.newLineIfNotEmpty();
+                          _builder_2.append("ret=read_non_blocking_");
+                          _builder_2.append(datatype);
+                          _builder_2.append("(&fifo_");
+                          _builder_2.append(sdfchannelName);
+                          _builder_2.append(",&");
+                          _builder_2.append(port);
+                          _builder_2.append("[i]);");
+                          _builder_2.newLineIfNotEmpty();
+                          _builder_2.append("if(ret==-1){");
+                          _builder_2.newLine();
+                          _builder_2.append("\t");
+                          _builder_2.append("printf(\"fifo_");
+                          _builder_2.append(sdfchannelName, "\t");
+                          _builder_2.append(" read error\\n\");");
+                          _builder_2.newLineIfNotEmpty();
+                          _builder_2.append("}");
+                          _builder_2.newLine();
+                          _builder_2.append("#else");
+                          _builder_2.newLine();
+                          _builder_2.append("read_blocking_");
+                          _builder_2.append(datatype);
+                          _builder_2.append("(&fifo_");
+                          _builder_2.append(sdfchannelName);
+                          _builder_2.append(",&");
+                          _builder_2.append(port);
+                          _builder_2.append("[i],&spinlock_");
+                          _builder_2.append(sdfchannelName);
+                          _builder_2.append(");");
+                          _builder_2.newLineIfNotEmpty();
+                          _builder_2.append("#endif");
+                          _builder_2.newLine();
+                        }
+                      }
+                      {
+                        if ((Generator.fifoType == 2)) {
+                          _builder_2.append("void* tmp_addr;");
+                          _builder_2.newLine();
+                          _builder_2.append("read_non_blocking(&fifo_");
+                          _builder_2.append(sdfchannelName);
+                          _builder_2.append(",&tmp_addr);");
+                          _builder_2.newLineIfNotEmpty();
+                          _builder_2.append(port);
+                          _builder_2.append("[i]= *((");
+                          _builder_2.append(datatype);
+                          _builder_2.append(" *)tmp_addr);");
+                          _builder_2.newLineIfNotEmpty();
+                        }
+                      }
+                      {
+                        if ((Generator.fifoType == 3)) {
+                          _builder_2.append("\t");
+                          _builder_2.newLine();
+                        }
+                      }
                       _builder_2.append("}");
                       _builder_2.newLine();
                     } else {
@@ -581,7 +634,7 @@ public class SDFActorSrc implements ActorTemplate {
                       _builder_2.newLineIfNotEmpty();
                       _builder_2.append("\t\t");
                       _builder_2.append(port, "\t\t");
-                      _builder_2.append("[i]=tmp_ptrs[i];\t");
+                      _builder_2.append("[i]=*tmp_ptrs[i];\t");
                       _builder_2.newLineIfNotEmpty();
                       _builder_2.append("\t");
                       _builder_2.append("}");
@@ -636,7 +689,7 @@ public class SDFActorSrc implements ActorTemplate {
                 throw Exceptions.sneakyThrow(_t);
               }
             }
-            Integer production = SDFComb.enforce(actor).getProduction().get(actorPortName);
+            Integer production = SDFActor.enforce(actor).getProduction().get(actorPortName);
             boolean _equals = Objects.equal(production, null);
             if (_equals) {
               String _ret = ret;
@@ -654,33 +707,51 @@ public class SDFActorSrc implements ActorTemplate {
                 {
                   boolean _isOnOneCoreChannel = Query.isOnOneCoreChannel(model, model.queryVertex(sdfchannelName).get());
                   if (_isOnOneCoreChannel) {
-                    _builder_1.append("#if ");
-                    String _upperCase = sdfchannelName.toUpperCase();
-                    _builder_1.append(_upperCase);
-                    _builder_1.append("_BLOCKING==0");
-                    _builder_1.newLineIfNotEmpty();
-                    _builder_1.append("write_non_blocking_");
-                    _builder_1.append(datatype);
-                    _builder_1.append("(&fifo_");
-                    _builder_1.append(sdfchannelName);
-                    _builder_1.append(",");
-                    _builder_1.append(outport);
-                    _builder_1.append(");");
-                    _builder_1.newLineIfNotEmpty();
-                    _builder_1.append("#else");
-                    _builder_1.newLine();
-                    _builder_1.append("write_blocking_");
-                    _builder_1.append(datatype);
-                    _builder_1.append("(&fifo_");
-                    _builder_1.append(sdfchannelName);
-                    _builder_1.append(",");
-                    _builder_1.append(outport);
-                    _builder_1.append(",&spinlock_");
-                    _builder_1.append(sdfchannelName);
-                    _builder_1.append(");");
-                    _builder_1.newLineIfNotEmpty();
-                    _builder_1.append("#endif");
-                    _builder_1.newLine();
+                    {
+                      if ((Generator.fifoType == 1)) {
+                        _builder_1.append("#if ");
+                        String _upperCase = sdfchannelName.toUpperCase();
+                        _builder_1.append(_upperCase);
+                        _builder_1.append("_BLOCKING==0");
+                        _builder_1.newLineIfNotEmpty();
+                        _builder_1.append("write_non_blocking_");
+                        _builder_1.append(datatype);
+                        _builder_1.append("(&fifo_");
+                        _builder_1.append(sdfchannelName);
+                        _builder_1.append(",");
+                        _builder_1.append(outport);
+                        _builder_1.append(");");
+                        _builder_1.newLineIfNotEmpty();
+                        _builder_1.append("#else");
+                        _builder_1.newLine();
+                        _builder_1.append("write_blocking_");
+                        _builder_1.append(datatype);
+                        _builder_1.append("(&fifo_");
+                        _builder_1.append(sdfchannelName);
+                        _builder_1.append(",");
+                        _builder_1.append(outport);
+                        _builder_1.append(",&spinlock_");
+                        _builder_1.append(sdfchannelName);
+                        _builder_1.append(");");
+                        _builder_1.newLineIfNotEmpty();
+                        _builder_1.append("#endif");
+                        _builder_1.newLine();
+                      }
+                    }
+                    {
+                      if ((Generator.fifoType == 2)) {
+                        _builder_1.append("write_non_blocking(&fifo_");
+                        _builder_1.append(sdfchannelName);
+                        _builder_1.append(",(void*)&");
+                        _builder_1.append(outport);
+                        _builder_1.append(");");
+                        _builder_1.newLineIfNotEmpty();
+                      }
+                    }
+                    {
+                      if ((Generator.fifoType == 3)) {
+                      }
+                    }
                   } else {
                     _builder_1.append("{");
                     _builder_1.newLine();
@@ -728,38 +799,57 @@ public class SDFActorSrc implements ActorTemplate {
                     _builder_2.append(production);
                     _builder_2.append(";++i){");
                     _builder_2.newLineIfNotEmpty();
-                    _builder_2.append("\t");
-                    _builder_2.append("#if ");
-                    String _upperCase_1 = sdfchannelName.toUpperCase();
-                    _builder_2.append(_upperCase_1, "\t");
-                    _builder_2.append("_BLOCKING==0");
-                    _builder_2.newLineIfNotEmpty();
-                    _builder_2.append("\t");
-                    _builder_2.append("write_non_blocking_");
-                    _builder_2.append(datatype, "\t");
-                    _builder_2.append("(&fifo_");
-                    _builder_2.append(sdfchannelName, "\t");
-                    _builder_2.append(",");
-                    _builder_2.append(outport, "\t");
-                    _builder_2.append("[i]);");
-                    _builder_2.newLineIfNotEmpty();
-                    _builder_2.append("\t");
-                    _builder_2.append("#else");
-                    _builder_2.newLine();
-                    _builder_2.append("\t");
-                    _builder_2.append("write_blocking_");
-                    _builder_2.append(datatype, "\t");
-                    _builder_2.append("(&fifo_");
-                    _builder_2.append(sdfchannelName, "\t");
-                    _builder_2.append(",");
-                    _builder_2.append(outport, "\t");
-                    _builder_2.append("[i],&spinlock_");
-                    _builder_2.append(sdfchannelName, "\t");
-                    _builder_2.append(");");
-                    _builder_2.newLineIfNotEmpty();
-                    _builder_2.append("\t");
-                    _builder_2.append("#endif");
-                    _builder_2.newLine();
+                    {
+                      if ((Generator.fifoType == 1)) {
+                        _builder_2.append("\t");
+                        _builder_2.append("#if ");
+                        String _upperCase_1 = sdfchannelName.toUpperCase();
+                        _builder_2.append(_upperCase_1, "\t");
+                        _builder_2.append("_BLOCKING==0");
+                        _builder_2.newLineIfNotEmpty();
+                        _builder_2.append("\t");
+                        _builder_2.append("write_non_blocking_");
+                        _builder_2.append(datatype, "\t");
+                        _builder_2.append("(&fifo_");
+                        _builder_2.append(sdfchannelName, "\t");
+                        _builder_2.append(",");
+                        _builder_2.append(outport, "\t");
+                        _builder_2.append("[i]);");
+                        _builder_2.newLineIfNotEmpty();
+                        _builder_2.append("\t");
+                        _builder_2.append("#else");
+                        _builder_2.newLine();
+                        _builder_2.append("\t");
+                        _builder_2.append("write_blocking_");
+                        _builder_2.append(datatype, "\t");
+                        _builder_2.append("(&fifo_");
+                        _builder_2.append(sdfchannelName, "\t");
+                        _builder_2.append(",");
+                        _builder_2.append(outport, "\t");
+                        _builder_2.append("[i],&spinlock_");
+                        _builder_2.append(sdfchannelName, "\t");
+                        _builder_2.append(");");
+                        _builder_2.newLineIfNotEmpty();
+                        _builder_2.append("\t");
+                        _builder_2.append("#endif");
+                        _builder_2.newLine();
+                      }
+                    }
+                    {
+                      if ((Generator.fifoType == 2)) {
+                        _builder_2.append("\t");
+                        _builder_2.append("write_non_blocking(&fifo_");
+                        _builder_2.append(sdfchannelName, "\t");
+                        _builder_2.append(",(void*)&");
+                        _builder_2.append(outport, "\t");
+                        _builder_2.append("[i]);\t\t");
+                        _builder_2.newLineIfNotEmpty();
+                      }
+                    }
+                    {
+                      if ((Generator.fifoType == 3)) {
+                      }
+                    }
                     _builder_2.append("}");
                     _builder_2.newLine();
                   } else {

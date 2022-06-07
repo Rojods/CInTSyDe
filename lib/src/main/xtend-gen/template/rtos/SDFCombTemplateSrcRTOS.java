@@ -8,7 +8,7 @@ import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
 import forsyde.io.java.core.VertexTrait;
 import forsyde.io.java.typed.viewers.impl.Executable;
-import forsyde.io.java.typed.viewers.moc.sdf.SDFComb;
+import forsyde.io.java.typed.viewers.moc.sdf.SDFActor;
 import forsyde.io.java.typed.viewers.typing.TypedOperation;
 import generator.Generator;
 import java.util.HashSet;
@@ -31,6 +31,12 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
   
   private Set<Vertex> outputSDFChannelSet;
   
+  @Override
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
+  }
+  
+  @Override
   public String create(final Vertex actor) {
     String _xblockexpression = null;
     {
@@ -41,7 +47,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
       this.inputSDFChannelSet = Query.findInputSDFChannels(Generator.model, actor);
       this.outputSDFChannelSet = Query.findOutputSDFChannels(Generator.model, actor);
       Set<Vertex> datablock = null;
-      datablock = Query.findAllExternalDataBlocks(model, SDFComb.safeCast(actor).get());
+      datablock = Query.findAllExternalDataBlocks(model, SDFActor.safeCast(actor).get());
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("\t");
       _builder.append("#include \"../inc/config.h\"");
@@ -517,12 +523,10 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
    * copied and modified from method read in SDFCombTemplateSrc class
    */
   public String read(final ForSyDeSystemGraph model, final Vertex actor) {
-    final Function<Executable, Vertex> _function = new Function<Executable, Vertex>() {
-      public Vertex apply(final Executable e) {
-        return e.getViewedVertex();
-      }
+    final Function<Executable, Vertex> _function = (Executable e) -> {
+      return e.getViewedVertex();
     };
-    Set<Vertex> impls = SDFComb.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
+    Set<Vertex> impls = SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().<Vertex>map(_function).collect(Collectors.<Vertex>toSet());
     Set<String> variableNameRecord = new HashSet<String>();
     String ret = "";
     for (final Vertex impl : impls) {
@@ -533,7 +537,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
             String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port);
             String sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName);
             String datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get());
-            Integer consumption = SDFComb.safeCast(actor).get().getConsumption().get(actorPortName);
+            Integer consumption = SDFActor.safeCast(actor).get().getConsumption().get(actorPortName);
             if (((consumption).intValue() == 1)) {
               String _ret = ret;
               StringConcatenation _builder = new StringConcatenation();
@@ -600,7 +604,7 @@ public class SDFCombTemplateSrcRTOS implements ActorTemplate {
             String sdfchannelName = Query.findOutputSDFChannelConnectedToActorPort(model, actor, actorPortName);
             String datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get());
             try {
-              Integer production = SDFComb.enforce(actor).getProduction().get(actorPortName);
+              Integer production = SDFActor.enforce(actor).getProduction().get(actorPortName);
               if (((production).intValue() == 1)) {
                 String _ret = ret;
                 StringConcatenation _builder = new StringConcatenation();

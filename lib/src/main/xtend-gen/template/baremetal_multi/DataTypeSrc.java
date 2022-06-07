@@ -16,33 +16,30 @@ import template.templateInterface.InitTemplate;
 @FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class DataTypeSrc implements InitTemplate {
+  @Override
   public String create() {
     String _xblockexpression = null;
     {
       ForSyDeSystemGraph model = Generator.model;
-      final Predicate<Vertex> _function = new Predicate<Vertex>() {
-        public boolean test(final Vertex v) {
-          return (IntegerValue.conforms(v)).booleanValue();
-        }
+      final Predicate<Vertex> _function = (Vertex v) -> {
+        return (IntegerValue.conforms(v)).booleanValue();
       };
-      final Function<Vertex, IntegerValue> _function_1 = new Function<Vertex, IntegerValue>() {
-        public IntegerValue apply(final Vertex v) {
-          return IntegerValue.safeCast(v).get();
-        }
+      final Function<Vertex, IntegerValue> _function_1 = (Vertex v) -> {
+        return IntegerValue.safeCast(v).get();
       };
       Set<IntegerValue> integerValues = model.vertexSet().stream().filter(_function).<IntegerValue>map(_function_1).collect(Collectors.<IntegerValue>toSet());
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("#include \"../inc/datatype_definition.h\"");
-      _builder.newLine();
+      _builder.append("#include \"datatype_definition.h\"");
       _builder.newLine();
       {
         for(final IntegerValue value : integerValues) {
+          _builder.append("\t");
           _builder.append("int ");
           String _identifier = value.getIdentifier();
-          _builder.append(_identifier);
+          _builder.append(_identifier, "\t");
           _builder.append("=");
           Integer _intValue = value.getIntValue();
-          _builder.append(_intValue);
+          _builder.append(_intValue, "\t");
           _builder.append(";");
           _builder.newLineIfNotEmpty();
         }
@@ -52,7 +49,8 @@ public class DataTypeSrc implements InitTemplate {
     return _xblockexpression;
   }
   
-  public String getFileName() {
-    return "data_definition";
+  @Override
+  public String savePath() {
+    return "/datatype/datatype_definition.c";
   }
 }

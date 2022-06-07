@@ -10,6 +10,7 @@ import template.templateInterface.InitTemplate;
 @FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class ConfigRTOSInc implements InitTemplate {
+  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("#ifndef CONFIG_H_");
@@ -65,7 +66,8 @@ public class ConfigRTOSInc implements InitTemplate {
     return _builder.toString();
   }
   
-  public String getFileName() {
-    return "config";
+  @Override
+  public String savePath() {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
 }
