@@ -1,5 +1,4 @@
 #include "spinlock.h"
-
 	#if defined(WINDOWS)
 	#define ATOMIC_TEST_AND_SET   _InterlockedExchange
 	#endif

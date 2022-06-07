@@ -1,8 +1,7 @@
 package template.baremetal_multi
 
-import fileAnnotation.FileType
-import fileAnnotation.FileTypeAnno
-import generator.Schedule
+
+
 import template.templateInterface.SubsystemTemplate
 import utils.Name
 import generator.Generator
@@ -12,8 +11,9 @@ import utils.Query
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import java.util.HashMap
 import java.util.ArrayList
+import processingModule.Schedule
 
-@FileTypeAnno(type=FileType.C_SOURCE)
+
 class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 	Schedule s
 

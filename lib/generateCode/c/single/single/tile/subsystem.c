@@ -38,62 +38,62 @@ int init_subsystem(){
 	extern int OneValue;
 	
 	/* extern sdfchannel GrayScaleToAbs*/
-	extern void* buffer_GrayScaleToAbs[];
-	extern size_t buffer_GrayScaleToAbs_size;
-	extern circular_fifo fifo_GrayScaleToAbs;
+	extern UInt16 buffer_GrayScaleToAbs[];
+	extern int buffer_GrayScaleToAbs_size;
+	extern circular_fifo_UInt16 fifo_GrayScaleToAbs;
 	/* extern sdfchannel AbsY*/
-	extern void* buffer_AbsY[];
-	extern size_t buffer_AbsY_size;
-	extern circular_fifo fifo_AbsY;
+	extern UInt16 buffer_AbsY[];
+	extern int buffer_AbsY_size;
+	extern circular_fifo_UInt16 fifo_AbsY;
 	/* extern sdfchannel gysig*/
-	extern void* buffer_gysig[];
-	extern size_t buffer_gysig_size;
-	extern circular_fifo fifo_gysig;
+	extern DoubleType buffer_gysig[];
+	extern int buffer_gysig_size;
+	extern circular_fifo_DoubleType fifo_gysig;
 	/* extern sdfchannel AbsX*/
-	extern void* buffer_AbsX[];
-	extern size_t buffer_AbsX_size;
-	extern circular_fifo fifo_AbsX;
+	extern UInt16 buffer_AbsX[];
+	extern int buffer_AbsX_size;
+	extern circular_fifo_UInt16 fifo_AbsX;
 	/* extern sdfchannel GrayScaleToGetPx*/
-	extern void* buffer_GrayScaleToGetPx[];
-	extern size_t buffer_GrayScaleToGetPx_size;
-	extern circular_fifo fifo_GrayScaleToGetPx;
+	extern DoubleType buffer_GrayScaleToGetPx[];
+	extern int buffer_GrayScaleToGetPx_size;
+	extern circular_fifo_DoubleType fifo_GrayScaleToGetPx;
 	/* extern sdfchannel gxsig*/
-	extern void* buffer_gxsig[];
-	extern size_t buffer_gxsig_size;
-	extern circular_fifo fifo_gxsig;
+	extern DoubleType buffer_gxsig[];
+	extern int buffer_gxsig_size;
+	extern circular_fifo_DoubleType fifo_gxsig;
 	/* extern sdfchannel absysig*/
-	extern void* buffer_absysig[];
-	extern size_t buffer_absysig_size;
-	extern circular_fifo fifo_absysig;
+	extern DoubleType buffer_absysig[];
+	extern int buffer_absysig_size;
+	extern circular_fifo_DoubleType fifo_absysig;
 	/* extern sdfchannel absxsig*/
-	extern void* buffer_absxsig[];
-	extern size_t buffer_absxsig_size;
-	extern circular_fifo fifo_absxsig;
+	extern DoubleType buffer_absxsig[];
+	extern int buffer_absxsig_size;
+	extern circular_fifo_DoubleType fifo_absxsig;
 	/* extern sdfchannel GrayScaleX*/
-	extern void* buffer_GrayScaleX[];
-	extern size_t buffer_GrayScaleX_size;
-	extern circular_fifo fifo_GrayScaleX;
+	extern UInt16 buffer_GrayScaleX[];
+	extern int buffer_GrayScaleX_size;
+	extern circular_fifo_UInt16 fifo_GrayScaleX;
 	/* extern sdfchannel GrayScaleY*/
-	extern void* buffer_GrayScaleY[];
-	extern size_t buffer_GrayScaleY_size;
-	extern circular_fifo fifo_GrayScaleY;
+	extern UInt16 buffer_GrayScaleY[];
+	extern int buffer_GrayScaleY_size;
+	extern circular_fifo_UInt16 fifo_GrayScaleY;
 	
 	/* initialize the channels*/
-		init(&fifo_GrayScaleToAbs,buffer_GrayScaleToAbs,buffer_GrayScaleToAbs_size);
-		init(&fifo_AbsY,buffer_AbsY,buffer_AbsY_size);
-		init(&fifo_gysig,buffer_gysig,buffer_gysig_size);
-		init(&fifo_AbsX,buffer_AbsX,buffer_AbsX_size);
-		init(&fifo_GrayScaleToGetPx,buffer_GrayScaleToGetPx,buffer_GrayScaleToGetPx_size);
-		init(&fifo_gxsig,buffer_gxsig,buffer_gxsig_size);
-		init(&fifo_absysig,buffer_absysig,buffer_absysig_size);
-		init(&fifo_absxsig,buffer_absxsig,buffer_absxsig_size);
-		init(&fifo_GrayScaleX,buffer_GrayScaleX,buffer_GrayScaleX_size);
-		init(&fifo_GrayScaleY,buffer_GrayScaleY,buffer_GrayScaleY_size);
+		init_channel_UInt16(&fifo_GrayScaleToAbs,buffer_GrayScaleToAbs,buffer_GrayScaleToAbs_size);
+		init_channel_UInt16(&fifo_AbsY,buffer_AbsY,buffer_AbsY_size);
+		init_channel_DoubleType(&fifo_gysig,buffer_gysig,buffer_gysig_size);
+		init_channel_UInt16(&fifo_AbsX,buffer_AbsX,buffer_AbsX_size);
+		init_channel_DoubleType(&fifo_GrayScaleToGetPx,buffer_GrayScaleToGetPx,buffer_GrayScaleToGetPx_size);
+		init_channel_DoubleType(&fifo_gxsig,buffer_gxsig,buffer_gxsig_size);
+		init_channel_DoubleType(&fifo_absysig,buffer_absysig,buffer_absysig_size);
+		init_channel_DoubleType(&fifo_absxsig,buffer_absxsig,buffer_absxsig_size);
+		init_channel_UInt16(&fifo_GrayScaleX,buffer_GrayScaleX,buffer_GrayScaleX_size);
+		init_channel_UInt16(&fifo_GrayScaleY,buffer_GrayScaleY,buffer_GrayScaleY_size);
 		
-write_non_blocking(&fifo_AbsY,(void*)&ZeroValue);
-write_non_blocking(&fifo_AbsX,(void*)&ZeroValue);
-write_non_blocking(&fifo_GrayScaleX,(void*)&ZeroValue);
-write_non_blocking(&fifo_GrayScaleY,(void*)&ZeroValue);
+write_non_blocking_UInt16(&fifo_AbsY,ZeroValue);
+write_non_blocking_UInt16(&fifo_AbsX,ZeroValue);
+write_non_blocking_UInt16(&fifo_GrayScaleX,ZeroValue);
+write_non_blocking_UInt16(&fifo_GrayScaleY,ZeroValue);
 		return 0;
 	}		
 

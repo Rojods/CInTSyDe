@@ -9,6 +9,8 @@ import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import java.util.TreeMap
 import forsyde.io.java.typed.viewers.moc.sdf.SDFActor
 import java.util.ArrayList
+import processingModule.ModuleInterface
+import processingModule.Schedule
 
 class Generator {
 
@@ -25,7 +27,7 @@ class Generator {
 	public static int TESTING=1
 	public static int PC=1
 	public static int NUCLEO=0
-	public static int fifoType=2
+	public static int fifoType=1
 	public static int platform=0
 	Set<ModuleInterface> modules = new HashSet
 

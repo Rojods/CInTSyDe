@@ -55,20 +55,20 @@ Array6OfDoubleType imgBlockX;
 
 	
 	/* Inline Code           */
-				/* in combFunction getPxImpl1 */
-				imgBlockX[0]=gray[0];
-				imgBlockX[1]=gray[1];
-				imgBlockX[2]=gray[2];
-				imgBlockX[3]=gray[3];
-				imgBlockX[4]=gray[4];
-				imgBlockX[5]=gray[5];
-				/* in combFunction getPxImpl2 */
-				imgBlockY[0]=gray[0];
-				imgBlockY[1]=gray[1];
-				imgBlockY[2]=gray[2];
-				imgBlockY[3]=gray[3];
-				imgBlockY[4]=gray[4];
-				imgBlockY[5]=gray[5];
+	/* in combFunction getPxImpl1 */
+	imgBlockX[0]=gray[0];
+	imgBlockX[1]=gray[1];
+	imgBlockX[2]=gray[2];
+	imgBlockX[3]=gray[3];
+	imgBlockX[4]=gray[4];
+	imgBlockX[5]=gray[5];
+	/* in combFunction getPxImpl2 */
+	imgBlockY[0]=gray[0];
+	imgBlockY[1]=gray[1];
+	imgBlockY[2]=gray[2];
+	imgBlockY[3]=gray[3];
+	imgBlockY[4]=gray[4];
+	imgBlockY[5]=gray[5];
 	
 	/* Write To Output Ports */
 				{

@@ -6,15 +6,12 @@ import template.templateInterface.SubsystemTemplate
 import java.util.stream.Collectors
 import generator.Generator
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
-import fileAnnotation.FileType
-import fileAnnotation.FileTypeAnno
-import generator.Schedule
 import java.util.HashMap
 import forsyde.io.java.typed.viewers.moc.sdf.SDFActor
 import utils.Query
 import forsyde.io.java.typed.viewers.values.IntegerValue
+import processingModule.Schedule
 
-@FileTypeAnno(type=FileType.C_SOURCE)
 class SubsystemTemplateSrc implements SubsystemTemplate {
 	override savePath() {
 		return "/tile/subsystem.c"

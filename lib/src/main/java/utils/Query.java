@@ -18,6 +18,7 @@ import forsyde.io.java.core.EdgeTrait;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexAcessor;
+import forsyde.io.java.core.VertexAcessor.VertexPortDirection;
 import forsyde.io.java.core.VertexProperty;
 import forsyde.io.java.core.VertexTrait;
 import forsyde.io.java.core.VertexViewer;
@@ -277,8 +278,12 @@ public class Query {
 
 	public static Set<String> findCombFuntionVertex(ForSyDeSystemGraph model, Vertex actor) {
 
-		var a =SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().map(v->v.getIdentifier()).collect(Collectors.toSet());
-		return a;
+		//var a =SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().map(v->v.getIdentifier()).collect(Collectors.toSet());
+		
+		var a = VertexAcessor.getMultipleNamedPort(model,actor,"combFunctions",VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE,  VertexPortDirection.OUTGOING);
+		
+		var b = a.stream().map(v->v.getIdentifier()).collect(Collectors.toSet());
+		return b;
 	}
 
 	/**

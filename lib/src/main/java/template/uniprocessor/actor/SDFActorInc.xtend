@@ -1,15 +1,15 @@
 package template.uniprocessor.actor
 
 import forsyde.io.java.core.Vertex
-import fileAnnotation.FileTypeAnno
-import fileAnnotation.FileType
+
+
 import template.templateInterface.ActorTemplate
 import forsyde.io.java.typed.viewers.impl.Executable
 import java.util.Set
 import forsyde.io.java.typed.viewers.moc.sdf.SDFActorViewer
 import generator.Generator
 
-@FileTypeAnno(type=FileType.C_INCLUDE)
+
 class SDFActorInc implements ActorTemplate{
 	Set<Executable> a
 	Vertex actor

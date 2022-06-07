@@ -1,5 +1,0 @@
-#ifndef  GRAYSCALETOABS_H_ 
-#define GRAYSCALETOABS_H_ 
-
-#define GRAYSCALETOABS_ADDR 0x80020000
-#endif

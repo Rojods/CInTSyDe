@@ -51,14 +51,14 @@ Array6OfDoubleType imgBlockX;
 
 	
 	/* Inline Code           */
-				/* in combFunction GxImpl */
-				gx=0;
-				gx=gx-imgBlockX[0];
-				gx=gx+imgBlockX[1];
-				gx=gx-2.0*imgBlockX[2];
-				gx=gx+2.0*imgBlockX[3];
-				gx=gx-imgBlockX[4];
-				gx=gx+imgBlockX[5];
+	/* in combFunction GxImpl */
+	gx=0;
+	gx=gx-imgBlockX[0];
+	gx=gx+imgBlockX[1];
+	gx=gx-2.0*imgBlockX[2];
+	gx=gx+2.0*imgBlockX[3];
+	gx=gx-imgBlockX[4];
+	gx=gx+imgBlockX[5];
 	
 	/* Write To Output Ports */
 				#if ABSXSIG_BLOCKING==0

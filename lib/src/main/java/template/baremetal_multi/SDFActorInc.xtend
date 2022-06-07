@@ -1,7 +1,6 @@
 package template.baremetal_multi
 
-import fileAnnotation.FileType
-import fileAnnotation.FileTypeAnno
+
 import forsyde.io.java.core.Vertex
 import forsyde.io.java.typed.viewers.impl.Executable
 import forsyde.io.java.typed.viewers.moc.sdf.SDFActorViewer
@@ -10,7 +9,7 @@ import java.util.Set
 import template.templateInterface.ActorTemplate
 import utils.Query
 
-@FileTypeAnno(type=FileType.C_INCLUDE)
+
 class SDFActorInc implements ActorTemplate{
 	Set<Executable> a
 	Vertex actor

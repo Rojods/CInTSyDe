@@ -51,14 +51,14 @@ Array6OfDoubleType imgBlockY;
 
 	
 	/* Inline Code           */
-				/* in combFunction GyImpl */
-				gy=0;
-				gy=gy+imgBlockY[0];
-				gy=gy+2.0*imgBlockY[1];
-				gy=gy+imgBlockY[2];
-				gy=gy-imgBlockY[3];
-				gy=gy-2.0*imgBlockY[4];
-				gy=gy-imgBlockY[5];
+	/* in combFunction GyImpl */
+	gy=0;
+	gy=gy+imgBlockY[0];
+	gy=gy+2.0*imgBlockY[1];
+	gy=gy+imgBlockY[2];
+	gy=gy-imgBlockY[3];
+	gy=gy-2.0*imgBlockY[4];
+	gy=gy-imgBlockY[5];
 	
 	/* Write To Output Ports */
 				#if ABSYSIG_BLOCKING==0

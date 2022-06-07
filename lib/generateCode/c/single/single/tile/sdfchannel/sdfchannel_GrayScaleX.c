@@ -1,7 +1,8 @@
 
 #include "sdfchannel_GrayScaleX.h"
 #include "../../circular_fifo_lib/circular_fifo_lib.h"
-void* buffer_GrayScaleX[2];
-size_t buffer_GrayScaleX_size = 2;
-circular_fifo  fifo_GrayScaleX;
-spinlock spinlock_GrayScaleX={.flag=0};
+volatile UInt16 buffer_GrayScaleX[2];
+int channel_GrayScaleX_size = 1;
+/*Because of circular fifo, the buffer_size=channel_size+1 */
+int buffer_GrayScaleX_size = 2;
+circular_fifo_UInt16 fifo_GrayScaleX;

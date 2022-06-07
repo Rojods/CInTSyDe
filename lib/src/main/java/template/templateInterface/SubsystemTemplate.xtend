@@ -1,6 +1,6 @@
 package template.templateInterface
 
-import generator.Schedule
+import processingModule.Schedule
 
 interface SubsystemTemplate {
 	def String create(Schedule s)

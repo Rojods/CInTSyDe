@@ -2,17 +2,33 @@ package demo
 
 import forsyde.io.java.drivers.ForSyDeModelHandler
 import generator.Generator
-import generator.SDFChannelProcessingModule
-import template.baremetal_multi.*
-import generator.SDFCombProcessingModule
-import generator.SubsystemMultiprocessorModule
-import generator.InitProcessingModule
-import template.uniprocessor.fifo.fifo1.FIFOInc1
-import template.uniprocessor.fifo.fifo1.FIFOSrc1
-import template.uniprocessor.fifo.fifo2.FIFOInc2
-import template.uniprocessor.fifo.fifo2.FIFOSrc2
-import template.uniprocessor.fifo.fifo3.FIFOInc3
-import template.uniprocessor.fifo.fifo3.FIFOSrc3
+
+//import template.baremetal_multi.DataTypeInc
+//import template.baremetal_multi.DataTypeSrc
+import template.baremetal_multi.SDFActorInc
+import template.baremetal_multi.SDFActorSrc
+import template.baremetal_multi.SDFChannelInc
+import template.baremetal_multi.SDFChannelTemplateSrc
+//import template.baremetal_multi.SpinLockTemplateInc
+//import template.baremetal_multi.SpinLockTemplateSrc
+import template.baremetal_multi.SubsystemTemplateIncMulti
+import template.baremetal_multi.SubsystemTemplateSrcMulti
+import template.fifo.fifo1.FIFOInc1
+import template.fifo.fifo1.FIFOSrc1
+import template.fifo.fifo2.FIFOInc2
+import template.fifo.fifo2.FIFOSrc2
+import template.fifo.fifo3.FIFOInc3
+import template.fifo.fifo3.FIFOSrc3
+
+import static generator.Generator.*
+import template.fifo.SpinLockTemplateInc
+import template.fifo.SpinLockTemplateSrc
+import template.datatype.DataTypeInc
+import template.datatype.DataTypeSrc
+import processingModule.SDFChannelProcessingModule
+import processingModule.SDFCombProcessingModule
+import processingModule.SubsystemMultiprocessorModule
+import processingModule.InitProcessingModule
 
 /**
  * multi cores
@@ -70,8 +86,7 @@ class demo2 {
 		initModule.add(new DataTypeSrc)
 		
 		
-//		initModule.add(new CircularFIFOTemplateInc)
-//		initModule.add(new CircularFIFOTemplateSrc)
+
 		
 		if(Generator.fifoType==1){
 			initModule.add(new FIFOInc1)
@@ -91,9 +106,7 @@ class demo2 {
 		
 		initModule.add(new SpinLockTemplateInc)
 		initModule.add(new SpinLockTemplateSrc)
-		//initModule.add(new Config)
-//		initModule.add(new SubsystemInitInc)
-//		initModule.add(new SubsystemInitSrc)
+
 		
 		
 		gen.add(initModule)

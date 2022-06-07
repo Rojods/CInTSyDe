@@ -1,10 +1,9 @@
 package template.rtos
 
 import template.templateInterface.InitTemplate
-import fileAnnotation.FileTypeAnno
-import fileAnnotation.FileType
 
-@FileTypeAnno(type=FileType.C_INCLUDE)
+
+
 class StartTaskInc implements InitTemplate{
 	
 	override create() {
@@ -17,7 +16,7 @@ class StartTaskInc implements InitTemplate{
 	}
 	
 	override savePath() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		return "/start_task.h"
 	}
 	
 }

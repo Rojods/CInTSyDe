@@ -1,20 +1,16 @@
 package template.baremetal_multi
-import fileAnnotation.FileType
-import fileAnnotation.FileTypeAnno
+
+
 import forsyde.io.java.core.Vertex
-import forsyde.io.java.typed.viewers.decision.sdf.BoundedSDFChannel
-import forsyde.io.java.typed.viewers.decision.sdf.BoundedSDFChannelViewer
 import generator.Generator
 import template.templateInterface.ChannelTemplate
 import utils.Query
-import template.templateInterface.SubsystemTemplate
-import generator.Schedule
 
 /**
  * without distinguish if the sdfchannel is a state variable
  * 
  */
-@FileTypeAnno(type=FileType.C_INCLUDE)
+
 class SDFChannelInc  implements ChannelTemplate{
 	Vertex sdfchannel
 	override create(Vertex vertex) {
