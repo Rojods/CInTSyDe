@@ -1,4 +1,4 @@
-package sdf
+package sdf;
 
 import forsyde.io.java.core.*;
 import forsyde.io.java.drivers.ForSyDeModelHandler;
