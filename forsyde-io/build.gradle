@@ -3,12 +3,10 @@ plugins {
     id 'groovy'
     id 'idea'
     id 'eclipse'
+    id "io.freefair.lombok" version "6.4.3"
 }
 
-version '0.1.0'
-
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
@@ -18,8 +16,27 @@ dependencies {
     implementation project(":common")
     implementation group: 'io.github.forsyde', name: 'forsyde-io-java-core', version: '0.5.9'
     implementation 'org.codehaus.groovy:groovy-all:3.0.10'
+
+    annotationProcessor project(":generator")
+    implementation project(":generator")
+
+    implementation 'org.apache.commons:commons-collections4:4.1'
+    //implementation project(":generator")
 }
 
 test {
     useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    doFirst {
+        println "AnnotationProcessorPath for $name is ${options.getAnnotationProcessorPath().getFiles()}"
+    }
+}
+
+
+tasks.withType(GroovyCompile) {
+    doFirst {
+        println "AnnotationProcessorPath for $name is ${options.getAnnotationProcessorPath().getFiles()}"
+    }
 }

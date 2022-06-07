@@ -22,16 +22,6 @@ class LocalInlineComponent<BaseT> implements StringComponent<BaseT> {
         return inlineCode
     }
 
-    @Override
-    Path getComponentPath() {
-        return componentPath
-    }
-
-    @Override
-    void setComponentPath(Path path) {
-        componentPath = path
-    }
-
     def propertyMissing(String name) {
         return dynamicContext[name]
     }

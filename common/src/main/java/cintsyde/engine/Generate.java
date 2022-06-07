@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
-public @interface Generated {
+public @interface Generate {
 
 
 

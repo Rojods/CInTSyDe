@@ -1,12 +1,17 @@
-package cintsyde.interfaces
+package cintsyde.interfaces;
 
-import com.github.mustachejava.Mustache
+import com.github.mustachejava.Mustache;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
-interface StringComponent<BaseT> extends Component<BaseT> {
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+
+public interface StringComponent<BaseT> extends Component<BaseT> {
 
     default String getComponentIdentifier() {
         return getClass().getName();
-    };
+    }
 
     String getComponentTemplate();
 
@@ -18,8 +23,7 @@ interface StringComponent<BaseT> extends Component<BaseT> {
     }
 
     default boolean componentIsEqual(Component<BaseT> other) {
-        return other instanceof StringComponent<BaseT> ? other.getComponentIdentifier() == getComponentIdentifier() &&
-                other.getContextAsMap() == getContextAsMap() : false
+        return other instanceof StringComponent<?> && ((StringComponent<BaseT>) other).getComponentIdentifier().equals(getComponentIdentifier()) && other.getContextAsMap().equals(getContextAsMap());
     }
 
 }

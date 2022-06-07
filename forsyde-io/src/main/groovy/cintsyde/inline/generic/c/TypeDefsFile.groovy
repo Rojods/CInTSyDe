@@ -1,5 +1,7 @@
 package cintsyde.inline.generic.c
 
+import cintsyde.engine.Generate
+import cintsyde.interfaces.Component
 import cintsyde.interfaces.FileComponent
 import cintsyde.interfaces.StringComponent
 import forsyde.io.java.core.ForSyDeSystemGraph
@@ -7,6 +9,7 @@ import forsyde.io.java.typed.viewers.typing.datatypes.DataType
 
 import java.nio.file.Path
 
+@Generate
 class TypeDefsFile implements FileComponent<ForSyDeSystemGraph> {
 
     ForSyDeSystemGraph baseModel
@@ -38,5 +41,14 @@ class TypeDefsFile implements FileComponent<ForSyDeSystemGraph> {
     @Override
     void setContextByMap(Map<String, Object> context) {
         typeDefs = (List<TypeDef>) context.getOrDefault("typeDefs", typeDefs)
+    }
+
+    static List<TypeDef> generate(ForSyDeSystemGraph baseModel, List<Component<ForSyDeSystemGraph>> components) {
+        def generatedComponents = components.findAll { it instanceof TypeDefsFile }
+                .collect { it as TypeDefsFile }
+        def hasTypes = baseModel.vertexSet().any { DataType.conforms(it) }
+        def generatedTypes = components.findAll { it instanceof TypeDef}
+                .collect { it as TypeDef }
+        return List.of()
     }
 }

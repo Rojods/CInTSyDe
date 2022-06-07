@@ -25,10 +25,11 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
     // https://mvnrepository.com/artifact/io.github.forsyde/forsyde-io-java-core
-    implementation group: 'io.github.forsyde', name: 'forsyde-io-java-core', version: '[0.5.6,)'
-    implementation 'com.github.spullara.mustache.java:compiler:0.9.10'
+    implementation group: 'io.github.forsyde', name: 'forsyde-io-java-core', version: '0.5.9'
+    api 'com.github.spullara.mustache.java:compiler:0.9.10'
 
     //implementation 'io.github.forsyde:forsyde-io-java-sdf3:0.5.5'
+    api 'org.codehaus.groovy:groovy-all:3.0.10'
 }
 
 tasks.named('test') {
