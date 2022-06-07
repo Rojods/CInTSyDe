@@ -1,7 +1,5 @@
 package template.baremetal_multi;
 
-import fileAnnotation.FileType;
-import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.core.VertexProperty;
@@ -16,7 +14,6 @@ import utils.Query;
 /**
  * without distinguish if the sdfchannel is a state variable
  */
-@FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class SDFChannelTemplateSrc implements ChannelTemplate {
   private Vertex sdfchannel;
@@ -68,41 +65,84 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
               _builder.append("\t");
               _builder.append("/* Channel On One Processor */");
               _builder.newLine();
-              _builder.append("\t");
-              _builder.append("volatile ");
-              _builder.append(type, "\t");
-              _builder.append(" buffer_");
-              _builder.append(channelname, "\t");
-              _builder.append("[");
-              _builder.append(((maximumTokens).intValue() + 1), "\t");
-              _builder.append("];");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("int channel_");
-              _builder.append(channelname, "\t");
-              _builder.append("_size=");
-              _builder.append(maximumTokens, "\t");
-              _builder.append(";");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("int buffer_");
-              _builder.append(channelname, "\t");
-              _builder.append("_size = ");
-              _builder.append(((maximumTokens).intValue() + 1), "\t");
-              _builder.append("; //Because of circular fifo, the buffer_size=channel_size+1 ");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("circular_fifo_");
-              _builder.append(type, "\t");
-              _builder.append(" fifo_");
-              _builder.append(channelname, "\t");
-              _builder.append(";");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("spinlock spinlock_");
-              _builder.append(channelname, "\t");
-              _builder.append("={.flag=0};");
-              _builder.newLineIfNotEmpty();
+              {
+                if ((Generator.fifoType == 1)) {
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("volatile ");
+                  _builder.append(type, "\t\t");
+                  _builder.append(" buffer_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("[");
+                  _builder.append(((maximumTokens).intValue() + 1), "\t\t");
+                  _builder.append("];");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("int channel_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("_size=");
+                  _builder.append(maximumTokens, "\t\t");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("int buffer_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("_size = ");
+                  _builder.append(((maximumTokens).intValue() + 1), "\t\t");
+                  _builder.append("; //Because of circular fifo, the buffer_size=channel_size+1 ");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("circular_fifo_");
+                  _builder.append(type, "\t\t");
+                  _builder.append(" fifo_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
+              {
+                if ((Generator.fifoType == 2)) {
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("circular_fifo fifo_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("volatile ");
+                  _builder.append(type, "\t\t");
+                  _builder.append(" buffer_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("[");
+                  _builder.append(((maximumTokens).intValue() + 1), "\t\t");
+                  _builder.append("];");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("int channel_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("_size=");
+                  _builder.append(maximumTokens, "\t\t");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("/*Because of circular fifo, the buffer_size=channel_size+1 */");
+                  _builder.newLine();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("int buffer_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("_size = ");
+                  _builder.append(((maximumTokens).intValue() + 1), "\t\t");
+                  _builder.append(";\t\t\t\t\t\t");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
             } else {
               _builder.append("\t");
               _builder.append("/* Channel Between Two Processors */");
@@ -150,6 +190,8 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
               _builder.append("\t");
               _builder.append(" ");
               _builder.newLine();
+              _builder.append("\t");
+              _builder.newLine();
             }
           }
         } else {
@@ -159,35 +201,72 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
               _builder.append("\t");
               _builder.append("/* Channel On One Processor */");
               _builder.newLine();
-              _builder.append("\t");
-              _builder.append("volatile ");
-              _builder.append(type, "\t");
-              _builder.append(" buffer_");
-              _builder.append(channelname, "\t");
-              _builder.append("[2];");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("unsigned int channel_");
-              _builder.append(channelname, "\t");
-              _builder.append("_size = 1;");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("unsigned int buffer_");
-              _builder.append(channelname, "\t");
-              _builder.append("_size = 2; // Because of circular fifo, the buffer_size=channel_size+1 ");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("circular_fifo_");
-              _builder.append(type, "\t");
-              _builder.append(" fifo_");
-              _builder.append(channelname, "\t");
-              _builder.append(";");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("spinlock spinlock_");
-              _builder.append(channelname, "\t");
-              _builder.append("={.flag=0};\t");
-              _builder.newLineIfNotEmpty();
+              {
+                if ((Generator.fifoType == 1)) {
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("volatile ");
+                  _builder.append(type, "\t\t");
+                  _builder.append(" buffer_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("[2];");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("unsigned int channel_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("_size = 1;");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("unsigned int buffer_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("_size = 2; // Because of circular fifo, the buffer_size=channel_size+1 ");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("circular_fifo_");
+                  _builder.append(type, "\t\t");
+                  _builder.append(" fifo_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
+              {
+                if ((Generator.fifoType == 1)) {
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("circular_fifo fifo_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("volatile ");
+                  _builder.append(type, "\t\t");
+                  _builder.append(" buffer_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("[2];");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("int channel_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("_size=1;");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("/*Because of circular fifo, the buffer_size=channel_size+1 */");
+                  _builder.newLine();
+                  _builder.append("\t");
+                  _builder.append("\t");
+                  _builder.append("int buffer_");
+                  _builder.append(channelname, "\t\t");
+                  _builder.append("_size = 2;\t\t\t\t\t\t");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
             } else {
               _builder.append("\t");
               _builder.append("/* Channel Between Two Processors */");

@@ -1,13 +1,10 @@
 package template.baremetal_multi;
 
-import fileAnnotation.FileType;
-import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.Vertex;
-import generator.Schedule;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import processingModule.Schedule;
 import template.templateInterface.SubsystemTemplate;
 
-@FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class SubsystemTemplateIncMulti implements SubsystemTemplate {
   private Schedule s;

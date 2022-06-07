@@ -39,11 +39,19 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 					«var maximumTokens =viewer.getMaximumTokens()»
 					«IF Query.isOnOneCoreChannel(model,sdfchannel)»
 					/* Channel On One Processor */
-					volatile «type» buffer_«channelname»[«maximumTokens+1»];
-					int channel_«channelname»_size=«maximumTokens»;
-					int buffer_«channelname»_size = «maximumTokens+1»; //Because of circular fifo, the buffer_size=channel_size+1 
-					circular_fifo_«type» fifo_«channelname»;
-					spinlock spinlock_«channelname»={.flag=0};
+						«IF Generator.fifoType==1»
+						volatile «type» buffer_«channelname»[«maximumTokens+1»];
+						int channel_«channelname»_size=«maximumTokens»;
+						int buffer_«channelname»_size = «maximumTokens+1»; //Because of circular fifo, the buffer_size=channel_size+1 
+						circular_fifo_«type» fifo_«channelname»;
+						«ENDIF»
+						«IF Generator.fifoType==2»
+						circular_fifo fifo_«channelname»;
+						volatile «type» buffer_«channelname»[«maximumTokens+1»];
+						int channel_«channelname»_size=«maximumTokens»;
+						/*Because of circular fifo, the buffer_size=channel_size+1 */
+						int buffer_«channelname»_size = «maximumTokens+1»;						
+						«ENDIF»
 					«ELSE»
 					/* Channel Between Two Processors */
 					 volatile cheap const fifo_admin_«channelname»=(cheap) «channelname.toUpperCase()»_ADDR;
@@ -51,17 +59,24 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 					 unsigned int buffer_«channelname»_size=«Query.getBufferSize(sdfchannel)»;
 					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»;
 					 
-«««					 «Query.getTokenSize(sdfchannel)»	;
-««« 					 volatile «type» buffer_«channelname»[«maximumTokens»];			
+	
 					«ENDIF»
 				«ELSE»
 					«IF Query.isOnOneCoreChannel(model,sdfchannel)»
 					/* Channel On One Processor */
-					volatile «type» buffer_«channelname»[2];
-					unsigned int channel_«channelname»_size = 1;
-					unsigned int buffer_«channelname»_size = 2; // Because of circular fifo, the buffer_size=channel_size+1 
-					circular_fifo_«type» fifo_«channelname»;
-					spinlock spinlock_«channelname»={.flag=0};	
+						«IF Generator.fifoType==1»
+						volatile «type» buffer_«channelname»[2];
+						unsigned int channel_«channelname»_size = 1;
+						unsigned int buffer_«channelname»_size = 2; // Because of circular fifo, the buffer_size=channel_size+1 
+						circular_fifo_«type» fifo_«channelname»;
+						«ENDIF»
+						«IF Generator.fifoType==1»
+						circular_fifo fifo_«channelname»;
+						volatile «type» buffer_«channelname»[2];
+						int channel_«channelname»_size=1;
+						/*Because of circular fifo, the buffer_size=channel_size+1 */
+						int buffer_«channelname»_size = 2;						
+						«ENDIF»
 					«ELSE»
 					/* Channel Between Two Processors */
 					

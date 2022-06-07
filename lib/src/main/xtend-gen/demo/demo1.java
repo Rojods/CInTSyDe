@@ -3,26 +3,22 @@ package demo;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.drivers.ForSyDeModelHandler;
 import generator.Generator;
-import generator.InitProcessingModule;
-import generator.SDFChannelProcessingModule;
-import generator.SDFCombProcessingModule;
-import generator.SubsystemUniprocessorModule;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
+import processingModule.InitProcessingModule;
+import processingModule.SDFChannelProcessingModule;
+import processingModule.SDFCombProcessingModule;
+import processingModule.SubsystemUniprocessorModule;
+import template.datatype.DataTypeInc;
+import template.datatype.DataTypeSrc;
+import template.fifo.fifo1.FIFOInc1;
+import template.fifo.fifo1.FIFOSrc1;
+import template.fifo.fifo2.FIFOInc2;
+import template.fifo.fifo2.FIFOSrc2;
 import template.uniprocessor.SDFChannel.SDFChannelInc;
-import template.uniprocessor.SDFChannel.SDFChannelTemplateSrc;
+import template.uniprocessor.SDFChannel.SDFChannelSrc;
 import template.uniprocessor.actor.SDFActorInc;
 import template.uniprocessor.actor.SDFActorSrc;
-import template.uniprocessor.fifo.SpinLockTemplateInc;
-import template.uniprocessor.fifo.SpinLockTemplateSrc;
-import template.uniprocessor.fifo.fifo1.FIFOInc1;
-import template.uniprocessor.fifo.fifo1.FIFOSrc1;
-import template.uniprocessor.fifo.fifo2.FIFOInc2;
-import template.uniprocessor.fifo.fifo2.FIFOSrc2;
-import template.uniprocessor.fifo.fifo3.FIFOInc3;
-import template.uniprocessor.fifo.fifo3.FIFOSrc3;
-import template.uniprocessor.others.DataTypeInc;
-import template.uniprocessor.others.DataTypeSrc;
 import template.uniprocessor.subsystem.SubsystemTemplateInc;
 import template.uniprocessor.subsystem.SubsystemTemplateSrc;
 
@@ -33,18 +29,16 @@ import template.uniprocessor.subsystem.SubsystemTemplateSrc;
 public class demo1 {
   public static void main(final String[] args) {
     try {
-      final String path = "forsyde-io/modified1/complete-mapped-sobel-model.forsyde.xmi";
-      final String path2 = "forsyde-io/modified1/sobel-application.fiodl";
+      final String path = "example1-2cores.fiodl";
       final String root = "generateCode/c/single/single";
       ForSyDeModelHandler loader = new ForSyDeModelHandler();
       ForSyDeSystemGraph model = loader.loadModel(path);
-      model.mergeInPlace(loader.loadModel(path2));
       Generator gen = new Generator(model, root);
-      Generator.fifoType = 2;
+      Generator.fifoType = 1;
       Generator.platform = 1;
       SDFChannelProcessingModule sdfchannelModule = new SDFChannelProcessingModule();
-      SDFChannelTemplateSrc _sDFChannelTemplateSrc = new SDFChannelTemplateSrc();
-      sdfchannelModule.add(_sDFChannelTemplateSrc);
+      SDFChannelSrc _sDFChannelSrc = new SDFChannelSrc();
+      sdfchannelModule.add(_sDFChannelSrc);
       SDFChannelInc _sDFChannelInc = new SDFChannelInc();
       sdfchannelModule.add(_sDFChannelInc);
       gen.add(sdfchannelModule);
@@ -77,16 +71,6 @@ public class demo1 {
         FIFOSrc2 _fIFOSrc2 = new FIFOSrc2();
         initModule.add(_fIFOSrc2);
       }
-      if ((Generator.fifoType == 3)) {
-        FIFOInc3 _fIFOInc3 = new FIFOInc3();
-        initModule.add(_fIFOInc3);
-        FIFOSrc3 _fIFOSrc3 = new FIFOSrc3();
-        initModule.add(_fIFOSrc3);
-      }
-      SpinLockTemplateInc _spinLockTemplateInc = new SpinLockTemplateInc();
-      initModule.add(_spinLockTemplateInc);
-      SpinLockTemplateSrc _spinLockTemplateSrc = new SpinLockTemplateSrc();
-      initModule.add(_spinLockTemplateSrc);
       gen.add(initModule);
       gen.create();
       InputOutput.<String>println("end!");

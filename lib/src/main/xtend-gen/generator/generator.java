@@ -13,6 +13,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import processingModule.ModuleInterface;
+import processingModule.Schedule;
 
 @SuppressWarnings("all")
 public class Generator {
@@ -34,7 +36,7 @@ public class Generator {
   
   public static int NUCLEO = 0;
   
-  public static int fifoType = 2;
+  public static int fifoType = 1;
   
   public static int platform = 0;
   

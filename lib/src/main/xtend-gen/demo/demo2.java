@@ -3,28 +3,24 @@ package demo;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.drivers.ForSyDeModelHandler;
 import generator.Generator;
-import generator.InitProcessingModule;
-import generator.SDFChannelProcessingModule;
-import generator.SDFCombProcessingModule;
-import generator.SubsystemMultiprocessorModule;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
-import template.baremetal_multi.DataTypeInc;
-import template.baremetal_multi.DataTypeSrc;
+import processingModule.InitProcessingModule;
+import processingModule.SDFChannelProcessingModule;
+import processingModule.SDFCombProcessingModule;
+import processingModule.SubsystemMultiprocessorModule;
 import template.baremetal_multi.SDFActorInc;
 import template.baremetal_multi.SDFActorSrc;
 import template.baremetal_multi.SDFChannelInc;
 import template.baremetal_multi.SDFChannelTemplateSrc;
-import template.baremetal_multi.SpinLockTemplateInc;
-import template.baremetal_multi.SpinLockTemplateSrc;
 import template.baremetal_multi.SubsystemTemplateIncMulti;
 import template.baremetal_multi.SubsystemTemplateSrcMulti;
-import template.uniprocessor.fifo.fifo1.FIFOInc1;
-import template.uniprocessor.fifo.fifo1.FIFOSrc1;
-import template.uniprocessor.fifo.fifo2.FIFOInc2;
-import template.uniprocessor.fifo.fifo2.FIFOSrc2;
-import template.uniprocessor.fifo.fifo3.FIFOInc3;
-import template.uniprocessor.fifo.fifo3.FIFOSrc3;
+import template.datatype.DataTypeInc;
+import template.datatype.DataTypeSrc;
+import template.fifo.fifo1.FIFOInc1;
+import template.fifo.fifo1.FIFOSrc1;
+import template.fifo.fifo2.FIFOInc2;
+import template.fifo.fifo2.FIFOSrc2;
 
 /**
  * multi cores
@@ -75,16 +71,6 @@ public class demo2 {
         FIFOSrc2 _fIFOSrc2 = new FIFOSrc2();
         initModule.add(_fIFOSrc2);
       }
-      if ((Generator.fifoType == 3)) {
-        FIFOInc3 _fIFOInc3 = new FIFOInc3();
-        initModule.add(_fIFOInc3);
-        FIFOSrc3 _fIFOSrc3 = new FIFOSrc3();
-        initModule.add(_fIFOSrc3);
-      }
-      SpinLockTemplateInc _spinLockTemplateInc = new SpinLockTemplateInc();
-      initModule.add(_spinLockTemplateInc);
-      SpinLockTemplateSrc _spinLockTemplateSrc = new SpinLockTemplateSrc();
-      initModule.add(_spinLockTemplateSrc);
       gen.add(initModule);
       gen.create();
       InputOutput.<String>println("end!");

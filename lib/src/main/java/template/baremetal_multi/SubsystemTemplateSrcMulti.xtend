@@ -51,9 +51,16 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 					«var type = Query.findSDFChannelDataType(Generator.model,channel)»
 					«IF Query.isOnOneCoreChannel(model,channel)»
 					/* extern sdfchannel «sdfname»*/
+					«IF Generator.fifoType==1»	
 					extern «type» buffer_«sdfname»[];
 					extern int buffer_«sdfname»_size;
 					extern circular_fifo_«type» fifo_«sdfname»;
+					«ENDIF»
+					«IF Generator.fifoType==2»	
+					extern «type» buffer_«sdfname»[];
+					extern size_t buffer_«sdfname»_size;
+					extern circular_fifo fifo_«sdfname»;
+					«ENDIF»					
 				«ELSE»
 					extern cheap fifo_admin_«sdfname»;
 					extern volatile «type» * const fifo_data_«sdfname»;
@@ -64,11 +71,18 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 			«FOR channel : schedule.incomingchannels»
 				«var sdfname=channel.getIdentifier()»
 				«var type = Query.findSDFChannelDataType(Generator.model,channel)»
-					«IF Query.isOnOneCoreChannel(model,channel)»
+				«IF Query.isOnOneCoreChannel(model,channel)»
 					/* extern sdfchannel «sdfname»*/
+					«IF Generator.fifoType==1»	
 					extern «type» buffer_«sdfname»[];
 					extern int buffer_«sdfname»_size;
 					extern circular_fifo_«type» fifo_«sdfname»;
+					«ENDIF»
+					«IF Generator.fifoType==2»
+					extern «type» buffer_«sdfname»[];
+					extern size_t buffer_«sdfname»_size;
+					extern circular_fifo fifo_«sdfname»;					
+					«ENDIF»	
 				«ELSE»
 					extern cheap fifo_admin_«sdfname»;
 					extern volatile «type» * const fifo_data_«sdfname»;
@@ -80,7 +94,12 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 				«FOR channel : schedule.outgoingchannels»
 					«var channelname=channel.getIdentifier()»
 					«IF Query.isOnOneCoreChannel(model,channel)»
+						«IF Generator.fifoType==1»	
 						init_channel_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size);
+						«ENDIF»
+						«IF Generator.fifoType==2»
+						init(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size, sizeof(«Query.findSDFChannelDataType(Generator.model,channel)»));
+						«ENDIF»	
 					«ELSE»
 						
 						if (cheap_init_r (fifo_admin_«channelname», (void *) fifo_data_«channelname», buffer_«channelname»_size, token_«channelname»_size) == NULL) {
@@ -102,7 +121,12 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 					«var initList = help(ordering)»		
 						«IF Query.isOnOneCoreChannel(model,channel)»
 							«FOR valueName:initList»
-								write_non_blocking_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«sdfchannel.getIdentifier()»,«valueName»);
+								«IF Generator.fifoType==1»	
+								write_fifo_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«sdfchannel.getIdentifier()»,&«valueName»,1);
+								«ENDIF»
+								«IF Generator.fifoType==2»
+								write_fifo(&fifo_«sdfchannel.getIdentifier()»,&«valueName»,1);
+								«ENDIF»	
 							«ENDFOR»
 						«ELSE»
 							{

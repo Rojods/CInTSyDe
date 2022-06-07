@@ -73,41 +73,16 @@ class FIFOInc1 implements InitTemplate {
 		    «type»* buffer;
 		    size_t front;
 		    size_t rear;
-			size_t size;	    
+			size_t size;
+			size_t count;	    
 		}circular_fifo_«type»;
 		
 		void init_channel_«type»(circular_fifo_«type» *channel ,«type»* buffer, size_t size);
-		int read_non_blocking_«type»(circular_fifo_«type»* src,«type»* dst );
-		int read_blocking_«type»(circular_fifo_«type»* src,«type»* dst,spinlock *lock);
-		int write_non_blocking_«type»(circular_fifo_«type»* dst,«type» src );
-		int write_blocking_«type»(circular_fifo_«type»* dst,«type» src,spinlock *lock);	
 		
-		
-		
-		«««		«ELSE»
-«««			«var maximumElems =getMaximumElems(v)»
-«««				«IF maximumElems>0»
-««««««			«var innerType = Query.getInnerType(Generator.model,v)»
-«««			/*
-«««			=============================================================
-«««							If Token type is «type» 
-«««			=============================================================
-«««			*/
-«««			typedef struct 
-«««			{
-«««			    «type»* buffer;
-«««			    size_t front;
-«««			    size_t rear;
-«««				size_t size;	    
-«««			}circular_fifo_«type»;
-«««			
-«««			void init_channel_«type»(circular_fifo_«type» *channel ,«type»* buffer, size_t size);
-«««			int read_non_blocking_«type»(circular_fifo_«type»* channel,«type»* dst );
-«««			int read_blocking_«type»(circular_fifo_«type»* ptr,«type»* dst,spinlock *lock);
-«««			int write_non_blocking_«type»(circular_fifo_«type»* ptr,«type»* src );
-«««			int write_blocking_«type»(circular_fifo_«type»* ptr,«type»* src,spinlock *lock);				
-«««				«ENDIF»				
-«««		«ENDIF»
+		void read_fifo_«type»(circular_fifo_«type»* channel,«type»* dst, size_t number);
+		void write_fifo_«type»(circular_fifo_«type»* channel,«type»* src, size_t number);
+		void PRINT_«type»(circular_fifo_«type» * fifo);
+
 		'''
 	}
 	

@@ -124,7 +124,8 @@ public class Query {
 		String actorname="";
 		String port;
 		Vertex actor;
-		
+//		System.out.println(inputedge);
+//		System.out.println(outputedge);
 		try {
 			if (inputedge != null) {
 				// actor's input sdf channel

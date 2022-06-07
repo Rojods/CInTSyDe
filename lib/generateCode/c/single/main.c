@@ -13,11 +13,11 @@ double *d[Y];
 ArrayXOfArrayXOfDoubleType system_img_source_global;
 ArrayXOfArrayXOfDoubleType system_img_sink_global;
 int main(){
-    
+    int e=0;
     for(int i=0;i<Y;++i){
         for(int j=0;j<X;++j){
-            a[i][j]=j;
-            
+            a[i][j]=e;
+            ++e;
             c[i][j]=0;
         }
     }

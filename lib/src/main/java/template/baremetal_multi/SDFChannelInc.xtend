@@ -20,7 +20,7 @@ class SDFChannelInc  implements ChannelTemplate{
 		#define «vertex.getIdentifier().toUpperCase()»_H_ 
 		
 		«IF  Query.isOnOneCoreChannel(Generator.model,vertex)»
-		#define «vertex.getIdentifier().toUpperCase()»_BLOCKING 0
+		//#define «vertex.getIdentifier().toUpperCase()»_BLOCKING 0
 		«ELSE»
 		#define «vertex.getIdentifier().toUpperCase()»_ADDR  0x80020000
 		«ENDIF»		

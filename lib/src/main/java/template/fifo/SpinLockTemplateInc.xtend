@@ -3,7 +3,7 @@ package template.fifo
 
 import template.templateInterface.InitTemplate
 
-
+@Deprecated
 class SpinLockTemplateInc implements InitTemplate{
 	
 	override create() {

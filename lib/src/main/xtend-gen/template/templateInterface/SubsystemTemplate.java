@@ -1,6 +1,6 @@
 package template.templateInterface;
 
-import generator.Schedule;
+import processingModule.Schedule;
 
 @SuppressWarnings("all")
 public interface SubsystemTemplate {

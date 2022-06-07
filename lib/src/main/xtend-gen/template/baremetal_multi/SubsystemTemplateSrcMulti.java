@@ -1,13 +1,10 @@
 package template.baremetal_multi;
 
-import fileAnnotation.FileType;
-import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel;
 import forsyde.io.java.typed.viewers.values.IntegerValue;
 import generator.Generator;
-import generator.Schedule;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -15,11 +12,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import processingModule.Schedule;
 import template.templateInterface.SubsystemTemplate;
 import utils.Name;
 import utils.Query;
 
-@FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
   private Schedule s;
@@ -129,25 +126,50 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
               _builder.append(sdfname, "\t");
               _builder.append("*/");
               _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("extern ");
-              _builder.append(type, "\t");
-              _builder.append(" buffer_");
-              _builder.append(sdfname, "\t");
-              _builder.append("[];");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("extern int buffer_");
-              _builder.append(sdfname, "\t");
-              _builder.append("_size;");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("extern circular_fifo_");
-              _builder.append(type, "\t");
-              _builder.append(" fifo_");
-              _builder.append(sdfname, "\t");
-              _builder.append(";");
-              _builder.newLineIfNotEmpty();
+              {
+                if ((Generator.fifoType == 1)) {
+                  _builder.append("\t");
+                  _builder.append("extern ");
+                  _builder.append(type, "\t");
+                  _builder.append(" buffer_");
+                  _builder.append(sdfname, "\t");
+                  _builder.append("[];");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("extern int buffer_");
+                  _builder.append(sdfname, "\t");
+                  _builder.append("_size;");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("extern circular_fifo_");
+                  _builder.append(type, "\t");
+                  _builder.append(" fifo_");
+                  _builder.append(sdfname, "\t");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
+              {
+                if ((Generator.fifoType == 2)) {
+                  _builder.append("\t");
+                  _builder.append("extern ");
+                  _builder.append(type, "\t");
+                  _builder.append(" buffer_");
+                  _builder.append(sdfname, "\t");
+                  _builder.append("[];");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("extern size_t buffer_");
+                  _builder.append(sdfname, "\t");
+                  _builder.append("_size;");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("\t");
+                  _builder.append("extern circular_fifo fifo_");
+                  _builder.append(sdfname, "\t");
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
             } else {
               _builder.append("\t");
               _builder.append("extern cheap fifo_admin_");
@@ -184,51 +206,65 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
           {
             boolean _isOnOneCoreChannel_1 = Query.isOnOneCoreChannel(model, channel_1);
             if (_isOnOneCoreChannel_1) {
-              _builder.append("\t");
               _builder.append("/* extern sdfchannel ");
-              _builder.append(sdfname_1, "\t");
+              _builder.append(sdfname_1);
               _builder.append("*/");
               _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("extern ");
-              _builder.append(type_1, "\t");
-              _builder.append(" buffer_");
-              _builder.append(sdfname_1, "\t");
-              _builder.append("[];");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("extern int buffer_");
-              _builder.append(sdfname_1, "\t");
-              _builder.append("_size;");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("extern circular_fifo_");
-              _builder.append(type_1, "\t");
-              _builder.append(" fifo_");
-              _builder.append(sdfname_1, "\t");
-              _builder.append(";");
-              _builder.newLineIfNotEmpty();
+              {
+                if ((Generator.fifoType == 1)) {
+                  _builder.append("extern ");
+                  _builder.append(type_1);
+                  _builder.append(" buffer_");
+                  _builder.append(sdfname_1);
+                  _builder.append("[];");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("extern int buffer_");
+                  _builder.append(sdfname_1);
+                  _builder.append("_size;");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("extern circular_fifo_");
+                  _builder.append(type_1);
+                  _builder.append(" fifo_");
+                  _builder.append(sdfname_1);
+                  _builder.append(";");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
+              {
+                if ((Generator.fifoType == 2)) {
+                  _builder.append("extern ");
+                  _builder.append(type_1);
+                  _builder.append(" buffer_");
+                  _builder.append(sdfname_1);
+                  _builder.append("[];");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("extern size_t buffer_");
+                  _builder.append(sdfname_1);
+                  _builder.append("_size;");
+                  _builder.newLineIfNotEmpty();
+                  _builder.append("extern circular_fifo fifo_");
+                  _builder.append(sdfname_1);
+                  _builder.append(";\t\t\t\t\t");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
             } else {
-              _builder.append("\t");
               _builder.append("extern cheap fifo_admin_");
-              _builder.append(sdfname_1, "\t");
+              _builder.append(sdfname_1);
               _builder.append(";");
               _builder.newLineIfNotEmpty();
-              _builder.append("\t");
               _builder.append("extern volatile ");
-              _builder.append(type_1, "\t");
+              _builder.append(type_1);
               _builder.append(" * const fifo_data_");
-              _builder.append(sdfname_1, "\t");
+              _builder.append(sdfname_1);
               _builder.append(";");
               _builder.newLineIfNotEmpty();
-              _builder.append("\t");
               _builder.append("extern unsigned int buffer_");
-              _builder.append(sdfname_1, "\t");
+              _builder.append(sdfname_1);
               _builder.append("_size;");
               _builder.newLineIfNotEmpty();
-              _builder.append("\t");
               _builder.append("extern unsigned int token_");
-              _builder.append(sdfname_1, "\t");
+              _builder.append(sdfname_1);
               _builder.append("_size;");
               _builder.newLineIfNotEmpty();
             }
@@ -245,18 +281,38 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
           {
             boolean _isOnOneCoreChannel_2 = Query.isOnOneCoreChannel(model, channel_2);
             if (_isOnOneCoreChannel_2) {
-              _builder.append("\t");
-              _builder.append("init_channel_");
-              String _findSDFChannelDataType = Query.findSDFChannelDataType(Generator.model, channel_2);
-              _builder.append(_findSDFChannelDataType, "\t");
-              _builder.append("(&fifo_");
-              _builder.append(channelname, "\t");
-              _builder.append(",buffer_");
-              _builder.append(channelname, "\t");
-              _builder.append(",buffer_");
-              _builder.append(channelname, "\t");
-              _builder.append("_size);");
-              _builder.newLineIfNotEmpty();
+              {
+                if ((Generator.fifoType == 1)) {
+                  _builder.append("\t");
+                  _builder.append("init_channel_");
+                  String _findSDFChannelDataType = Query.findSDFChannelDataType(Generator.model, channel_2);
+                  _builder.append(_findSDFChannelDataType, "\t");
+                  _builder.append("(&fifo_");
+                  _builder.append(channelname, "\t");
+                  _builder.append(",buffer_");
+                  _builder.append(channelname, "\t");
+                  _builder.append(",buffer_");
+                  _builder.append(channelname, "\t");
+                  _builder.append("_size);");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
+              {
+                if ((Generator.fifoType == 2)) {
+                  _builder.append("\t");
+                  _builder.append("init(&fifo_");
+                  _builder.append(channelname, "\t");
+                  _builder.append(",buffer_");
+                  _builder.append(channelname, "\t");
+                  _builder.append(",buffer_");
+                  _builder.append(channelname, "\t");
+                  _builder.append("_size, sizeof(");
+                  String _findSDFChannelDataType_1 = Query.findSDFChannelDataType(Generator.model, channel_2);
+                  _builder.append(_findSDFChannelDataType_1, "\t");
+                  _builder.append("));");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
             } else {
               _builder.append("\t");
               _builder.newLine();
@@ -317,17 +373,33 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
                     if (_isOnOneCoreChannel_3) {
                       {
                         for(final String valueName : initList) {
-                          _builder.append("\t");
-                          _builder.append("write_non_blocking_");
-                          String _findSDFChannelDataType_1 = Query.findSDFChannelDataType(Generator.model, channel_3);
-                          _builder.append(_findSDFChannelDataType_1, "\t");
-                          _builder.append("(&fifo_");
-                          String _identifier_6 = sdfchannel.getIdentifier();
-                          _builder.append(_identifier_6, "\t");
-                          _builder.append(",");
-                          _builder.append(valueName, "\t");
-                          _builder.append(");");
-                          _builder.newLineIfNotEmpty();
+                          {
+                            if ((Generator.fifoType == 1)) {
+                              _builder.append("\t");
+                              _builder.append("write_fifo_");
+                              String _findSDFChannelDataType_2 = Query.findSDFChannelDataType(Generator.model, channel_3);
+                              _builder.append(_findSDFChannelDataType_2, "\t");
+                              _builder.append("(&fifo_");
+                              String _identifier_6 = sdfchannel.getIdentifier();
+                              _builder.append(_identifier_6, "\t");
+                              _builder.append(",&");
+                              _builder.append(valueName, "\t");
+                              _builder.append(",1);");
+                              _builder.newLineIfNotEmpty();
+                            }
+                          }
+                          {
+                            if ((Generator.fifoType == 2)) {
+                              _builder.append("\t");
+                              _builder.append("write_fifo(&fifo_");
+                              String _identifier_7 = sdfchannel.getIdentifier();
+                              _builder.append(_identifier_7, "\t");
+                              _builder.append(",&");
+                              _builder.append(valueName, "\t");
+                              _builder.append(",1);");
+                              _builder.newLineIfNotEmpty();
+                            }
+                          }
                         }
                       }
                     } else {
@@ -422,8 +494,8 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
         for(final Vertex channel_4 : schedule.incomingchannels) {
           _builder.append("\t");
           _builder.append("while (cheap_get_buffer_capacity (fifo_admin_");
-          String _identifier_7 = channel_4.getIdentifier();
-          _builder.append(_identifier_7, "\t");
+          String _identifier_8 = channel_4.getIdentifier();
+          _builder.append(_identifier_8, "\t");
           _builder.append(") == 0); ");
           _builder.newLineIfNotEmpty();
         }

@@ -64,34 +64,33 @@ class SDFActorSrc implements ActorTemplate {
 			========================================
 			*/			
 				«FOR d : datablock»
-				extern «findType(model,d)» «d.getIdentifier()»;
+			extern «findType(model,d)» «d.getIdentifier()»;
 				«ENDFOR»
 				
-				/*
-				========================================
+			/*
+			========================================
 					Actor Function
-				========================================
-				*/	
-			«««			/*  	initialize memory*/
+			========================================
+			*/	
 			
 			void actor_«name»(){
 				
 				/*  initialize memory*/
-			«««			«initMemory(model,actor)»
+
 				«ret1»	
-					«ret2»
-					/* Read From Input Port  */
-					int ret=0;
-					«read(model,actor)»
+				«ret2»
+				/* Read From Input Port  */
+				int ret=0;
+				«read(model,actor)»
 				
 					
-					/* Inline Code           */
-					«getInlineCode()»
+				/* Inline Code           */
+				«getInlineCode()»
 					
-					/* Write To Output Ports */
-					«write(actor)»
+				/* Write To Output Ports */
+				«write(actor)»
 				
-				}
+			}
 		'''
 	}
 
@@ -103,26 +102,22 @@ class SDFActorSrc implements ActorTemplate {
 				«IF !record.contains(sdf)»
 					«IF Generator.fifoType==1»
 						extern circular_fifo_«Query.findSDFChannelDataType(Generator.model,sdf)» fifo_«sdf.getIdentifier()»;
-						extern spinlock spinlock_«sdf.getIdentifier()»;	
 					«ENDIF»		
 					«IF Generator.fifoType==2»
 						extern circular_fifo fifo_«sdf.getIdentifier()»;
-						extern spinlock spinlock_«sdf.getIdentifier()»;	
 					«ENDIF»
 					«var tmp=record.add(sdf)»
-					
 				«ENDIF»
 			«ENDFOR»
+			
 			/* Output FIFO */
 			«FOR sdf : this.outputSDFChannelSet SEPARATOR "" AFTER ""»
 				«IF !record.contains(sdf)»
 					«IF Generator.fifoType==1»
 						extern circular_fifo_«Query.findSDFChannelDataType(Generator.model,sdf)» fifo_«sdf.getIdentifier()»;
-						extern spinlock spinlock_«sdf.getIdentifier()»;
 					«ENDIF»
 					«IF Generator.fifoType==2»
 						extern circular_fifo fifo_«sdf.getIdentifier()»;
-						extern spinlock spinlock_«sdf.getIdentifier()»;
 					«ENDIF»
 					«var tmp=record.add(sdf)»
 				«ENDIF»
@@ -193,11 +188,16 @@ class SDFActorSrc implements ActorTemplate {
 			// var inputPorts = Query.findImplInputPorts(impl)	
 			if (inputPorts !== null) {
 				for (String port : inputPorts) {
-					// println("port-->"+ port)
+					println("port-->"+ port)
 					if (!variableNameRecord.contains(port) && Query.isSystemChannel(model, impl, port) === null) {
-
+						println(actor.getIdentifier())
+						println(impl.getIdentifier()+" "+port)
+						
 						var actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port)
 						var sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName)
+						println(actorPortName)
+						println(sdfchannelName)
+						
 						var datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get())
 
 						var consumption = SDFActor.safeCast(actor).get().getConsumption().get(actorPortName)
@@ -208,50 +208,20 @@ class SDFActorSrc implements ActorTemplate {
 						} else if (consumption == 1) {
 							ret += '''
 								«IF Generator.fifoType==1»
-									#if «sdfchannelName.toUpperCase()»_BLOCKING==0
-									ret=read_non_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»);
-									if(ret==-1){
-										//printf("fifo_«sdfchannelName» read error\n");
-									}
-									
-									#else
-									read_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»,&spinlock_«sdfchannelName»);
-									#endif
+									read_fifo_«datatype»(&fifo_«sdfchannelName», &«port»,«consumption»);
 								«ENDIF»
 								«IF Generator.fifoType==2»
-									{
-										void* tmp_addr;
-										read_non_blocking(&fifo_«sdfchannelName»,&tmp_addr);
-										«port»= *((«datatype» *)tmp_addr);
-									}
-								«ENDIF»
-								«IF Generator.fifoType==3»
-									
+									read_fifo(&fifo_«sdfchannelName»,(void*)&«port»,«consumption»);
 								«ENDIF»
 							'''
 						} else {
 							ret += '''
-								for(int i=0;i<«consumption»;++i){
-									«IF Generator.fifoType==1»
-										#if «sdfchannelName.toUpperCase()»_BLOCKING==0
-										ret=read_non_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»[i]);
-										if(ret==-1){
-											printf("fifo_«sdfchannelName» read error\n");
-										}
-										#else
-										read_blocking_«datatype»(&fifo_«sdfchannelName»,&«port»[i],&spinlock_«sdfchannelName»);
-										#endif
-									«ENDIF»
-									«IF Generator.fifoType==2»
-										void* tmp_addr;
-										read_non_blocking(&fifo_«sdfchannelName»,&tmp_addr);
-										«port»[i]= *((«datatype» *)tmp_addr);
-									«ENDIF»
-									«IF Generator.fifoType==3»
-										
-									«ENDIF»
-								}
-								
+							«IF Generator.fifoType==1»
+								read_fifo_«datatype»(&fifo_«sdfchannelName», «port»,«consumption»);
+							«ENDIF»
+							«IF Generator.fifoType==2»
+								read_fifo(&fifo_«sdfchannelName»,(void*)«port»,«consumption»);
+							«ENDIF»								
 							'''
 						}
 						variableNameRecord.add(port)
@@ -293,35 +263,22 @@ class SDFActorSrc implements ActorTemplate {
 						'''
 					} else if (production == 1) {
 						ret += '''
-							«IF Generator.fifoType==1»
-								#if «sdfchannelName.toUpperCase()»_BLOCKING==0
-								write_non_blocking_«datatype»(&fifo_«sdfchannelName»,«outport»);
-								#else
-								write_blocking_«datatype»(&fifo_«sdfchannelName»,«outport»,&spinlock_«sdfchannelName»);
-								#endif
-							«ENDIF»
-							«IF Generator.fifoType==2»
-								write_non_blocking(&fifo_«sdfchannelName»,(void*)&«outport»);
-							«ENDIF»	
-							«IF Generator.fifoType==3»
-							«ENDIF»					
+						«IF Generator.fifoType==1»
+						 write_fifo_«datatype»(&fifo_«sdfchannelName»,&«outport»,1);
+						 «ENDIF»
+						 
+						«IF Generator.fifoType==2»
+						write_fifo(&fifo_«sdfchannelName»,(void*)&«outport»,1);
+						«ENDIF»			
 						'''
 					} else {
 						ret += '''
-							for(int i=0;i<«production»;++i){
-								«IF Generator.fifoType==1»
-									#if «sdfchannelName.toUpperCase()»_BLOCKING==0
-									write_non_blocking_«datatype»(&fifo_«sdfchannelName»,«outport»[i]);
-									#else
-									write_blocking_«datatype»(&fifo_«sdfchannelName»,«outport»[i],&spinlock_«sdfchannelName»);
-									#endif
-								«ENDIF»
-								«IF Generator.fifoType==2»
-									write_non_blocking(&fifo_«sdfchannelName»,(void*)&«outport»[i]);		
-								«ENDIF»							
-								«IF Generator.fifoType==3»
-								«ENDIF»
-							}
+						«IF Generator.fifoType==1»
+						write_fifo_«datatype»(&fifo_«sdfchannelName»,«outport»,«production»);
+						«ENDIF»
+						«IF Generator.fifoType==2»
+						write_fifo(&fifo_«sdfchannelName»,«outport»,«production»);
+						«ENDIF»
 							
 						'''
 					}

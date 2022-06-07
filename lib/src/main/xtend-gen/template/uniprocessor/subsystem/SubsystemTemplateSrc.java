@@ -1,14 +1,11 @@
 package template.uniprocessor.subsystem;
 
-import fileAnnotation.FileType;
-import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.ForSyDeSystemGraph;
 import forsyde.io.java.core.Vertex;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFActor;
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel;
 import forsyde.io.java.typed.viewers.values.IntegerValue;
 import generator.Generator;
-import generator.Schedule;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,10 +13,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import processingModule.Schedule;
 import template.templateInterface.SubsystemTemplate;
 import utils.Query;
 
-@FileTypeAnno(type = FileType.C_SOURCE)
 @SuppressWarnings("all")
 public class SubsystemTemplateSrc implements SubsystemTemplate {
   @Override
@@ -83,19 +80,12 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
           } else {
             _builder.appendImmediate("", "\t\t");
           }
-          _builder.append("\t\t");
-          _builder.append("//printf(\"%s\\n\",\"enter ");
-          String _identifier_1 = set.getValue().getIdentifier();
-          _builder.append(_identifier_1, "\t\t");
-          _builder.append("\");");
-          _builder.newLineIfNotEmpty();
           {
             if (((Generator.TESTING == 1) && (Generator.PC == 1))) {
               _builder.append("\t\t");
-              _builder.append("\t");
               _builder.append("actor_");
-              String _identifier_2 = set.getValue().getIdentifier();
-              _builder.append(_identifier_2, "\t\t\t");
+              String _identifier_1 = set.getValue().getIdentifier();
+              _builder.append(_identifier_1, "\t\t");
               _builder.append("();");
               _builder.newLineIfNotEmpty();
             }
@@ -136,8 +126,8 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
         for(final IntegerValue value : integerValues) {
           _builder.append("\t");
           _builder.append("extern int ");
-          String _identifier_3 = value.getIdentifier();
-          _builder.append(_identifier_3, "\t");
+          String _identifier_2 = value.getIdentifier();
+          _builder.append(_identifier_2, "\t");
           _builder.append(";");
           _builder.newLineIfNotEmpty();
         }
@@ -156,35 +146,35 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
       _builder.newLine();
       {
         for(final Vertex channel : Generator.sdfchannelSet) {
-          _builder.append("\t\t");
           String sdfname = channel.getIdentifier();
           _builder.newLineIfNotEmpty();
           {
             if ((Generator.fifoType == 1)) {
-              _builder.append("\t\t");
               _builder.append("init_channel_");
               String _findSDFChannelDataType = Query.findSDFChannelDataType(Generator.model, channel);
-              _builder.append(_findSDFChannelDataType, "\t\t");
+              _builder.append(_findSDFChannelDataType);
               _builder.append("(&fifo_");
-              _builder.append(sdfname, "\t\t");
+              _builder.append(sdfname);
               _builder.append(",buffer_");
-              _builder.append(sdfname, "\t\t");
+              _builder.append(sdfname);
               _builder.append(",buffer_");
-              _builder.append(sdfname, "\t\t");
+              _builder.append(sdfname);
               _builder.append("_size);");
               _builder.newLineIfNotEmpty();
             }
           }
           {
             if ((Generator.fifoType == 2)) {
-              _builder.append("\t\t");
               _builder.append("init(&fifo_");
-              _builder.append(sdfname, "\t\t");
+              _builder.append(sdfname);
               _builder.append(",buffer_");
-              _builder.append(sdfname, "\t\t");
+              _builder.append(sdfname);
               _builder.append(",buffer_");
-              _builder.append(sdfname, "\t\t");
-              _builder.append("_size);");
+              _builder.append(sdfname);
+              _builder.append("_size, sizeof(");
+              String _findSDFChannelDataType_1 = Query.findSDFChannelDataType(Generator.model, channel);
+              _builder.append(_findSDFChannelDataType_1);
+              _builder.append("));");
               _builder.newLineIfNotEmpty();
             }
           }
@@ -194,10 +184,12 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
       _builder.newLine();
       {
         for(final Vertex channel_1 : Generator.sdfchannelSet) {
+          _builder.append("\t\t");
           SDFChannel sdfchannel = SDFChannel.safeCast(channel_1).get();
           _builder.newLineIfNotEmpty();
           {
             if (((sdfchannel.getNumOfInitialTokens() != null) && ((sdfchannel.getNumOfInitialTokens()).intValue() > 0))) {
+              _builder.append("\t\t");
               Object _unwrap = sdfchannel.getProperties().get("__initialTokenValues_ordering__").unwrap();
               HashMap<String, Integer> b = ((HashMap<String, Integer>) _unwrap);
               _builder.newLineIfNotEmpty();
@@ -205,27 +197,27 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
                 Set<String> _keySet = b.keySet();
                 for(final String k : _keySet) {
                   {
-                    if ((Generator.fifoType == 2)) {
-                      _builder.append("write_non_blocking(&fifo_");
-                      String _identifier_4 = sdfchannel.getIdentifier();
-                      _builder.append(_identifier_4);
-                      _builder.append(",(void*)&");
+                    if ((Generator.fifoType == 1)) {
+                      _builder.append("write_fifo_");
+                      String _findSDFChannelDataType_2 = Query.findSDFChannelDataType(Generator.model, channel_1);
+                      _builder.append(_findSDFChannelDataType_2);
+                      _builder.append("(&fifo_");
+                      String _identifier_3 = sdfchannel.getIdentifier();
+                      _builder.append(_identifier_3);
+                      _builder.append(",&");
                       _builder.append(k);
-                      _builder.append(");");
+                      _builder.append(",1);");
                       _builder.newLineIfNotEmpty();
                     }
                   }
                   {
-                    if ((Generator.fifoType == 1)) {
-                      _builder.append("write_non_blocking_");
-                      String _findSDFChannelDataType_1 = Query.findSDFChannelDataType(Generator.model, channel_1);
-                      _builder.append(_findSDFChannelDataType_1);
-                      _builder.append("(&fifo_");
-                      String _identifier_5 = sdfchannel.getIdentifier();
-                      _builder.append(_identifier_5);
-                      _builder.append(",");
+                    if ((Generator.fifoType == 2)) {
+                      _builder.append("write_fifo(&fifo_");
+                      String _identifier_4 = sdfchannel.getIdentifier();
+                      _builder.append(_identifier_4);
+                      _builder.append(",(void*)&");
                       _builder.append(k);
-                      _builder.append(");");
+                      _builder.append(",1);");
                       _builder.newLineIfNotEmpty();
                     }
                   }
@@ -235,7 +227,7 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
           }
         }
       }
-      _builder.append("\t\t");
+      _builder.append("\t");
       _builder.append("return 0;");
       _builder.newLine();
       _builder.append("\t");
@@ -282,7 +274,9 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
         }
         {
           if ((Generator.fifoType == 2)) {
-            _builder.append("extern void* buffer_");
+            _builder.append("extern ");
+            _builder.append(type);
+            _builder.append(" buffer_");
             _builder.append(sdfname);
             _builder.append("[];");
             _builder.newLineIfNotEmpty();
@@ -296,22 +290,7 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
             _builder.newLineIfNotEmpty();
           }
         }
-        {
-          if ((Generator.fifoType == 3)) {
-            _builder.append("extern void* buffer_");
-            _builder.append(sdfname);
-            _builder.append("[];");
-            _builder.newLineIfNotEmpty();
-            _builder.append("extern size_t buffer_");
-            _builder.append(sdfname);
-            _builder.append("_size;");
-            _builder.newLineIfNotEmpty();
-            _builder.append("extern circular_fifo fifo_");
-            _builder.append(sdfname);
-            _builder.append(";");
-            _builder.newLineIfNotEmpty();
-          }
-        }
+        _builder.newLine();
       }
     }
     return _builder.toString();

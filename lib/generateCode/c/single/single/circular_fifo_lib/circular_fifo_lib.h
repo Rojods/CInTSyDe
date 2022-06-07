@@ -24,16 +24,15 @@ typedef struct
     DoubleType* buffer;
     size_t front;
     size_t rear;
-	size_t size;	    
+	size_t size;
+	size_t count;	    
 }circular_fifo_DoubleType;
 
 void init_channel_DoubleType(circular_fifo_DoubleType *channel ,DoubleType* buffer, size_t size);
-int read_non_blocking_DoubleType(circular_fifo_DoubleType* src,DoubleType* dst );
-int read_blocking_DoubleType(circular_fifo_DoubleType* src,DoubleType* dst,spinlock *lock);
-int write_non_blocking_DoubleType(circular_fifo_DoubleType* dst,DoubleType src );
-int write_blocking_DoubleType(circular_fifo_DoubleType* dst,DoubleType src,spinlock *lock);	
 
-
+void read_fifo_DoubleType(circular_fifo_DoubleType* channel,DoubleType* dst, size_t number);
+void write_fifo_DoubleType(circular_fifo_DoubleType* channel,DoubleType* src, size_t number);
+void PRINT_DoubleType(circular_fifo_DoubleType * fifo);
 
 /*
 =============================================================
@@ -45,16 +44,15 @@ typedef struct
     UInt16* buffer;
     size_t front;
     size_t rear;
-	size_t size;	    
+	size_t size;
+	size_t count;	    
 }circular_fifo_UInt16;
 
 void init_channel_UInt16(circular_fifo_UInt16 *channel ,UInt16* buffer, size_t size);
-int read_non_blocking_UInt16(circular_fifo_UInt16* src,UInt16* dst );
-int read_blocking_UInt16(circular_fifo_UInt16* src,UInt16* dst,spinlock *lock);
-int write_non_blocking_UInt16(circular_fifo_UInt16* dst,UInt16 src );
-int write_blocking_UInt16(circular_fifo_UInt16* dst,UInt16 src,spinlock *lock);	
 
-
+void read_fifo_UInt16(circular_fifo_UInt16* channel,UInt16* dst, size_t number);
+void write_fifo_UInt16(circular_fifo_UInt16* channel,UInt16* src, size_t number);
+void PRINT_UInt16(circular_fifo_UInt16 * fifo);
 
 
 
