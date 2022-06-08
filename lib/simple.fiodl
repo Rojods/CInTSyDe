@@ -1,6 +1,6 @@
 systemgraph {
   vertex p3
-  [moc::sdf::SDFActor]
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor, visualization::Visualizable]
   (combFunctions, s3_port, s5_port, s6_port)
   {
     "production": {
@@ -9,18 +9,41 @@ systemgraph {
     "consumption": {
       "s5_port": 2_i,
       "s3_port": 2_i
-    }
+    },
+    "firingSlots": [
+      8_i
+    ]
   }
   vertex p4
-  [moc::sdf::SDFActor]
-  (combFunctions, s2_port, s4_port, s5_port, s_out_port)
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor, visualization::Visualizable]
+  (combFunctions, s2_port, s4_port, s_out_port)
+  {
+    "production": {
+      "s4_port": 1_i,
+      "s_out_port": 3_i
+    },
+    "consumption": {
+      "s2_port": 1_i
+    },
+    "firingSlots": [
+      2_i,
+      6_i
+    ]
+  }
+  vertex p5
+  [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor, visualization::Visualizable]
+  (combFunctions, s4_port, s5_port)
   {
     "production": {
       "s5_port": 1_i
     },
     "consumption": {
       "s4_port": 1_i
-    }
+    },
+    "firingSlots": [
+      3_i,
+      7_i
+    ]
   }
   vertex p1
   [decision::sdf::PASSedSDFActor, moc::sdf::SDFActor, visualization::Visualizable]
@@ -34,7 +57,8 @@ systemgraph {
       "s_in_port": 2_i
     },
     "firingSlots": [
-      0_i
+      0_i,
+      4_i
     ]
   }
   vertex p2
@@ -49,7 +73,8 @@ systemgraph {
       "s1_port": 1_i
     },
     "firingSlots": [
-      1_i
+      1_i,
+      5_i
     ]
   }
   vertex s1
@@ -60,36 +85,43 @@ systemgraph {
     "maximumTokens": 1_i
   }
   vertex s2
-  [moc::sdf::SDFChannel]
+  [decision::sdf::BoundedSDFChannel, moc::sdf::SDFChannel, visualization::Visualizable]
   (consumer, initialTokenValues, producer)
   {
-    "numOfInitialTokens": 0_i
+    "numOfInitialTokens": 0_i,
+    "maximumTokens": 1_i
   }
   vertex s3
-  [decision::sdf::BoundedSDFChannel, moc::sdf::SDFChannel]
+  [decision::sdf::BoundedSDFChannel, moc::sdf::SDFChannel, visualization::Visualizable]
   (consumer, initialTokenValues, producer)
   {
     "numOfInitialTokens": 0_i,
-    "maximumTokens": 1_i
+    "maximumTokens": 2_i
   }
   vertex s4
-  [moc::sdf::SDFChannel]
-  (consumer, initialTokenValues, producer)
-  {
-    "numOfInitialTokens": 0_i
-  }
-  vertex s5
-  [moc::sdf::SDFChannel]
-  (consumer, initialTokenValues, producer)
-  {
-    "numOfInitialTokens": 0_i
-  }
-  vertex s6
-  [decision::sdf::BoundedSDFChannel, moc::sdf::SDFChannel]
+  [decision::sdf::BoundedSDFChannel, moc::sdf::SDFChannel, visualization::Visualizable]
   (consumer, initialTokenValues, producer)
   {
     "numOfInitialTokens": 0_i,
     "maximumTokens": 1_i
+  }
+  vertex s5
+  [decision::sdf::BoundedSDFChannel, moc::sdf::SDFChannel, visualization::Visualizable]
+  (consumer, initialTokenValues, producer)
+  {
+    "numOfInitialTokens": 0_i,
+    "maximumTokens": 2_i
+  }
+  vertex s6
+  [decision::sdf::BoundedSDFChannel, moc::sdf::SDFChannel, visualization::Visualizable]
+  (consumer, initialTokenValues, producer)
+  {
+    "numOfInitialTokens": 2_i,
+    "__initialTokenValues_ordering__": {
+      "ZeroValue2": 1_i,
+      "ZeroValue1": 0_i
+    },
+    "maximumTokens": 2_i
   }
   vertex s_in
   [decision::sdf::BoundedSDFChannel, impl::TokenizableDataBlock, moc::sdf::SDFChannel, visualization::Visualizable]
@@ -97,7 +129,7 @@ systemgraph {
   {
     "numOfInitialTokens": 0_i,
     "maxSizeInBits": 32_l,
-    "maximumTokens": 1_i,
+    "maximumTokens": 10_i,
     "tokenSizeInBits": 32_l
   }
   vertex UInt32
@@ -106,11 +138,39 @@ systemgraph {
   {
     "numberOfBits": 32_i
   }
+  vertex Array2OfUInt32Type
+  [typing::datatypes::Array]
+  (innerType)
+  {
+    "maximumElems": 2_i
+  }
+  vertex Array3OfUInt32Type
+  [typing::datatypes::Array]
+  (innerType)
+  {
+    "maximumElems": 3_i
+  }
+  vertex ZeroValue1
+  [values::IntegerValue]
+  ()
+  {
+    "intValue": 0_i
+  }
+  vertex ZeroValue2
+  [values::IntegerValue]
+  ()
+  {
+    "intValue": 0_i
+  }
   vertex p1Body
   [impl::ANSICBlackBoxExecutable, typing::TypedOperation]
-  (inputPortTypes, outputPortTypes, s1)
+  (inputPortTypes, outputPortTypes, s1, s6, s_in)
   {
-    "inlinedCode": "s1 = 5;",
+    "__inputPortTypes_ordering__": {
+      "Array2OfUInt32Type": 0_i,
+      "UInt32": 1_i
+    },
+    "inlinedCode": "s1 = s_in[0]+s_in[1]+s6;",
     "outputPorts": [
       "s1"
     ],
@@ -118,23 +178,107 @@ systemgraph {
       "UInt32": 0_i
     },
     "inputPorts": [
-
+      "s_in",
+      "s6"
     ]
   }
   vertex p2Body
   [impl::ANSICBlackBoxExecutable, typing::TypedOperation]
-  (inputPortTypes, outputPortTypes, s1)
+  (inputPortTypes, outputPortTypes, s1, s2, s3)
   {
     "__inputPortTypes_ordering__": {
       "UInt32": 0_i
     },
-    "inlinedCode": "int c = s1;",
+    "inlinedCode": "s2=s1;s3=s1+1;",
     "outputPorts": [
-
+      "s2",
+      "s3"
     ],
+    "__outputPortTypes_ordering__": {
+      "UInt32": 1_i
+    },
     "inputPorts": [
       "s1"
     ]
+  }
+  vertex p3Body
+  [impl::ANSICBlackBoxExecutable, typing::TypedOperation]
+  (inputPortTypes, outputPortTypes, s3, s5, s6)
+  {
+    "__inputPortTypes_ordering__": {
+      "UInt32": 1_i
+    },
+    "inlinedCode": "s6[0]=s3[0]+s3[1];s6[1]=s5[0]+s5[1];",
+    "outputPorts": [
+      "s6"
+    ],
+    "__outputPortTypes_ordering__": {
+      "UInt32": 0_i
+    },
+    "inputPorts": [
+      "s3",
+      "s5"
+    ]
+  }
+  vertex p4Body
+  [impl::ANSICBlackBoxExecutable, typing::TypedOperation]
+  (inputPortTypes, outputPortTypes, s2, s4)
+  {
+    "__inputPortTypes_ordering__": {
+      "UInt32": 0_i
+    },
+    "inlinedCode": "s4=s2;int out[3];out[0]=s2;out[1]=s2+1;out[2]=s2+2;",
+    "outputPorts": [
+      "s4"
+    ],
+    "__outputPortTypes_ordering__": {
+      "UInt32": 0_i
+    },
+    "inputPorts": [
+      "s2"
+    ]
+  }
+  vertex p5Body
+  [impl::ANSICBlackBoxExecutable, typing::TypedOperation]
+  (inputPortTypes, outputPortTypes, s4, s5)
+  {
+    "__inputPortTypes_ordering__": {
+      "UInt32": 0_i
+    },
+    "inlinedCode": "s5=s4+1;",
+    "outputPorts": [
+      "s5"
+    ],
+    "__outputPortTypes_ordering__": {
+      "UInt32": 0_i
+    },
+    "inputPorts": [
+      "s4"
+    ]
+  }
+  vertex tile0
+  [platform::GenericProcessingModule]
+  (communication, contained, execution)
+  {}
+  vertex tile1
+  [platform::GenericProcessingModule]
+  (communication, contained, execution)
+  {}
+  vertex order_0
+  [platform::runtime::RoundRobinScheduler]
+  (contained, slot_0, slot_1, slot_2, slot_3, slot_4)
+  {
+    "maximumTimeSliceInCycles": 0_i,
+    "maximumTimeSlices": 0_i,
+    "minimumTimeSliceInCycles": 0_i
+  }
+  vertex order_1
+  [platform::runtime::RoundRobinScheduler]
+  (contained, slot_0, slot_1, slot_2, slot_3)
+  {
+    "maximumTimeSliceInCycles": 0_i,
+    "maximumTimeSlices": 0_i,
+    "minimumTimeSliceInCycles": 0_i
   }
   edge [moc::sdf::SDFDataEdge] from s_in port consumer to p1 port s_in_port
   edge [moc::sdf::SDFDataEdge] from p1 port s1_port to s1 port producer
@@ -146,16 +290,77 @@ systemgraph {
   edge [moc::sdf::SDFDataEdge] from p2 port s2_port to s2 port producer
   edge [moc::sdf::SDFDataEdge] from s2 port consumer to p4 port s2_port
   edge [moc::sdf::SDFDataEdge] from p4 port s4_port to s4 port producer
-  edge [moc::sdf::SDFDataEdge] from s4 port consumer to p4 port s4_port
-  edge [moc::sdf::SDFDataEdge] from p4 port s5_port to s5 port producer
+  edge [moc::sdf::SDFDataEdge] from s4 port consumer to p5 port s4_port
+  edge [moc::sdf::SDFDataEdge] from p5 port s5_port to s5 port producer
   edge [moc::sdf::SDFDataEdge] from s5 port consumer to p3 port s5_port
+  edge [typing::datatypes::DataDefinition] from Array2OfUInt32Type port innerType to UInt32 
+  edge [typing::datatypes::DataDefinition] from Array3OfUInt32Type port innerType to UInt32 
+  edge [] from s6 port initialTokenValues to ZeroValue1 
+  edge [] from s6 port initialTokenValues to ZeroValue2 
+  edge [typing::datatypes::DataDefinition] from p1Body port inputPortTypes to Array2OfUInt32Type 
+  edge [typing::datatypes::DataDefinition] from p1Body port inputPortTypes to UInt32 
   edge [typing::datatypes::DataDefinition] from p1Body port outputPortTypes to UInt32 
   edge [moc::AbstractionEdge] from p1 port combFunctions to p1Body 
+  edge [moc::AbstractionEdge] from p1 port s_in_port to p1Body port s_in
+  edge [moc::AbstractionEdge] from p1 port s6_port to p1Body port s6
   edge [moc::AbstractionEdge] from p1Body port s1 to p1 port s1_port
+  edge [typing::datatypes::DataDefinition] from p1Body port s_in to Array2OfUInt32Type 
+  edge [typing::datatypes::DataDefinition] from p1Body port s1 to UInt32 
+  edge [typing::datatypes::DataDefinition] from p1Body port s6 to UInt32 
   edge [typing::datatypes::DataDefinition] from p2Body port inputPortTypes to UInt32 
+  edge [typing::datatypes::DataDefinition] from p2Body port outputPortTypes to UInt32 
   edge [moc::AbstractionEdge] from p2 port combFunctions to p2Body 
-  edge [moc::AbstractionEdge] from p1 port s1_port to p1Body port s1
+  edge [moc::AbstractionEdge] from p2 port s1_port to p2Body port s1
+  edge [moc::AbstractionEdge] from p2Body port s3 to p2 port s3_port
+  edge [moc::AbstractionEdge] from p2Body port s2 to p2 port s2_port
+  edge [typing::datatypes::DataDefinition] from p2Body port s1 to UInt32 
+  edge [typing::datatypes::DataDefinition] from p2Body port s2 to UInt32 
+  edge [typing::datatypes::DataDefinition] from p2Body port s3 to UInt32 
+  edge [typing::datatypes::DataDefinition] from p3Body port inputPortTypes to UInt32 
+  edge [typing::datatypes::DataDefinition] from p3Body port outputPortTypes to UInt32 
+  edge [moc::AbstractionEdge] from p3 port combFunctions to p3Body 
+  edge [moc::AbstractionEdge] from p3 port s3_port to p3Body port s3
+  edge [moc::AbstractionEdge] from p3 port s5_port to p3Body port s5
+  edge [moc::AbstractionEdge] from p3Body port s6 to p3 port s6_port
+  edge [typing::datatypes::DataDefinition] from p3Body port s3 to Array2OfUInt32Type 
+  edge [typing::datatypes::DataDefinition] from p3Body port s5 to Array2OfUInt32Type 
+  edge [typing::datatypes::DataDefinition] from p3Body port s6 to Array2OfUInt32Type 
+  edge [typing::datatypes::DataDefinition] from p4Body port inputPortTypes to UInt32 
+  edge [typing::datatypes::DataDefinition] from p4Body port outputPortTypes to UInt32 
+  edge [moc::AbstractionEdge] from p4 port combFunctions to p4Body 
+  edge [moc::AbstractionEdge] from p4 port s2_port to p4Body port s2
+  edge [moc::AbstractionEdge] from p4Body port s4 to p4 port s4_port
+  edge [typing::datatypes::DataDefinition] from p4Body port s2 to UInt32 
+  edge [typing::datatypes::DataDefinition] from p4Body port s4 to UInt32 
+  edge [typing::datatypes::DataDefinition] from p5Body port inputPortTypes to UInt32 
+  edge [typing::datatypes::DataDefinition] from p5Body port outputPortTypes to UInt32 
+  edge [moc::AbstractionEdge] from p5 port combFunctions to p5Body 
+  edge [moc::AbstractionEdge] from p5 port s4_port to p5Body port s4
+  edge [moc::AbstractionEdge] from p5Body port s5 to p5 port s5_port
+  edge [typing::datatypes::DataDefinition] from p5Body port s4 to UInt32 
+  edge [typing::datatypes::DataDefinition] from p5Body port s5 to UInt32 
   edge [visualization::VisualConnection] from s_in to p1 
   edge [visualization::VisualConnection] from p1 to s1 
   edge [visualization::VisualConnection] from s1 to p2 
+  edge [visualization::VisualConnection] from p2 to s3 
+  edge [visualization::VisualConnection] from s3 to p3 
+  edge [visualization::VisualConnection] from p3 to s6 
+  edge [visualization::VisualConnection] from s6 to p1 
+  edge [visualization::VisualConnection] from p2 to s2 
+  edge [visualization::VisualConnection] from s2 to p4 
+  edge [visualization::VisualConnection] from p4 to s4 
+  edge [visualization::VisualConnection] from s4 to p5 
+  edge [visualization::VisualConnection] from p5 to s5 
+  edge [visualization::VisualConnection] from s5 to p3 
+  edge [decision::AbstractAllocation] from tile0 port execution to order_0 
+  edge [decision::AbstractAllocation] from tile1 port execution to order_1 
+  edge [visualization::VisualContainment] from tile0 port contained to order_0 
+  edge [visualization::VisualContainment] from tile1 port contained to order_1 
+  edge [visualization::VisualContainment] from order_0 port slot_0 to p1 
+  edge [visualization::VisualContainment] from order_0 port slot_1 to p2 
+  edge [visualization::VisualContainment] from order_0 port slot_2 to p1 
+  edge [visualization::VisualContainment] from order_0 port slot_3 to p2 
+  edge [visualization::VisualContainment] from order_0 port slot_4 to p3 
+  edge [visualization::VisualContainment] from order_1 port slot_0 to p4 
+  edge [visualization::VisualContainment] from order_1 port slot_1 to p5 
 }

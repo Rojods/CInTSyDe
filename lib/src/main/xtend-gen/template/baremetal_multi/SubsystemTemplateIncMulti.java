@@ -2,19 +2,17 @@ package template.baremetal_multi;
 
 import forsyde.io.java.core.Vertex;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import processingModule.Schedule;
 import template.templateInterface.SubsystemTemplate;
 
 @SuppressWarnings("all")
 public class SubsystemTemplateIncMulti implements SubsystemTemplate {
-  private Schedule s;
+  private Vertex tile;
   
   @Override
-  public String create(final Schedule s) {
+  public String create(final Vertex tile) {
     String _xblockexpression = null;
     {
-      this.s = s;
-      Vertex tile = s.tile;
+      this.tile = tile;
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("#ifndef SUBSYSTEM_");
       int _hashCode = this.hashCode();
@@ -50,10 +48,10 @@ public class SubsystemTemplateIncMulti implements SubsystemTemplate {
   
   @Override
   public String savePath() {
-    String _identifier = this.s.tile.getIdentifier();
+    String _identifier = this.tile.getIdentifier();
     String _plus = ("/" + _identifier);
     String _plus_1 = (_plus + "/subsystem_");
-    String _identifier_1 = this.s.tile.getIdentifier();
+    String _identifier_1 = this.tile.getIdentifier();
     String _plus_2 = (_plus_1 + _identifier_1);
     return (_plus_2 + ".h");
   }

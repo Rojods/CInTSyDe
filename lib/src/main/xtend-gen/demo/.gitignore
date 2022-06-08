@@ -20,3 +20,8 @@
 /test4.java
 /test5.java
 /.text6.java._trace
+/.single_fifo1.java._trace
+/.single_fifo2.java._trace
+/.multi_fifo1.java._trace
+/.multi_fifo2.java._trace
+/.rtos.java._trace

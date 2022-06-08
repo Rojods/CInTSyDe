@@ -16,7 +16,7 @@ class FIFOInc2 implements InitTemplate{
 			#define CIRCULAR_FIFO_LIB_H_
 			
 				#include "../datatype/datatype_definition.h"
-				#include "../circular_fifo_lib/spinlock.h"	
+				//#include "../circular_fifo_lib/spinlock.h"	
 				#include <string.h>
 				/*
 				*******************************************************

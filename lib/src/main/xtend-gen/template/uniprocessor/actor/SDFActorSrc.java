@@ -292,6 +292,7 @@ public class SDFActorSrc implements ActorTemplate {
         if (_tripleNotEquals_1) {
           ports.addAll(Query.findImplOutputPorts(actorimpl));
         }
+        InputOutput.<String>println(("-->" + ports));
         boolean _isEmpty = ports.isEmpty();
         if (_isEmpty) {
           String _ret = ret;

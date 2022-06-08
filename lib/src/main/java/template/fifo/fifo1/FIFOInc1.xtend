@@ -46,7 +46,7 @@ class FIFOInc1 implements InitTemplate {
 			
 			#include "../datatype/datatype_definition.h"
 			
-			#include "spinlock.h"	
+			//#include "spinlock.h"	
 			
 			«IF typeVertexSet.size()!=0»		
 				«FOR v : typeVertexSet SEPARATOR "" AFTER ""»

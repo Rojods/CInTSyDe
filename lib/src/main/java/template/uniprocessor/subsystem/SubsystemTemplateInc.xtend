@@ -4,10 +4,10 @@ import template.templateInterface.SubsystemTemplate
 
 
 import processingModule.Schedule
-
+import forsyde.io.java.core.Vertex
 
 class SubsystemTemplateInc implements SubsystemTemplate{
-	override String create(Schedule s){
+	override String create(Vertex tile){
 		
 		'''
 			#ifndef SUBSYSTEM_«this.hashCode()»_H_

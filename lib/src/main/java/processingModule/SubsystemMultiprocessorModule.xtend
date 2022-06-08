@@ -8,7 +8,9 @@ import utils.Save
 import java.util.HashSet
 import generator.Generator
 import processingModule.Schedule
-
+import forsyde.io.java.core.Vertex
+import forsyde.io.java.typed.viewers.platform.GenericProcessingModule
+import java.util.stream.Collectors
 
 class SubsystemMultiprocessorModule implements ModuleInterface {
 	Set<SubsystemTemplate> templates
@@ -18,23 +20,17 @@ class SubsystemMultiprocessorModule implements ModuleInterface {
 	}
 
 	override create() {
-		Generator.multiProcessorSchedules.stream().forEach([schedule|process(schedule)])
+//		Generator.multiProcessorSchedules.stream().forEach([schedule|process(schedule)])
+		Generator.model.vertexSet().stream().filter([v| GenericProcessingModule.conforms(v) ])
+									.collect(Collectors.toSet())
 	}
 
-	def process(Schedule s) {
-		val schedule = s
+	def process(Vertex tile) {
 		templates.stream().forEach( [ t |
 
-//			var anno = t.getClass().getAnnotation(FileTypeAnno)
-//
-//			if (anno.type() == FileType.C_INCLUDE) {
 				
-				Save.save(t.create(schedule),Generator.root +t.savePath());
-//			}
-//
-//			if (anno.type() == FileType.C_SOURCE) {
-//				Save.save(t.create(schedule),Generator.root +t.savePath())
-//			}
+				Save.save(t.create(tile),Generator.root +t.savePath());
+
 
 		])
 	}

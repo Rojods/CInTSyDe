@@ -39,12 +39,35 @@ import generator.Generator;
 import java.lang.Math;
 
 public class Query {
+	public static MyPair findSrcAndSnkTileOfChannel(ForSyDeSystemGraph model,Vertex channel) {
+		var inputActor=VertexAcessor.getNamedPort(model,channel,"producer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
+		var outputActor = VertexAcessor.getNamedPort(model,channel,"consumer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
+		// if the fifo is external fifo, then, by default , it is on-one-core fifo
+		
 
+		
+		
+		if(inputActor==null||outputActor==null) {
+				if(inputActor!=null) {
+					return new MyPair( findTile(model,inputActor)  ,null);
+				}
+				if(outputActor!=null) {
+					return new MyPair( null,findTile(model,outputActor));
+				}
+		}
+		
+		
+		return new MyPair(findTile(model,inputActor),findTile(model,outputActor));
+	}
+	
+	
+	
 	public static boolean isOnOneCoreChannel(ForSyDeSystemGraph model,Vertex channel) {
 		var inputActor=VertexAcessor.getNamedPort(model,channel,"producer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
 		var outputActor = VertexAcessor.getNamedPort(model,channel,"consumer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
+		// if the fifo is external fifo, then, by default , it is on-one-core fifo
 		if(inputActor==null||outputActor==null) {
-			return true;
+				return true;
 		}
 		
 		
@@ -82,10 +105,12 @@ public class Query {
 					.filter(v->GenericProcessingModule.conforms(v))
 					.collect(Collectors.toSet());
 			BFSShortestPath<Vertex,EdgeInfo> bfs = new BFSShortestPath<>(model);
-			
+
 			Vertex targetTile=null;
 			for(Vertex tile:tiles) {
 				var a=	bfs.getPath(tile,vertex);
+			//System.out.println("path");
+				//System.out.println(a);
 				if(a!=null&&a.getLength()==2) {
 					targetTile = tile;
 					return targetTile;
@@ -124,8 +149,9 @@ public class Query {
 		String actorname="";
 		String port;
 		Vertex actor;
-//		System.out.println(inputedge);
-//		System.out.println(outputedge);
+		//System.out.println("for sdf channel, find type "+sdfchannel.getIdentifier());
+		//System.out.println(inputedge);
+		//System.out.println(outputedge);
 		try {
 			if (inputedge != null) {
 				// actor's input sdf channel
@@ -140,10 +166,10 @@ public class Query {
 
 				String implName = info.getTarget();
 				String implPort = info.getTargetPort().get();
-
+				//System.out.println("-->"+implPort);
 				var implDataType = findImplPortDataType(model, findVertexByName(model, implName), implPort);
 				Vertex datatypeVertex = findVertexByName(model, implDataType);
-
+				//System.out.println(datatypeVertex);
 				if (!Array.conforms(datatypeVertex)) {
 					return implDataType;
 				} else {
@@ -174,6 +200,7 @@ public class Query {
 				return "<ERROR! "+actorname+" Not Connected To Any ConbFunctions ! >";
 			}			
 		}catch(Exception e){
+			e.printStackTrace();
 			return "<ERROR! "+actorname+" Not Connected To Any ConbFunctions ! >";
 		}
 		

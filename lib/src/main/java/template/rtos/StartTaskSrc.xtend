@@ -9,7 +9,7 @@ import java.util.HashMap
 import java.util.stream.Collectors
 import template.templateInterface.InitTemplate
 import utils.Query
-
+import java.util.ArrayList
 
 class StartTaskSrc implements InitTemplate {
 	override savePath() {
@@ -93,9 +93,9 @@ class StartTaskSrc implements InitTemplate {
 			«FOR channel : Generator.sdfchannelSet»
 				«var sdfchannel=SDFChannel.safeCast(channel).get()»
 				«IF sdfchannel.getNumOfInitialTokens()!==null&&sdfchannel.getNumOfInitialTokens()>0»
-					«var b = (sdfchannel.getProperties().get("__initialTokenValues_ordering__").unwrap() as HashMap<String,Integer>) »					
-					«FOR k:b.keySet()»
-					xQueueSend(msg_queue_«sdfchannel.getIdentifier()»,&«k»,portMAX_DELAY);
+					«var delays=inithelp(sdfchannel)»
+					«FOR delay:delays»
+					xQueueSend(msg_queue_«sdfchannel.getIdentifier()»,&«delay»,portMAX_DELAY);
 					«ENDFOR»
 				«ENDIF»
 			«ENDFOR»						
@@ -151,7 +151,23 @@ class StartTaskSrc implements InitTemplate {
 			
 		'''
 	}
+	def inithelp(SDFChannel sdfchannel) {
+		var numOfInitialToken = sdfchannel.getNumOfInitialTokens()
+		var delays = (sdfchannel.getProperties().get("__initialTokenValues_ordering__").
+			unwrap() as HashMap<String, Integer>)
 
+		var delayValueList = new ArrayList<String>()
+		for(var int i=0;i<numOfInitialToken;i=i+1){
+			delayValueList.add("")
+		}
+
+		
+		for (String k : delays.keySet()) {
+			println("->"+delays.get(k))
+			delayValueList.set(delays.get(k), k)
+		}
+		return delayValueList
+	}
 
 
 }

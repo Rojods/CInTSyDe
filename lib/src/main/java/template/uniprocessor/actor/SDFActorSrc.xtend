@@ -136,15 +136,16 @@ class SDFActorSrc implements ActorTemplate {
 			println("-->" + impl)
 			var actorimpl = model.queryVertex(impl).get()
 			var Set<String> ports = new HashSet
-
+			
 			if (Query.findImplInputPorts(actorimpl) !== null) {
+				
 				ports.addAll(Query.findImplInputPorts(actorimpl))
 			}
 
 			if (Query.findImplOutputPorts(actorimpl) !== null) {
 				ports.addAll(Query.findImplOutputPorts(actorimpl))
 			}
-			// println("-->" + ports)
+			println("-->" + ports)
 			if (ports.isEmpty()) {
 				ret += '''
 					The inputPorts or outputPorts Property is not specified in «impl»

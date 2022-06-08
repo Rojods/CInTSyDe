@@ -3,13 +3,14 @@ package template.baremetal_multi
 import template.templateInterface.SubsystemTemplate
 
 import processingModule.Schedule
-
+import forsyde.io.java.core.Vertex
 
 class SubsystemTemplateIncMulti implements SubsystemTemplate{
-	Schedule s
-	override create(Schedule s) {
-		this.s=s
-		var tile=s.tile
+
+	Vertex tile
+	override create(Vertex tile) {
+
+		this.tile=tile
 		'''
 			#ifndef SUBSYSTEM_«this.hashCode()»_H_
 			#define SUBSYSTEM_«this.hashCode()»_H_
@@ -24,6 +25,6 @@ class SubsystemTemplateIncMulti implements SubsystemTemplate{
 	
 	override savePath() {
 		
-		return "/"+s.tile.getIdentifier()+"/subsystem_"+s.tile.getIdentifier()+".h"
+		return "/"+tile.getIdentifier()+"/subsystem_"+tile.getIdentifier()+".h"
 	}
 }

@@ -107,11 +107,11 @@ class Schedule {
 		).orElse(null)
 	}
 
-	def print() {
-		println("tile: " + tile.getIdentifier())
-		if(order === null) println("order null") else println("order : " + order.getIdentifier())
-		for (Vertex v : slots) {
-			if(v === null) println("null") else println(v.getIdentifier())
-		}
-	}	
+//	def print() {
+//		println("tile: " + tile.getIdentifier())
+//		if(order === null) println("order null") else println("order : " + order.getIdentifier())
+//		for (Vertex v : slots) {
+//			if(v === null) println("null") else println(v.getIdentifier())
+//		}
+//	}	
 }

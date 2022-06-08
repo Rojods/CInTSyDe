@@ -1,13 +1,13 @@
 package template.uniprocessor.subsystem;
 
+import forsyde.io.java.core.Vertex;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import processingModule.Schedule;
 import template.templateInterface.SubsystemTemplate;
 
 @SuppressWarnings("all")
 public class SubsystemTemplateInc implements SubsystemTemplate {
   @Override
-  public String create(final Schedule s) {
+  public String create(final Vertex tile) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("#ifndef SUBSYSTEM_");
     int _hashCode = this.hashCode();

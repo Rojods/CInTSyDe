@@ -66,6 +66,8 @@ class SDFChannelProcessingModule implements ModuleInterface {
 					orElse(null)
 				if (consumer !== null) {
 					var Vertex tile = Query.findTile(Generator.model, consumer)
+					println(consumer)
+					println(tile)
 					Save.save(t.create(v), Generator.root+"/" + tile.getIdentifier() + t.savePath());
 				}
 
