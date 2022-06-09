@@ -75,10 +75,10 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 					«FOR channel : Generator.sdfchannelSet»
 					«var sdfname=channel.getIdentifier()»
 							«IF Generator.fifoType==1»	
-						init_channel_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«sdfname»,buffer_«sdfname»,buffer_«sdfname»_size);
+						init_fifo_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«sdfname»,buffer_«sdfname»,buffer_«sdfname»_size);
 						«ENDIF»
 						«IF Generator.fifoType==2»
-							init(&fifo_«sdfname»,buffer_«sdfname»,buffer_«sdfname»_size, sizeof(«Query.findSDFChannelDataType(Generator.model,channel)»));
+							init_fifo(&fifo_«sdfname»,buffer_«sdfname»,buffer_«sdfname»_size, sizeof(«Query.findSDFChannelDataType(Generator.model,channel)»));
 							«ENDIF»
 						«ENDFOR»		
 						

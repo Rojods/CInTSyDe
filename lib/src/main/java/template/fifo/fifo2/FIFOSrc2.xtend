@@ -25,7 +25,7 @@ class FIFOSrc2  implements InitTemplate {
 			#include <string.h>
 			#include <stdio.h>
 			
-			void init(circular_fifo* fifo_ptr, void* buf, size_t capacity, size_t token_size){
+			void init_fifo(circular_fifo* fifo_ptr, void* buf, size_t capacity, size_t token_size){
 				fifo_ptr->buffer=buf;
 				
 				fifo_ptr->front=0;

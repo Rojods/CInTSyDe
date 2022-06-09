@@ -157,7 +157,7 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
           _builder.newLineIfNotEmpty();
           {
             if ((Generator.fifoType == 1)) {
-              _builder.append("init_channel_");
+              _builder.append("init_fifo_");
               String _findSDFChannelDataType = Query.findSDFChannelDataType(Generator.model, channel);
               _builder.append(_findSDFChannelDataType);
               _builder.append("(&fifo_");
@@ -174,7 +174,7 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
             if ((Generator.fifoType == 2)) {
               _builder.append("\t\t");
               _builder.append("\t");
-              _builder.append("init(&fifo_");
+              _builder.append("init_fifo(&fifo_");
               _builder.append(sdfname, "\t\t\t");
               _builder.append(",buffer_");
               _builder.append(sdfname, "\t\t\t");

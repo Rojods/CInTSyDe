@@ -69,7 +69,7 @@ class FIFOSrc1 implements InitTemplate {
 					«type» Channel Definition 
 				=============================================================
 				*/				
-				void init_channel_«type»(circular_fifo_«type» *channel ,«type»* buffer, size_t size){
+				void init_fifo_«type»(circular_fifo_«type» *channel ,«type»* buffer, size_t size){
 				    channel->buffer = buffer;
 				    channel->size=size;
 				    channel->front = 0;
