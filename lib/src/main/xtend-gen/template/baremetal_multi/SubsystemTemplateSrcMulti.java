@@ -87,22 +87,10 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
           {
             if ((actor != null)) {
               _builder.append("\t");
-              _builder.append("xil_printf(\"fire actor ");
-              String _identifier_2 = actor.getIdentifier();
-              _builder.append(_identifier_2, "\t");
-              _builder.append("\\n\");");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
               _builder.append("actor_");
               String _name = Name.name(actor);
               _builder.append(_name, "\t");
               _builder.append("();");
-              _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append("xil_printf(\"actor ");
-              String _identifier_3 = actor.getIdentifier();
-              _builder.append(_identifier_3, "\t");
-              _builder.append(" ends\\n\");");
               _builder.newLineIfNotEmpty();
             }
           }
@@ -118,8 +106,8 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
       _builder.newLine();
       _builder.newLine();
       _builder.append("int init_");
-      String _identifier_4 = tile.getIdentifier();
-      _builder.append(_identifier_4);
+      String _identifier_2 = tile.getIdentifier();
+      _builder.append(_identifier_2);
       _builder.append("(){");
       _builder.newLineIfNotEmpty();
       _builder.append("\t");

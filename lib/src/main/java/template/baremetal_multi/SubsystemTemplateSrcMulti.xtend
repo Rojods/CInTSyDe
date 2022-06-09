@@ -55,9 +55,7 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 			«FOR actor : slots SEPARATOR "" AFTER ""»
 				«var tmp =1»
 					«IF actor!==null»
-						xil_printf("fire actor «actor.getIdentifier()»\n");
 						actor_«Name.name(actor)»();
-						xil_printf("actor «actor.getIdentifier()» ends\n");
 					«ENDIF»
 			«ENDFOR»
 				}

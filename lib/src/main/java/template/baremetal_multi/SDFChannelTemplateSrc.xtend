@@ -56,8 +56,8 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 					 volatile cheap const fifo_admin_«channelname»=(cheap) «channelname.toUpperCase()»_ADDR;
 					 volatile «type» * const fifo_data_«channelname»=(«type»  *)((cheap) «channelname.toUpperCase()»_ADDR +1);			 
 					 unsigned int buffer_«channelname»_size=«Query.getBufferSize(sdfchannel)»;
-					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»;
-					 
+«««					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»;
+					 unsigned int token_«channelname»_size= sizeof(«Query.findSDFChannelDataType(model,sdfchannel)»);
 	
 					«ENDIF»
 				«ELSE»
@@ -82,7 +82,8 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
  					 volatile cheap const fifo_admin_«channelname»=(cheap) «channelname.toUpperCase()»_ADDR;
  					 volatile «type» * const fifo_data_«channelname»=(«type»  *)((cheap) «channelname.toUpperCase()»_ADDR +1); 					 
  					 unsigned int buffer_«channelname»_size=1;
- 					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»;
+««« 					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»;
+ 					 unsigned int token_«channelname»_size= sizeof(«Query.findSDFChannelDataType(model,sdfchannel)»);
 ««« 					 unsigned int token_«channelname»_size=«Query.getTokenSize(sdfchannel)»	;
 ««« 					 volatile «type» buffer_«channelname»[1];							
 					«ENDIF»

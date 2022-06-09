@@ -158,7 +158,7 @@ public class SDFCreate {
         p5pass.setFiringSlots(List.of(3,7));
 
         final BoundedSDFChannel sInBounded = BoundedSDFChannel.enforce(sIn);
-        sInBounded.setMaximumTokens(10);
+        sInBounded.setMaximumTokens(20);
 
         final BoundedSDFChannel s1Bounded = BoundedSDFChannel.enforce(s1);
         s1Bounded.setMaximumTokens(1);

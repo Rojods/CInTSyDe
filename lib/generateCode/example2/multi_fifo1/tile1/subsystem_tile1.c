@@ -6,12 +6,8 @@
 
 void subsystem_tile1(){
 	while(1){
-	xil_printf("fire actor p4\n");
 	actor_p4();
-	xil_printf("actor p4 ends\n");
-	xil_printf("fire actor p5\n");
 	actor_p5();
-	xil_printf("actor p5 ends\n");
 	}
 }	
 

@@ -48,12 +48,12 @@ UInt32 s2;
 	/* Inline Code           */
 	/* in combFunction p4Body */
 	s4=s2;
-	intout[3];
+	int out[3];
 	out[0]=s2;
 	out[1]=s2+1;
 	out[2]=s2+2;
 	
 	/* Write To Output Ports */
 				write_fifo(&fifo_s4,(void*)&s4,1);
-
+	xil_printf("out:  %d, %d, %d\n",out[0],out[1],out[2]);
 	}

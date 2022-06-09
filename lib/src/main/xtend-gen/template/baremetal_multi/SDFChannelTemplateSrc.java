@@ -180,14 +180,11 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
               _builder.append(" ");
               _builder.append("unsigned int token_");
               _builder.append(channelname, "\t ");
-              _builder.append("_size=");
-              long _tokenSize = Query.getTokenSize(sdfchannel);
-              _builder.append(_tokenSize, "\t ");
-              _builder.append(";");
+              _builder.append("_size= sizeof(");
+              String _findSDFChannelDataType = Query.findSDFChannelDataType(model, sdfchannel);
+              _builder.append(_findSDFChannelDataType, "\t ");
+              _builder.append(");");
               _builder.newLineIfNotEmpty();
-              _builder.append("\t");
-              _builder.append(" ");
-              _builder.newLine();
               _builder.append("\t");
               _builder.newLine();
             }
@@ -299,10 +296,10 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
               _builder.append(" \t\t\t\t\t ");
               _builder.append("unsigned int token_");
               _builder.append(channelname, " \t\t\t\t\t ");
-              _builder.append("_size=");
-              long _tokenSize_1 = Query.getTokenSize(sdfchannel);
-              _builder.append(_tokenSize_1, " \t\t\t\t\t ");
-              _builder.append(";");
+              _builder.append("_size= sizeof(");
+              String _findSDFChannelDataType_1 = Query.findSDFChannelDataType(model, sdfchannel);
+              _builder.append(_findSDFChannelDataType_1, " \t\t\t\t\t ");
+              _builder.append(");");
               _builder.newLineIfNotEmpty();
             }
           }
