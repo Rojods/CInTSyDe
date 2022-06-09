@@ -44,7 +44,7 @@ Array6OfDoubleType imgBlockY;
 			imgBlockY[i]=*tmp_ptrs[i];	
 		}
 		
-		cheap_release_spaces (fifo_admin_gysig, 1);
+		cheap_release_spaces (fifo_admin_gysig, 6);
 	}
 
 	

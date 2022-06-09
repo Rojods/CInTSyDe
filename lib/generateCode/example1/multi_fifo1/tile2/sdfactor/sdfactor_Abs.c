@@ -55,7 +55,7 @@ DoubleType resx;
 			dims[i]=*tmp_ptrs[i];	
 		}
 		
-		cheap_release_spaces (fifo_admin_GrayScaleToAbs, 1);
+		cheap_release_spaces (fifo_admin_GrayScaleToAbs, 2);
 	}
 	read_fifo_UInt16(&fifo_AbsX, &offsetX,1);
 	read_fifo_UInt16(&fifo_AbsY, &offsetY,1);

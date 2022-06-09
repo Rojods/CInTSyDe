@@ -148,7 +148,7 @@ class SDFActorSrc implements ActorTemplate {
 		var String ret = ""
 
 		for (String impl : impls) {
-			println("-->" + impl)
+			//println("-->" + impl)
 			var actorimpl = model.queryVertex(impl).get()
 			var Set<String> ports = new HashSet
 
@@ -262,7 +262,7 @@ class SDFActorSrc implements ActorTemplate {
 									«port»[i]=*tmp_ptrs[i];	
 								}
 								
-								cheap_release_spaces (fifo_admin_«sdfchannelName», 1);
+								cheap_release_spaces (fifo_admin_«sdfchannelName», «consumption»);
 							}
 							«ENDIF»	
 							'''

@@ -23,9 +23,9 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 
 	Vertex tile
 	Vertex order
-	List<Vertex> slots =new ArrayList
+	
 	override create(Vertex tile) {
-
+		var List<Vertex> slots =new ArrayList
 		this.tile = tile
 		var model = Generator.model
 		this.order=findOrder(model,tile)
@@ -41,6 +41,8 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 			slots.add(actor)			
 		}
 		
+		println(tile.getIdentifier())
+		println(order.getIdentifier())
 		'''
 			#include "subsystem_«tile.getIdentifier()».h"
 			#include "../datatype/datatype_definition.h"
@@ -49,7 +51,7 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 			
 			
 			void subsystem_«tile.getIdentifier()»(){
-«««			«FOR actor : schedule.slots SEPARATOR "" AFTER ""»
+				while(1){
 			«FOR actor : slots SEPARATOR "" AFTER ""»
 				«var tmp =1»
 					«IF actor!==null»
@@ -58,6 +60,7 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 						xil_printf("actor «actor.getIdentifier()» ends\n");
 					«ENDIF»
 			«ENDFOR»
+				}
 			}	
 			
 			int init_«tile.getIdentifier()»(){
@@ -189,10 +192,10 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 					// fifo src and snk on this tile
 					ret += '''
 						«IF Generator.fifoType==1»	
-							init_channel_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size);
+							init_fifo_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size);
 						«ENDIF»
 						«IF Generator.fifoType==2»
-							init(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size, sizeof(«Query.findSDFChannelDataType(Generator.model,channel)»));
+							init_fifo(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size, sizeof(«Query.findSDFChannelDataType(Generator.model,channel)»));
 						«ENDIF»						
 					'''
 				}
@@ -212,10 +215,10 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 					if (pair.snk == tile) {
 						ret += '''
 							«IF Generator.fifoType==1»	
-								init_channel_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size);
+								init_fifo_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size);
 							«ENDIF»
 							«IF Generator.fifoType==2»
-								init(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size, sizeof(«Query.findSDFChannelDataType(Generator.model,channel)»));
+								init_fifo(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size, sizeof(«Query.findSDFChannelDataType(Generator.model,channel)»));
 							«ENDIF»							
 						'''
 					}
@@ -225,10 +228,10 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 					if (pair.src == tile) {
 						ret += '''
 							«IF Generator.fifoType==1»	
-								init_channel_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size);
+								init_fifo_«Query.findSDFChannelDataType(Generator.model,channel)»(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size);
 							«ENDIF»
 							«IF Generator.fifoType==2»
-								init(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size, sizeof(«Query.findSDFChannelDataType(Generator.model,channel)»));
+								init_fifo(&fifo_«channelname»,buffer_«channelname»,buffer_«channelname»_size, sizeof(«Query.findSDFChannelDataType(Generator.model,channel)»));
 							«ENDIF»	
 						'''
 					}
@@ -342,7 +345,7 @@ class SubsystemTemplateSrcMulti implements SubsystemTemplate {
 		}
 
 		for (String k : delays.keySet()) {
-			println("->" + delays.get(k))
+			//println("->" + delays.get(k))
 			delayValueList.set(delays.get(k), k)
 		}
 		return delayValueList

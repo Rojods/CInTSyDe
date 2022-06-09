@@ -49,7 +49,7 @@ Array2OfUInt32Type s6;
 			s5[i]=*tmp_ptrs[i];	
 		}
 		
-		cheap_release_spaces (fifo_admin_s5, 1);
+		cheap_release_spaces (fifo_admin_s5, 2);
 	}
 
 	

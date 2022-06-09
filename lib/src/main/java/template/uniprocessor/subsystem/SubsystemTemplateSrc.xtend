@@ -49,11 +49,12 @@ class SubsystemTemplateSrc implements SubsystemTemplate {
 			==============================================
 			*/	
 			int subsystem(){
+				while(1){
 					«FOR set : uniprocessorSchedule.entrySet() SEPARATOR "" AFTER ""»
+					actor_«set.getValue().getIdentifier()»();
+					«ENDFOR»						
+				}
 
-							actor_«set.getValue().getIdentifier()»();
-
-					«ENDFOR»	
 			}
 			
 			

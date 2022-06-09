@@ -35,8 +35,6 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
       Map<String, VertexProperty> properties = sdfchannel.getProperties();
       StringConcatenation _builder = new StringConcatenation();
       _builder.newLine();
-      _builder.append("#include \"../../circular_fifo_lib/spinlock.h\"");
-      _builder.newLine();
       _builder.append("#include \"../../datatype/datatype_definition.h\"");
       _builder.newLine();
       String channelname = sdfchannel.getIdentifier();
@@ -234,7 +232,7 @@ public class SDFChannelTemplateSrc implements ChannelTemplate {
                 }
               }
               {
-                if ((Generator.fifoType == 1)) {
+                if ((Generator.fifoType == 2)) {
                   _builder.append("\t");
                   _builder.append("\t");
                   _builder.append("circular_fifo fifo_");

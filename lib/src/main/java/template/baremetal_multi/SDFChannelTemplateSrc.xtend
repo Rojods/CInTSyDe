@@ -27,7 +27,6 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 		var properties = sdfchannel.getProperties()
 		'''	
 			
-			#include "../../circular_fifo_lib/spinlock.h"
 			#include "../../datatype/datatype_definition.h"
 			«var channelname=sdfchannel.getIdentifier()»
 			#include "../../circular_fifo_lib/circular_fifo_lib.h"
@@ -70,7 +69,7 @@ class SDFChannelTemplateSrc implements ChannelTemplate {
 						unsigned int buffer_«channelname»_size = 2; // Because of circular fifo, the buffer_size=channel_size+1 
 						circular_fifo_«type» fifo_«channelname»;
 						«ENDIF»
-						«IF Generator.fifoType==1»
+						«IF Generator.fifoType==2»
 						circular_fifo fifo_«channelname»;
 						volatile «type» buffer_«channelname»[2];
 						int channel_«channelname»_size=1;

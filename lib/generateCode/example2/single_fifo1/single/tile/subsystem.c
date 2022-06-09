@@ -13,32 +13,17 @@
 ==============================================
 */	
 int subsystem(){
-
+	while(1){
 		actor_p1();
-
-
 		actor_p2();
-
-
 		actor_p4();
-
-
 		actor_p5();
-
-
 		actor_p1();
-
-
 		actor_p2();
-
-
 		actor_p4();
-
-
 		actor_p5();
-
-
 		actor_p3();
+	}
 
 }
 
@@ -91,13 +76,13 @@ int init_subsystem(){
 				
 	
 	/* initialize the channels*/
-init_channel_UInt32(&fifo_s4,buffer_s4,buffer_s4_size);
-init_channel_UInt32(&fifo_s5,buffer_s5,buffer_s5_size);
-init_channel_UInt32(&fifo_s6,buffer_s6,buffer_s6_size);
-init_channel_UInt32(&fifo_s_in,buffer_s_in,buffer_s_in_size);
-init_channel_UInt32(&fifo_s1,buffer_s1,buffer_s1_size);
-init_channel_UInt32(&fifo_s2,buffer_s2,buffer_s2_size);
-init_channel_UInt32(&fifo_s3,buffer_s3,buffer_s3_size);
+init_fifo_UInt32(&fifo_s4,buffer_s4,buffer_s4_size);
+init_fifo_UInt32(&fifo_s5,buffer_s5,buffer_s5_size);
+init_fifo_UInt32(&fifo_s6,buffer_s6,buffer_s6_size);
+init_fifo_UInt32(&fifo_s_in,buffer_s_in,buffer_s_in_size);
+init_fifo_UInt32(&fifo_s1,buffer_s1,buffer_s1_size);
+init_fifo_UInt32(&fifo_s2,buffer_s2,buffer_s2_size);
+init_fifo_UInt32(&fifo_s3,buffer_s3,buffer_s3_size);
 			
 			
 			

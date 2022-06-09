@@ -30,12 +30,11 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
   
   private Vertex order;
   
-  private List<Vertex> slots = new ArrayList<Vertex>();
-  
   @Override
   public String create(final Vertex tile) {
     String _xblockexpression = null;
     {
+      List<Vertex> slots = new ArrayList<Vertex>();
       this.tile = tile;
       ForSyDeSystemGraph model = Generator.model;
       this.order = this.findOrder(model, tile);
@@ -48,9 +47,11 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
             Generator.model, 
             this.order, portname, 
             VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
-          this.slots.add(actor);
+          slots.add(actor);
         }
       }
+      InputOutput.<String>println(tile.getIdentifier());
+      InputOutput.<String>println(this.order.getIdentifier());
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("#include \"subsystem_");
       String _identifier = tile.getIdentifier();
@@ -70,9 +71,12 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
       _builder.append(_identifier_1);
       _builder.append("(){");
       _builder.newLineIfNotEmpty();
+      _builder.append("\t");
+      _builder.append("while(1){");
+      _builder.newLine();
       {
         boolean _hasElements = false;
-        for(final Vertex actor : this.slots) {
+        for(final Vertex actor : slots) {
           if (!_hasElements) {
             _hasElements = true;
           } else {
@@ -107,6 +111,9 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
           _builder.append("");
         }
       }
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
       _builder.append("}\t");
       _builder.newLine();
       _builder.newLine();
@@ -399,7 +406,7 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
             StringConcatenation _builder = new StringConcatenation();
             {
               if ((Generator.fifoType == 1)) {
-                _builder.append("init_channel_");
+                _builder.append("init_fifo_");
                 String _findSDFChannelDataType = Query.findSDFChannelDataType(Generator.model, channel);
                 _builder.append(_findSDFChannelDataType);
                 _builder.append("(&fifo_");
@@ -414,7 +421,7 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
             }
             {
               if ((Generator.fifoType == 2)) {
-                _builder.append("init(&fifo_");
+                _builder.append("init_fifo(&fifo_");
                 _builder.append(channelname);
                 _builder.append(",buffer_");
                 _builder.append(channelname);
@@ -460,7 +467,7 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
               StringConcatenation _builder_2 = new StringConcatenation();
               {
                 if ((Generator.fifoType == 1)) {
-                  _builder_2.append("init_channel_");
+                  _builder_2.append("init_fifo_");
                   String _findSDFChannelDataType_2 = Query.findSDFChannelDataType(Generator.model, channel);
                   _builder_2.append(_findSDFChannelDataType_2);
                   _builder_2.append("(&fifo_");
@@ -475,7 +482,7 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
               }
               {
                 if ((Generator.fifoType == 2)) {
-                  _builder_2.append("init(&fifo_");
+                  _builder_2.append("init_fifo(&fifo_");
                   _builder_2.append(channelname);
                   _builder_2.append(",buffer_");
                   _builder_2.append(channelname);
@@ -498,7 +505,7 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
               StringConcatenation _builder_3 = new StringConcatenation();
               {
                 if ((Generator.fifoType == 1)) {
-                  _builder_3.append("init_channel_");
+                  _builder_3.append("init_fifo_");
                   String _findSDFChannelDataType_4 = Query.findSDFChannelDataType(Generator.model, channel);
                   _builder_3.append(_findSDFChannelDataType_4);
                   _builder_3.append("(&fifo_");
@@ -513,7 +520,7 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
               }
               {
                 if ((Generator.fifoType == 2)) {
-                  _builder_3.append("init(&fifo_");
+                  _builder_3.append("init_fifo(&fifo_");
                   _builder_3.append(channelname);
                   _builder_3.append(",buffer_");
                   _builder_3.append(channelname);
@@ -700,12 +707,7 @@ public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
     }
     Set<String> _keySet = delays.keySet();
     for (final String k : _keySet) {
-      {
-        Integer _get = delays.get(k);
-        String _plus = ("->" + _get);
-        InputOutput.<String>println(_plus);
-        delayValueList.set((delays.get(k)).intValue(), k);
-      }
+      delayValueList.set((delays.get(k)).intValue(), k);
     }
     return delayValueList;
   }

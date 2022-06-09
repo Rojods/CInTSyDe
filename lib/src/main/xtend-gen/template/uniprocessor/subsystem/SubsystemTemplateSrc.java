@@ -79,6 +79,9 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
       _builder.newLine();
       _builder.append("int subsystem(){");
       _builder.newLine();
+      _builder.append("\t");
+      _builder.append("while(1){");
+      _builder.newLine();
       {
         Set<Map.Entry<Integer, Vertex>> _entrySet = this.uniprocessorSchedule.entrySet();
         boolean _hasElements = false;
@@ -88,19 +91,21 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
           } else {
             _builder.appendImmediate("", "\t\t");
           }
-          _builder.newLine();
           _builder.append("\t\t");
           _builder.append("actor_");
           String _identifier_1 = set.getValue().getIdentifier();
           _builder.append(_identifier_1, "\t\t");
           _builder.append("();");
           _builder.newLineIfNotEmpty();
-          _builder.newLine();
         }
         if (_hasElements) {
           _builder.append("", "\t\t");
         }
       }
+      _builder.append("\t");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
       _builder.append("}");
       _builder.newLine();
       _builder.newLine();

@@ -13,20 +13,15 @@
 ==============================================
 */	
 int subsystem(){
-
+	while(1){
 		actor_GrayScale();
-
-
 		actor_getPx();
-
-
 		actor_Gx();
-
-
 		actor_Gy();
-
-
 		actor_Abs();
+
+		test();
+	}
 
 }
 
@@ -94,35 +89,26 @@ int init_subsystem(){
 				
 	
 	/* initialize the channels*/
-init_channel_UInt16(&fifo_GrayScaleToAbs,buffer_GrayScaleToAbs,buffer_GrayScaleToAbs_size);
-init_channel_UInt16(&fifo_AbsY,buffer_AbsY,buffer_AbsY_size);
-init_channel_DoubleType(&fifo_gysig,buffer_gysig,buffer_gysig_size);
-init_channel_UInt16(&fifo_AbsX,buffer_AbsX,buffer_AbsX_size);
-init_channel_DoubleType(&fifo_GrayScaleToGetPx,buffer_GrayScaleToGetPx,buffer_GrayScaleToGetPx_size);
-init_channel_DoubleType(&fifo_gxsig,buffer_gxsig,buffer_gxsig_size);
-init_channel_DoubleType(&fifo_absysig,buffer_absysig,buffer_absysig_size);
-init_channel_DoubleType(&fifo_absxsig,buffer_absxsig,buffer_absxsig_size);
-init_channel_UInt16(&fifo_GrayScaleX,buffer_GrayScaleX,buffer_GrayScaleX_size);
-init_channel_UInt16(&fifo_GrayScaleY,buffer_GrayScaleY,buffer_GrayScaleY_size);
+init_fifo_UInt16(&fifo_GrayScaleToAbs,buffer_GrayScaleToAbs,buffer_GrayScaleToAbs_size);
+init_fifo_UInt16(&fifo_AbsY,buffer_AbsY,buffer_AbsY_size);
+init_fifo_DoubleType(&fifo_gysig,buffer_gysig,buffer_gysig_size);
+init_fifo_UInt16(&fifo_AbsX,buffer_AbsX,buffer_AbsX_size);
+init_fifo_DoubleType(&fifo_GrayScaleToGetPx,buffer_GrayScaleToGetPx,buffer_GrayScaleToGetPx_size);
+init_fifo_DoubleType(&fifo_gxsig,buffer_gxsig,buffer_gxsig_size);
+init_fifo_DoubleType(&fifo_absysig,buffer_absysig,buffer_absysig_size);
+init_fifo_DoubleType(&fifo_absxsig,buffer_absxsig,buffer_absxsig_size);
+init_fifo_UInt16(&fifo_GrayScaleX,buffer_GrayScaleX,buffer_GrayScaleX_size);
+init_fifo_UInt16(&fifo_GrayScaleY,buffer_GrayScaleY,buffer_GrayScaleY_size);
 			
 			
-			
+	
 			write_fifo_UInt16(&fifo_AbsY,&ZeroValue,1);
 			
 			
 			
 			
 			write_fifo_UInt16(&fifo_AbsX,&ZeroValue,1);
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+
 			write_fifo_UInt16(&fifo_GrayScaleX,&ZeroValue,1);
 			
 			

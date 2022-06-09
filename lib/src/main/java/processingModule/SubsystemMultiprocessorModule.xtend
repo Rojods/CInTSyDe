@@ -21,14 +21,15 @@ class SubsystemMultiprocessorModule implements ModuleInterface {
 
 	override create() {
 //		Generator.multiProcessorSchedules.stream().forEach([schedule|process(schedule)])
-		Generator.model.vertexSet().stream().filter([v| GenericProcessingModule.conforms(v) ])
+		var tiles=Generator.model.vertexSet().stream().filter([v| GenericProcessingModule.conforms(v) ])
 									.collect(Collectors.toSet())
+		tiles.stream().forEach([tile|process(tile)])
 	}
 
 	def process(Vertex tile) {
 		templates.stream().forEach( [ t |
 
-				
+				//println("================="+tile.getIdentifier())
 				Save.save(t.create(tile),Generator.root +t.savePath());
 
 

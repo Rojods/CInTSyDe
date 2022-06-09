@@ -51,7 +51,7 @@ class SDFChannelProcessingModule implements ModuleInterface {
 				if (consumer !== null) {
 					var Vertex tile = Query.findTile(model, consumer)
 					Save.save(t.create(v), Generator.root + "/" + tile.getIdentifier() + t.savePath());
-					println(Generator.root + "/" + tile.getIdentifier() + t.savePath())
+					//println(Generator.root + "/" + tile.getIdentifier() + t.savePath())
 				} else {
 					var Vertex producer = VertexAcessor.getNamedPort(model, v, "producer",
 						VertexTrait.MOC_SDF_SDFACTOR).orElse(null)
@@ -66,8 +66,8 @@ class SDFChannelProcessingModule implements ModuleInterface {
 					orElse(null)
 				if (consumer !== null) {
 					var Vertex tile = Query.findTile(Generator.model, consumer)
-					println(consumer)
-					println(tile)
+					//println(consumer)
+					//println(tile)
 					Save.save(t.create(v), Generator.root+"/" + tile.getIdentifier() + t.savePath());
 				}
 

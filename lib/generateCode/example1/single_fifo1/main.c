@@ -37,16 +37,28 @@ int main(){
     system_img_sink_global=d;
 
         init_subsystem();
-
-        
         subsystem();
     
-    printf("\n");
-    for(int i=0;i<Y;++i){
-        for(int j=0;j<X;++j){
-            printf("%f, ", c[i][j]);
-        }
-        printf("\n");
-    }
+    // printf("\n");
+    // for(int i=0;i<dimY_global;++i){
+    //     for(int j=0;j<dimX_global;++j){
+    //         printf("%f, ", c[i][j]);
+    //     }
+    //     printf("\n");
+    // }
     return 0;
+}
+
+void test(){
+
+ 		extern UInt16 dimX_global;
+		extern UInt16 dimY_global;
+		extern ArrayXOfArrayXOfDoubleType system_img_sink_global;
+		printf("------------------------->\n");
+		for(int i=0;i<dimY_global;++i){
+			for(int j=0;j<dimX_global;++j){
+				printf("%d, ", system_img_sink_global[i][j]);
+			}
+			printf("\n");
+		}   
 }

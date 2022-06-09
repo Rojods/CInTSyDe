@@ -23,7 +23,7 @@
 			DoubleType Channel Definition 
 		=============================================================
 		*/				
-		void init_channel_DoubleType(circular_fifo_DoubleType *channel ,DoubleType* buffer, size_t size){
+		void init_fifo_DoubleType(circular_fifo_DoubleType *channel ,DoubleType* buffer, size_t size){
 		    channel->buffer = buffer;
 		    channel->size=size;
 		    channel->front = 0;
@@ -60,7 +60,7 @@
 			UInt16 Channel Definition 
 		=============================================================
 		*/				
-		void init_channel_UInt16(circular_fifo_UInt16 *channel ,UInt16* buffer, size_t size){
+		void init_fifo_UInt16(circular_fifo_UInt16 *channel ,UInt16* buffer, size_t size){
 		    channel->buffer = buffer;
 		    channel->size=size;
 		    channel->front = 0;

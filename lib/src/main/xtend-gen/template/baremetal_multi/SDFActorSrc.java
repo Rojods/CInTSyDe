@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import template.templateInterface.ActorTemplate;
 import utils.Query;
 
@@ -339,7 +338,6 @@ public class SDFActorSrc implements ActorTemplate {
     String ret = "";
     for (final String impl : impls) {
       {
-        InputOutput.<String>println(("-->" + impl));
         Vertex actorimpl = model.queryVertex(impl).get();
         Set<String> ports = new HashSet<String>();
         List<String> _findImplInputPorts = Query.findImplInputPorts(actorimpl);
@@ -569,7 +567,9 @@ public class SDFActorSrc implements ActorTemplate {
                       _builder_2.append("\t");
                       _builder_2.append("cheap_release_spaces (fifo_admin_");
                       _builder_2.append(sdfchannelName, "\t");
-                      _builder_2.append(", 1);");
+                      _builder_2.append(", ");
+                      _builder_2.append(consumption, "\t");
+                      _builder_2.append(");");
                       _builder_2.newLineIfNotEmpty();
                       _builder_2.append("}");
                       _builder_2.newLine();

@@ -23,7 +23,7 @@
 			UInt32 Channel Definition 
 		=============================================================
 		*/				
-		void init_channel_UInt32(circular_fifo_UInt32 *channel ,UInt32* buffer, size_t size){
+		void init_fifo_UInt32(circular_fifo_UInt32 *channel ,UInt32* buffer, size_t size){
 		    channel->buffer = buffer;
 		    channel->size=size;
 		    channel->front = 0;
