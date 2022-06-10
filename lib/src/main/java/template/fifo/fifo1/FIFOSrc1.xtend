@@ -88,6 +88,9 @@ class FIFOSrc1 implements InitTemplate {
 				}
 				
 				void write_fifo_«type»(circular_fifo_«type»* channel,«type»* src, size_t number){
+					// is full ?
+					while( channel->front== ( (channel->rear+1)%channel->size) );
+					
 					
 					for(int i=0; i<number; ++i){
 				        channel->buffer[channel->rear] = src[i];
@@ -96,9 +99,9 @@ class FIFOSrc1 implements InitTemplate {
 				    }
 					
 				}
-				void PRINT_«type»(circular_fifo_«type» * fifo){
-					printf("buffer addr 0x%p, front: %d , rear %d, count %d\n",fifo->buffer,fifo->front,fifo->rear,fifo->count);
-				}				
+«««				void PRINT_«type»(circular_fifo_«type» * fifo){
+«««					printf("buffer addr 0x%p, front: %d , rear %d, count %d\n",fifo->buffer,fifo->front,fifo->rear,fifo->count);
+«««				}				
 «««						int read_non_blocking_«type»(circular_fifo_«type» *channel, «type» *data){
 «««							if(channel->front==channel->rear){
 «««							    	//empty 

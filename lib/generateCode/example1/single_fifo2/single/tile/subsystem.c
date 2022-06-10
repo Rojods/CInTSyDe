@@ -19,19 +19,6 @@ int subsystem(){
 		actor_Gx();
 		actor_Gy();
 		actor_Abs();
-
-
-
-		// extern UInt16 dimX_global;
-		// extern UInt16 dimY_global;
-		// extern ArrayXOfArrayXOfDoubleType system_img_sink_global;
-		// printf("------------------------->\n");
-		// for(int i=0;i<dimY_global;++i){
-		// 	for(int j=0;j<dimX_global;++j){
-		// 		printf("%f, ", system_img_sink_global[i][j]);
-		// 	}
-		// 	printf("\n");
-		// }
 		test();
 	}
 

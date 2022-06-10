@@ -42,6 +42,9 @@
 		}
 		
 		void write_fifo_DoubleType(circular_fifo_DoubleType* channel,DoubleType* src, size_t number){
+			// is full ?
+			while( channel->front== ( (channel->rear+1)%channel->size) );
+			
 			
 			for(int i=0; i<number; ++i){
 		        channel->buffer[channel->rear] = src[i];
@@ -50,9 +53,6 @@
 		    }
 			
 		}
-		void PRINT_DoubleType(circular_fifo_DoubleType * fifo){
-			printf("buffer addr 0x%p, front: %d , rear %d, count %d\n",fifo->buffer,fifo->front,fifo->rear,fifo->count);
-		}				
 		
 		
 		/*
@@ -79,6 +79,9 @@
 		}
 		
 		void write_fifo_UInt16(circular_fifo_UInt16* channel,UInt16* src, size_t number){
+			// is full ?
+			while( channel->front== ( (channel->rear+1)%channel->size) );
+			
 			
 			for(int i=0; i<number; ++i){
 		        channel->buffer[channel->rear] = src[i];
@@ -87,8 +90,5 @@
 		    }
 			
 		}
-		void PRINT_UInt16(circular_fifo_UInt16 * fifo){
-			printf("buffer addr 0x%p, front: %d , rear %d, count %d\n",fifo->buffer,fifo->front,fifo->rear,fifo->count);
-		}				
 		
 		

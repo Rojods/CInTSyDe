@@ -57,7 +57,7 @@ void test(){
 		printf("------------------------->\n");
 		for(int i=0;i<dimY_global;++i){
 			for(int j=0;j<dimX_global;++j){
-				printf("%d, ", system_img_sink_global[i][j]);
+				printf("%f, ", system_img_sink_global[i][j]);
 			}
 			printf("\n");
 		}   
