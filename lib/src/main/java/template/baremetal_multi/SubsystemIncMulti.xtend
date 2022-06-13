@@ -5,7 +5,7 @@ import template.templateInterface.SubsystemTemplate
 import processingModule.Schedule
 import forsyde.io.java.core.Vertex
 
-class SubsystemTemplateIncMulti implements SubsystemTemplate{
+class SubsystemIncMulti implements SubsystemTemplate{
 
 	Vertex tile
 	override create(Vertex tile) {

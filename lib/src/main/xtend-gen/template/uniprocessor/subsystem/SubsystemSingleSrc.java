@@ -16,12 +16,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import template.templateInterface.SubsystemTemplate;
 import utils.Query;
 
 @SuppressWarnings("all")
-public class SubsystemTemplateSrc implements SubsystemTemplate {
+public class SubsystemSingleSrc implements SubsystemTemplate {
   private Set<Vertex> sdfactorSet;
   
   private TreeMap<Integer, Vertex> uniprocessorSchedule;
@@ -178,59 +177,58 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
           {
             if ((Generator.fifoType == 2)) {
               _builder.append("\t\t");
-              _builder.append("\t");
               _builder.append("init_fifo(&fifo_");
-              _builder.append(sdfname, "\t\t\t");
+              _builder.append(sdfname, "\t\t");
               _builder.append(",buffer_");
-              _builder.append(sdfname, "\t\t\t");
+              _builder.append(sdfname, "\t\t");
               _builder.append(",buffer_");
-              _builder.append(sdfname, "\t\t\t");
+              _builder.append(sdfname, "\t\t");
               _builder.append("_size, sizeof(");
               String _findSDFChannelDataType_1 = Query.findSDFChannelDataType(Generator.model, channel);
-              _builder.append(_findSDFChannelDataType_1, "\t\t\t");
+              _builder.append(_findSDFChannelDataType_1, "\t\t");
               _builder.append("));");
               _builder.newLineIfNotEmpty();
             }
           }
         }
       }
-      _builder.append("\t\t\t");
+      _builder.append("\t\t");
       _builder.newLine();
       {
         for(final Vertex channel_1 : Generator.sdfchannelSet) {
-          _builder.append("\t\t\t");
+          _builder.append("\t\t");
           SDFChannel sdfchannel = SDFChannel.safeCast(channel_1).get();
           _builder.newLineIfNotEmpty();
           {
             if (((sdfchannel.getNumOfInitialTokens() != null) && ((sdfchannel.getNumOfInitialTokens()).intValue() > 0))) {
-              _builder.append("\t\t\t");
+              _builder.append("\t\t");
               ArrayList<String> delayValueList = this.inithelp(sdfchannel);
               _builder.newLineIfNotEmpty();
               {
                 for(final String delay : delayValueList) {
                   {
                     if ((Generator.fifoType == 1)) {
-                      _builder.append("\t\t\t");
+                      _builder.append("\t\t");
                       _builder.append("write_fifo_");
                       String _findSDFChannelDataType_2 = Query.findSDFChannelDataType(Generator.model, channel_1);
-                      _builder.append(_findSDFChannelDataType_2, "\t\t\t");
+                      _builder.append(_findSDFChannelDataType_2, "\t\t");
                       _builder.append("(&fifo_");
                       String _identifier_3 = sdfchannel.getIdentifier();
-                      _builder.append(_identifier_3, "\t\t\t");
+                      _builder.append(_identifier_3, "\t\t");
                       _builder.append(",&");
-                      _builder.append(delay, "\t\t\t");
+                      _builder.append(delay, "\t\t");
                       _builder.append(",1);");
                       _builder.newLineIfNotEmpty();
                     }
                   }
                   {
                     if ((Generator.fifoType == 2)) {
-                      _builder.append("\t\t\t");
+                      _builder.append("\t\t");
                       _builder.append("write_fifo(&fifo_");
                       String _identifier_4 = sdfchannel.getIdentifier();
-                      _builder.append(_identifier_4, "\t\t\t");
+                      _builder.append(_identifier_4, "\t\t");
                       _builder.append(",(void*)&");
-                      _builder.append(delay, "\t\t\t");
+                      _builder.append(delay, "\t\t");
                       _builder.append(",1);");
                       _builder.newLineIfNotEmpty();
                     }
@@ -241,7 +239,8 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
           }
           _builder.append("\t\t\t");
           _builder.newLine();
-          _builder.append("\t\t\t");
+          _builder.append("\t\t");
+          _builder.append("\t");
           _builder.newLine();
         }
       }
@@ -268,12 +267,7 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
     }
     Set<String> _keySet = delays.keySet();
     for (final String k : _keySet) {
-      {
-        Integer _get = delays.get(k);
-        String _plus = ("->" + _get);
-        InputOutput.<String>println(_plus);
-        delayValueList.set((delays.get(k)).intValue(), k);
-      }
+      delayValueList.set((delays.get(k)).intValue(), k);
     }
     return delayValueList;
   }
@@ -328,7 +322,6 @@ public class SubsystemTemplateSrc implements SubsystemTemplate {
             _builder.newLineIfNotEmpty();
           }
         }
-        _builder.append("\t\t\t");
         _builder.newLine();
       }
     }

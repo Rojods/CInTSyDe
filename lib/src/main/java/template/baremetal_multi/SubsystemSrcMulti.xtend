@@ -19,7 +19,7 @@ import java.util.TreeSet
 import forsyde.io.java.core.VertexTrait
 import forsyde.io.java.core.Trait
 
-class SubsystemTemplateSrcMulti implements SubsystemTemplate {
+class SubsystemSrcMulti implements SubsystemTemplate {
 
 	Vertex tile
 	Vertex order

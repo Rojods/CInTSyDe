@@ -4,7 +4,6 @@ import forsyde.io.java.drivers.ForSyDeModelHandler
 import generator.Generator
 import processingModule.InitProcessingModule
 import processingModule.SDFChannelProcessingModule
-import processingModule.SDFCombProcessingModule
 import processingModule.SubsystemUniprocessorModule
 import template.datatype.DataTypeInc
 import template.datatype.DataTypeSrc
@@ -16,10 +15,11 @@ import template.uniprocessor.SDFChannel.SDFChannelInc
 import template.uniprocessor.SDFChannel.SDFChannelSrc
 import template.uniprocessor.actor.SDFActorInc
 import template.uniprocessor.actor.SDFActorSrc
-import template.uniprocessor.subsystem.SubsystemTemplateInc
-import template.uniprocessor.subsystem.SubsystemTemplateSrc
 
 import static generator.Generator.*
+import processingModule.SDFActorProcessingModule
+import template.uniprocessor.subsystem.SubsystemSingleInc
+import template.uniprocessor.subsystem.SubsystemSingleSrc
 
 /**
  * one core
@@ -44,15 +44,15 @@ class single_fifo1 {
 		
 		gen.add(sdfchannelModule)
 
-		var actorModule = new SDFCombProcessingModule
+		var actorModule = new SDFActorProcessingModule
 		actorModule.add(new SDFActorSrc)
 		actorModule.add(new SDFActorInc)
 		gen.add(actorModule)
 
 		var subsystem = new SubsystemUniprocessorModule
-		subsystem.add(new SubsystemTemplateSrc)
+		subsystem.add(new SubsystemSingleSrc)
 		
-		subsystem.add(new SubsystemTemplateInc)
+		subsystem.add(new SubsystemSingleInc)
 		gen.add(subsystem)
 
 		var initModule = new InitProcessingModule

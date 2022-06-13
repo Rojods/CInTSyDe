@@ -22,5 +22,5 @@
 	void init_fifo(circular_fifo* fifo_ptr, void* buf, int token_number, int token_size);
 	void read_fifo(circular_fifo* channel, void* dst, int number);
 	void write_fifo(circular_fifo* channel,void* src, int number);	
-		
+					
 	#endif

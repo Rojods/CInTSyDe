@@ -10,9 +10,9 @@ import forsyde.io.java.drivers.ForSyDeModelHandler
 import template.datatype.DataTypeInc
 import template.datatype.DataTypeSrc
 import processingModule.InitProcessingModule
-import processingModule.SDFCombProcessingModule
 import processingModule.SDFChannelProcessingModule
 import processingModule.SubsystemUniprocessorModule
+import processingModule.SDFActorProcessingModule
 
 /**
  * rtos
@@ -36,7 +36,7 @@ class rtos {
 		
 		
 		var initModule = new InitProcessingModule
-		var actorModule = new SDFCombProcessingModule
+		var actorModule = new SDFActorProcessingModule
 		var sdfchannelModule = new SDFChannelProcessingModule
 		//var subsystem = new SubsystemUniprocessorModule
 

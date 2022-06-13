@@ -20,15 +20,15 @@ extern circular_fifo_DoubleType fifo_absxsig;
 ========================================
 */			
 	
-/*
-========================================
-		Actor Function
-========================================
-*/	
-
-void actor_Gx(){
+	/*
+	========================================
+			Actor Function
+	========================================
+	*/	
 	
-	/*  initialize memory*/
+	void actor_Gx(){
+		
+		/*  initialize memory*/
 
 	DoubleType gx; 
 	Array6OfDoubleType imgBlockX; 
@@ -51,4 +51,4 @@ void actor_Gx(){
 	write_fifo_DoubleType(&fifo_absxsig,&gx,1);
 	 
 	
-}
+	}

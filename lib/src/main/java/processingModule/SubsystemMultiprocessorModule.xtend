@@ -1,16 +1,13 @@
 package processingModule
 
-import java.util.Set
-
-import template.templateInterface.SubsystemTemplate
-
-import utils.Save
-import java.util.HashSet
-import generator.Generator
-import processingModule.Schedule
 import forsyde.io.java.core.Vertex
 import forsyde.io.java.typed.viewers.platform.GenericProcessingModule
+import generator.Generator
+import java.util.HashSet
+import java.util.Set
 import java.util.stream.Collectors
+import template.templateInterface.SubsystemTemplate
+import utils.Save
 
 class SubsystemMultiprocessorModule implements ModuleInterface {
 	Set<SubsystemTemplate> templates
@@ -20,18 +17,14 @@ class SubsystemMultiprocessorModule implements ModuleInterface {
 	}
 
 	override create() {
-//		Generator.multiProcessorSchedules.stream().forEach([schedule|process(schedule)])
-		var tiles=Generator.model.vertexSet().stream().filter([v| GenericProcessingModule.conforms(v) ])
-									.collect(Collectors.toSet())
+		var tiles = Generator.model.vertexSet().stream().filter([v|GenericProcessingModule.conforms(v)]).collect(
+			Collectors.toSet())
 		tiles.stream().forEach([tile|process(tile)])
 	}
 
 	def process(Vertex tile) {
 		templates.stream().forEach( [ t |
-
-				//println("================="+tile.getIdentifier())
-				Save.save(t.create(tile),Generator.root +t.savePath());
-
+			Save.save(t.create(tile), Generator.root + t.savePath());
 
 		])
 	}

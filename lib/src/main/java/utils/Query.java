@@ -2,8 +2,6 @@ package utils;
 
 import java.util.ArrayList;
 
-
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,91 +37,84 @@ import generator.Generator;
 import java.lang.Math;
 
 public class Query {
-	public static MyPair findSrcAndSnkTileOfChannel(ForSyDeSystemGraph model,Vertex channel) {
-		var inputActor=VertexAcessor.getNamedPort(model,channel,"producer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
-		var outputActor = VertexAcessor.getNamedPort(model,channel,"consumer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
+	public static MyPair findSrcAndSnkTileOfChannel(ForSyDeSystemGraph model, Vertex channel) {
+		var inputActor = VertexAcessor.getNamedPort(model, channel, "producer", VertexTrait.MOC_SDF_SDFACTOR)
+				.orElse(null);
+		var outputActor = VertexAcessor.getNamedPort(model, channel, "consumer", VertexTrait.MOC_SDF_SDFACTOR)
+				.orElse(null);
 		// if the fifo is external fifo, then, by default , it is on-one-core fifo
-		
 
-		
-		
-		if(inputActor==null||outputActor==null) {
-				if(inputActor!=null) {
-					return new MyPair( findTile(model,inputActor)  ,null);
-				}
-				if(outputActor!=null) {
-					return new MyPair( null,findTile(model,outputActor));
-				}
+		if (inputActor == null || outputActor == null) {
+			if (inputActor != null) {
+				return new MyPair(findTile(model, inputActor), null);
+			}
+			if (outputActor != null) {
+				return new MyPair(null, findTile(model, outputActor));
+			}
 		}
-		
-		
-		return new MyPair(findTile(model,inputActor),findTile(model,outputActor));
+
+		return new MyPair(findTile(model, inputActor), findTile(model, outputActor));
 	}
-	
-	
-	
-	public static boolean isOnOneCoreChannel(ForSyDeSystemGraph model,Vertex channel) {
-		var inputActor=VertexAcessor.getNamedPort(model,channel,"producer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
-		var outputActor = VertexAcessor.getNamedPort(model,channel,"consumer" , VertexTrait.MOC_SDF_SDFACTOR).orElse(null);
+
+	public static boolean isOnOneCoreChannel(ForSyDeSystemGraph model, Vertex channel) {
+		var inputActor = VertexAcessor.getNamedPort(model, channel, "producer", VertexTrait.MOC_SDF_SDFACTOR)
+				.orElse(null);
+		var outputActor = VertexAcessor.getNamedPort(model, channel, "consumer", VertexTrait.MOC_SDF_SDFACTOR)
+				.orElse(null);
 		// if the fifo is external fifo, then, by default , it is on-one-core fifo
-		if(inputActor==null||outputActor==null) {
-				return true;
+		if (inputActor == null || outputActor == null) {
+			return true;
 		}
-		
-		
-		Set<Vertex> tiles = model.vertexSet().stream()
-				.filter(v->GenericProcessingModule.conforms(v))
+
+		Set<Vertex> tiles = model.vertexSet().stream().filter(v -> GenericProcessingModule.conforms(v))
 				.collect(Collectors.toSet());
-		BFSShortestPath<Vertex,EdgeInfo> bfs = new BFSShortestPath<>(model);
-		
-		Vertex tile_input=null;
-		Vertex tile_output=null;
-		for(Vertex tile:tiles) {
-			var a=	bfs.getPath(tile,inputActor);
-			if(a!=null&&a.getLength()==2) {
+		BFSShortestPath<Vertex, EdgeInfo> bfs = new BFSShortestPath<>(model);
+
+		Vertex tile_input = null;
+		Vertex tile_output = null;
+		for (Vertex tile : tiles) {
+			var a = bfs.getPath(tile, inputActor);
+			if (a != null && a.getLength() == 2) {
 				tile_input = tile;
 				break;
 			}
 		}
-		for(Vertex tile:tiles) {
-			var a=	bfs.getPath(tile,outputActor);
-			if(a!=null&&a.getLength()==2) {
+		for (Vertex tile : tiles) {
+			var a = bfs.getPath(tile, outputActor);
+			if (a != null && a.getLength() == 2) {
 				tile_output = tile;
 				break;
 			}
-		}		
-		if(tile_output==tile_input) {
+		}
+		if (tile_output == tile_input) {
 			return true;
 		}
 		return false;
 	}
-	
-	public static Vertex findTile(ForSyDeSystemGraph model,Vertex vertex) {
-		
-		if(SDFActor.conforms(vertex)) {
-			Set<Vertex> tiles = model.vertexSet().stream()
-					.filter(v->GenericProcessingModule.conforms(v))
-					.collect(Collectors.toSet());
-			BFSShortestPath<Vertex,EdgeInfo> bfs = new BFSShortestPath<>(model);
 
-			Vertex targetTile=null;
-			for(Vertex tile:tiles) {
-				var a=	bfs.getPath(tile,vertex);
-			//System.out.println("path");
-				//System.out.println(a);
-				if(a!=null&&a.getLength()==2) {
+	public static Vertex findTile(ForSyDeSystemGraph model, Vertex vertex) {
+
+		if (SDFActor.conforms(vertex)) {
+			Set<Vertex> tiles = model.vertexSet().stream().filter(v -> GenericProcessingModule.conforms(v))
+					.collect(Collectors.toSet());
+			BFSShortestPath<Vertex, EdgeInfo> bfs = new BFSShortestPath<>(model);
+
+			Vertex targetTile = null;
+			for (Vertex tile : tiles) {
+				var a = bfs.getPath(tile, vertex);
+				// System.out.println("path");
+				// System.out.println(a);
+				if (a != null && a.getLength() == 2) {
 					targetTile = tile;
 					return targetTile;
 				}
-			}		
+			}
 		}
-		
-			
+
 		return null;
-		
+
 	}
-	
-	
+
 	public static Set<Vertex> findAllExternalDataBlocks(ForSyDeSystemGraph model) {
 		return model.vertexSet().stream().filter(v -> DataBlock.conforms(v) && !SDFChannel.conforms(v))
 				.collect(Collectors.toSet());
@@ -145,31 +136,30 @@ public class Query {
 				.filter(e -> e.getSource().equals(sdfchannel.getIdentifier())).findAny().orElse(null);
 		EdgeInfo outputedge = model.edgeSet().stream().filter(e -> e.hasTrait(EdgeTrait.MOC_SDF_SDFDATAEDGE))
 				.filter(e -> e.getTarget().equals(sdfchannel.getIdentifier())).findAny().orElse(null);
-		
-		String actorname="";
+
+		String actorname = "";
 		String port;
 		Vertex actor;
-		//System.out.println("for sdf channel, find type "+sdfchannel.getIdentifier());
-		//System.out.println(inputedge);
-		//System.out.println(outputedge);
+		// System.out.println("for sdf channel, find type "+sdfchannel.getIdentifier());
+		// System.out.println(inputedge);
+		// System.out.println(outputedge);
 		try {
 			if (inputedge != null) {
 				// actor's input sdf channel
 				actorname = inputedge.getTarget();
 				port = inputedge.getTargetPort().get();
-				actor = model.queryVertex(actorname).get();   //findVertexByName(model, actorname);
+				actor = model.queryVertex(actorname).get(); // findVertexByName(model, actorname);
 				var impls = Query.findCombFuntionVertex(model, actor);
-
 
 				EdgeInfo info = model.outgoingEdgesOf(actor).stream().filter(e -> impls.contains(e.getTarget()))
 						.filter(e -> e.getSourcePort().get().equals(port)).findAny().get();
 
 				String implName = info.getTarget();
 				String implPort = info.getTargetPort().get();
-				//System.out.println("-->"+implPort);
+				// System.out.println("-->"+implPort);
 				var implDataType = findImplPortDataType(model, findVertexByName(model, implName), implPort);
 				Vertex datatypeVertex = findVertexByName(model, implDataType);
-				//System.out.println(datatypeVertex);
+				// System.out.println(datatypeVertex);
 				if (!Array.conforms(datatypeVertex)) {
 					return implDataType;
 				} else {
@@ -197,14 +187,12 @@ public class Query {
 					return (new ArrayViewer(datatypeVertex)).getInnerTypePort(model).get().getIdentifier();
 				}
 			} else {
-				return "<ERROR! "+actorname+" Not Connected To Any ConbFunctions ! >";
-			}			
-		}catch(Exception e){
+				return "<ERROR! " + actorname + " Not Connected To Any ConbFunctions ! >";
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
-			return "<ERROR! "+actorname+" Not Connected To Any ConbFunctions ! >";
+			return "<ERROR! " + actorname + " Not Connected To Any ConbFunctions ! >";
 		}
-		
-
 
 	}
 
@@ -281,7 +269,7 @@ public class Query {
 	 * @return
 	 */
 	public static String findImplPortDataType(ForSyDeSystemGraph model, Vertex impl, String implPort) {
-			//System.out.println(impl.getIdentifier()+"  "+implPort);
+		// System.out.println(impl.getIdentifier()+" "+implPort);
 		Optional<EdgeInfo> op = model.outgoingEdgesOf(impl).stream()
 				.filter(e -> e.hasTrait(EdgeTrait.TYPING_DATATYPES_DATADEFINITION))
 				.filter(e -> e.getSourcePort().get().equals(implPort)).findAny();
@@ -306,11 +294,13 @@ public class Query {
 
 	public static Set<String> findCombFuntionVertex(ForSyDeSystemGraph model, Vertex actor) {
 
-		//var a =SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().map(v->v.getIdentifier()).collect(Collectors.toSet());
-		
-		var a = VertexAcessor.getMultipleNamedPort(model,actor,"combFunctions",VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE,  VertexPortDirection.OUTGOING);
-		
-		var b = a.stream().map(v->v.getIdentifier()).collect(Collectors.toSet());
+		// var a
+		// =SDFActor.safeCast(actor).get().getCombFunctionsPort(model).stream().map(v->v.getIdentifier()).collect(Collectors.toSet());
+
+		var a = VertexAcessor.getMultipleNamedPort(model, actor, "combFunctions",
+				VertexTrait.IMPL_ANSICBLACKBOXEXECUTABLE, VertexPortDirection.OUTGOING);
+
+		var b = a.stream().map(v -> v.getIdentifier()).collect(Collectors.toSet());
 		return b;
 	}
 
@@ -395,11 +385,11 @@ public class Query {
 	 * @return
 	 */
 	public static String getInlineCode(Vertex impl) {
-		
+
 		Map<String, VertexProperty> properties = impl.getProperties();
 
 		var tmp2 = ANSICBlackBoxExecutable.safeCast(impl).get().getInlinedCode();
-		if(properties.get("inlinedCode")!=null) {
+		if (properties.get("inlinedCode") != null) {
 			var tmp = properties.get("inlinedCode").unwrap();
 			String inlineCode = (String) tmp;
 			var b = new StringBuilder(inlineCode);
@@ -424,8 +414,8 @@ public class Query {
 				start = index + 1;
 				b.insert(index + 1, "\n");
 			}
-			return b.toString();			
-		}else {
+			return b.toString();
+		} else {
 			return "";
 		}
 

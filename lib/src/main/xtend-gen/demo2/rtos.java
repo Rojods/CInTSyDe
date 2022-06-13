@@ -6,8 +6,8 @@ import generator.Generator;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import processingModule.InitProcessingModule;
+import processingModule.SDFActorProcessingModule;
 import processingModule.SDFChannelProcessingModule;
-import processingModule.SDFCombProcessingModule;
 import template.datatype.DataTypeInc;
 import template.datatype.DataTypeSrc;
 import template.rtos.ConfigRTOSInc;
@@ -32,7 +32,7 @@ public class rtos {
       Generator gen = new Generator(model, root);
       Generator.platform = 3;
       InitProcessingModule initModule = new InitProcessingModule();
-      SDFCombProcessingModule actorModule = new SDFCombProcessingModule();
+      SDFActorProcessingModule actorModule = new SDFActorProcessingModule();
       SDFChannelProcessingModule sdfchannelModule = new SDFChannelProcessingModule();
       ConfigRTOSInc _configRTOSInc = new ConfigRTOSInc();
       initModule.add(_configRTOSInc);

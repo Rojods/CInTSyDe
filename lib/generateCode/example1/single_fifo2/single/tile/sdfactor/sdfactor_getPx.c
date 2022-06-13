@@ -20,17 +20,17 @@ extern circular_fifo fifo_gxsig;
 	Declare Extern Global Variables
 ========================================
 */			
-extern Array1000OfArrayOfDouble inputImage;
+	extern Array1000OfArrayOfDouble inputImage;
 	
-/*
-========================================
-		Actor Function
-========================================
-*/	
-
-void actor_getPx(){
+	/*
+	========================================
+			Actor Function
+	========================================
+	*/	
 	
-	/*  initialize memory*/
+	void actor_getPx(){
+		
+		/*  initialize memory*/
 
 	Array6OfDoubleType gray; 
 	Array6OfDoubleType imgBlockY; 
@@ -62,4 +62,4 @@ void actor_getPx(){
 	write_fifo(&fifo_gxsig,imgBlockX,6);
 		
 	
-}
+	}

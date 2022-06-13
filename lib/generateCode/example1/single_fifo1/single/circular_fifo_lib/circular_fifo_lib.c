@@ -47,10 +47,10 @@
 			
 			
 			for(int i=0; i<number; ++i){
-		        channel->buffer[channel->rear] = src[i];
-		     	channel->rear= (channel->rear+1)%channel->size;
-		     	++(channel->count);	
-		    }
+			       channel->buffer[channel->rear] = src[i];
+			    	channel->rear= (channel->rear+1)%channel->size;
+			    	++(channel->count);	
+			   }
 			
 		}
 		
@@ -84,10 +84,10 @@
 			
 			
 			for(int i=0; i<number; ++i){
-		        channel->buffer[channel->rear] = src[i];
-		     	channel->rear= (channel->rear+1)%channel->size;
-		     	++(channel->count);	
-		    }
+			       channel->buffer[channel->rear] = src[i];
+			    	channel->rear= (channel->rear+1)%channel->size;
+			    	++(channel->count);	
+			   }
 			
 		}
 		

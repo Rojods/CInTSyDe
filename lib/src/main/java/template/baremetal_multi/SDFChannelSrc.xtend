@@ -13,7 +13,7 @@ import utils.Query
  * 
  */
 
-class SDFChannelTemplateSrc implements ChannelTemplate {
+class SDFChannelSrc implements ChannelTemplate {
 	Vertex sdfchannel
 	override savePath() {
 		return "/sdfchannel/sdfchannel_"+sdfchannel.getIdentifier()+".c"

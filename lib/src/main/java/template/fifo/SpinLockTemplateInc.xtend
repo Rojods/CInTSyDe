@@ -1,11 +1,10 @@
 package template.fifo
 
-
 import template.templateInterface.InitTemplate
 
 @Deprecated
-class SpinLockTemplateInc implements InitTemplate{
-	
+class SpinLockTemplateInc implements InitTemplate {
+
 	override create() {
 		'''
 			#ifndef SPINLOCK_H_
@@ -23,9 +22,9 @@ class SpinLockTemplateInc implements InitTemplate{
 			#endif
 		'''
 	}
-	
+
 	override savePath() {
 		return "/circular_fifo_lib/spinlock.h"
 	}
-	
+
 }

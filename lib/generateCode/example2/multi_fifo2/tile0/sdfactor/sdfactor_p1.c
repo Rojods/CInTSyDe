@@ -40,7 +40,6 @@ UInt32 s1;
 	
 	read_fifo(&fifo_s6,(void*)&s6,1);
 
-	xil_printf("p1 read s_in:  %d, %d\n",s_in[0],s_in[1]);
 	
 	/* Inline Code           */
 	/* in combFunction p1Body */

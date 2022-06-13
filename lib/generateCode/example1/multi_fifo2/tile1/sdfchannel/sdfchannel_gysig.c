@@ -8,6 +8,5 @@
 	 volatile cheap const fifo_admin_gysig=(cheap) GYSIG_ADDR;
 	 volatile DoubleType * const fifo_data_gysig=(DoubleType  *)((cheap) GYSIG_ADDR +1);			 
 	 unsigned int buffer_gysig_size=6;
-	 unsigned int token_gysig_size=8;
-	 
+	 unsigned int token_gysig_size= sizeof(DoubleType);
 	

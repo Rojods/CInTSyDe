@@ -19,3 +19,5 @@
 /Schedule.java
 /SubsystemMultiprocessorModule.java
 /SubsystemUniprocessorModule.java
+/.SubsystemRTOSModule.java._trace
+/.SDFActorProcessingModule.java._trace

@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 
-void init_fifo(circular_fifo* fifo_ptr, void* buf, size_t capacity, size_t token_size){
+void init_fifo(circular_fifo* fifo_ptr, void* buf, int capacity, int token_size){
 	fifo_ptr->buffer=buf;
 	
 	fifo_ptr->front=0;
@@ -19,7 +19,7 @@ void init_fifo(circular_fifo* fifo_ptr, void* buf, size_t capacity, size_t token
 	fifo_ptr->count=0;
 }
 
-void read_fifo(circular_fifo* channel, void* dst, size_t number){
+void read_fifo(circular_fifo* channel, void* dst, int number){
 	while(channel->count< number);
 	
 	char* memcpy_dst,*memcpy_src;
@@ -32,7 +32,10 @@ void read_fifo(circular_fifo* channel, void* dst, size_t number){
 		--(channel->count);
 	}
 }
-void write_fifo(circular_fifo* channel,void* src, size_t number){
+void write_fifo(circular_fifo* channel,void* src, int number){
+	// is full?
+	while(channel->front== (  (channel->rear+1)%channel->capacity ) );
+	
 	char* memcpy_dst,*memcpy_src;
 	for(int i=0; i<number;++i){
 		
@@ -44,8 +47,5 @@ void write_fifo(circular_fifo* channel,void* src, size_t number){
 		++(channel->count);
 	}				
 }
-void PRINT(circular_fifo * fifo){
-	printf("buffer addr 0x%p, front: %d , rear %d, count %d\n",fifo->buffer,fifo->front,fifo->rear,fifo->count);
-}				
-
+			
 			

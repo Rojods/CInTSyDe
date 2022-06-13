@@ -32,7 +32,6 @@ void init_fifo_UInt32(circular_fifo_UInt32 *channel ,UInt32* buffer, size_t size
 
 void read_fifo_UInt32(circular_fifo_UInt32* channel,UInt32* dst, size_t number);
 void write_fifo_UInt32(circular_fifo_UInt32* channel,UInt32* src, size_t number);
-void PRINT_UInt32(circular_fifo_UInt32 * fifo);
 
 
 

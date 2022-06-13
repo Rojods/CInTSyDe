@@ -32,7 +32,6 @@ void init_fifo_DoubleType(circular_fifo_DoubleType *channel ,DoubleType* buffer,
 
 void read_fifo_DoubleType(circular_fifo_DoubleType* channel,DoubleType* dst, size_t number);
 void write_fifo_DoubleType(circular_fifo_DoubleType* channel,DoubleType* src, size_t number);
-void PRINT_DoubleType(circular_fifo_DoubleType * fifo);
 
 /*
 =============================================================
@@ -52,7 +51,6 @@ void init_fifo_UInt16(circular_fifo_UInt16 *channel ,UInt16* buffer, size_t size
 
 void read_fifo_UInt16(circular_fifo_UInt16* channel,UInt16* dst, size_t number);
 void write_fifo_UInt16(circular_fifo_UInt16* channel,UInt16* src, size_t number);
-void PRINT_UInt16(circular_fifo_UInt16 * fifo);
 
 
 

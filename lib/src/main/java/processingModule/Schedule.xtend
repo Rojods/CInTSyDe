@@ -11,7 +11,7 @@ import java.util.Set
 import java.util.HashSet
 import generator.Generator
 import forsyde.io.java.core.VertexAcessor.VertexPortDirection
-
+@Deprecated
 class Schedule {
 	public var Vertex tile
 	public var Vertex order = null

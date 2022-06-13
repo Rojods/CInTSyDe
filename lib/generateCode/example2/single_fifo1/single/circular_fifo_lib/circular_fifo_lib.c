@@ -42,16 +42,16 @@
 		}
 		
 		void write_fifo_UInt32(circular_fifo_UInt32* channel,UInt32* src, size_t number){
+			// is full ?
+			while( channel->front== ( (channel->rear+1)%channel->size) );
+			
 			
 			for(int i=0; i<number; ++i){
-		        channel->buffer[channel->rear] = src[i];
-		     	channel->rear= (channel->rear+1)%channel->size;
-		     	++(channel->count);	
-		    }
+			       channel->buffer[channel->rear] = src[i];
+			    	channel->rear= (channel->rear+1)%channel->size;
+			    	++(channel->count);	
+			   }
 			
 		}
-		void PRINT_UInt32(circular_fifo_UInt32 * fifo){
-			printf("buffer addr 0x%p, front: %d , rear %d, count %d\n",fifo->buffer,fifo->front,fifo->rear,fifo->count);
-		}				
 		
 		

@@ -1,6 +1,5 @@
 package template.fifo.fifo1
 
-
 import forsyde.io.java.core.Vertex
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import generator.Generator
@@ -9,24 +8,23 @@ import java.util.stream.Collectors
 import template.templateInterface.InitTemplate
 import utils.Query
 
-
 class FIFOInc1 implements InitTemplate {
 
 	Set<Vertex> typeVertexSet
+
 	override savePath() {
 		return "/circular_fifo_lib/circular_fifo_lib.h"
 	}
-	new() {		
+
+	new() {
 		val model = Generator.model
 
-		typeVertexSet=model.vertexSet().stream()
-			.filter([v|SDFChannel.conforms(v)])
-			.map([v|Query.findSDFChannelDataType(model,v)])
-			.map([s|Query.findVertexByName(model,s)])
-			.collect(Collectors.toSet())
-		if(typeVertexSet.contains(null)){
+		typeVertexSet = model.vertexSet().stream().filter([v|SDFChannel.conforms(v)]).map([ v |
+			Query.findSDFChannelDataType(model, v)
+		]).map([s|Query.findVertexByName(model, s)]).collect(Collectors.toSet())
+		if (typeVertexSet.contains(null)) {
 			typeVertexSet.remove(null)
-		}	
+		}
 
 	}
 
@@ -59,33 +57,32 @@ class FIFOInc1 implements InitTemplate {
 		'''
 	}
 
-
-	def String foo(Vertex v){
+	def String foo(Vertex v) {
 		'''
-		«val type=v.getIdentifier()»
-		/*
-		=============================================================
-					If Token type is «type» 
-		=============================================================
-		*/
-		typedef struct 
-		{
-		    «type»* buffer;
-		    size_t front;
-		    size_t rear;
-			size_t size;
-			size_t count;	    
-		}circular_fifo_«type»;
-		
-		void init_fifo_«type»(circular_fifo_«type» *channel ,«type»* buffer, size_t size);
-		
-		void read_fifo_«type»(circular_fifo_«type»* channel,«type»* dst, size_t number);
-		void write_fifo_«type»(circular_fifo_«type»* channel,«type»* src, size_t number);
-«««		void PRINT_«type»(circular_fifo_«type» * fifo);
+			«val type=v.getIdentifier()»
+			/*
+			=============================================================
+						If Token type is «type» 
+			=============================================================
+			*/
+			typedef struct 
+			{
+			    «type»* buffer;
+			    size_t front;
+			    size_t rear;
+				size_t size;
+				size_t count;	    
+			}circular_fifo_«type»;
+			
+			void init_fifo_«type»(circular_fifo_«type» *channel ,«type»* buffer, size_t size);
+			
+			void read_fifo_«type»(circular_fifo_«type»* channel,«type»* dst, size_t number);
+			void write_fifo_«type»(circular_fifo_«type»* channel,«type»* src, size_t number);
+			«««		void PRINT_«type»(circular_fifo_«type» * fifo);
 
 		'''
 	}
-	
+
 	private def getMaximumElems(Vertex typeVertex) {
 		var maximumElems = 0
 		if (typeVertex.getProperties().get("maximumElems") !== null) {
@@ -95,7 +92,7 @@ class FIFOInc1 implements InitTemplate {
 		}
 		return maximumElems
 	}
-	
+
 //	def String primitiveChannelPrototype(VertexTrait trait) {
 //		'''
 //			«IF trait!==VertexTrait.TYPING_DATATYPES_ARRAY»
@@ -156,7 +153,4 @@ class FIFOInc1 implements InitTemplate {
 //	def void addPrimitiveVertexTrait(VertexTrait primitiveTrait) {
 //		primitiveTraitSet.add(primitiveTrait)
 //	}
-
-
-
 }

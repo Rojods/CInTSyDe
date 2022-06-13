@@ -6,8 +6,8 @@ import generator.Generator;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import processingModule.InitProcessingModule;
+import processingModule.SDFActorProcessingModule;
 import processingModule.SDFChannelProcessingModule;
-import processingModule.SDFCombProcessingModule;
 import processingModule.SubsystemUniprocessorModule;
 import template.datatype.DataTypeInc;
 import template.datatype.DataTypeSrc;
@@ -19,8 +19,8 @@ import template.uniprocessor.SDFChannel.SDFChannelInc;
 import template.uniprocessor.SDFChannel.SDFChannelSrc;
 import template.uniprocessor.actor.SDFActorInc;
 import template.uniprocessor.actor.SDFActorSrc;
-import template.uniprocessor.subsystem.SubsystemTemplateInc;
-import template.uniprocessor.subsystem.SubsystemTemplateSrc;
+import template.uniprocessor.subsystem.SubsystemSingleInc;
+import template.uniprocessor.subsystem.SubsystemSingleSrc;
 
 /**
  * one core
@@ -42,17 +42,17 @@ public class single_fifo1 {
       SDFChannelInc _sDFChannelInc = new SDFChannelInc();
       sdfchannelModule.add(_sDFChannelInc);
       gen.add(sdfchannelModule);
-      SDFCombProcessingModule actorModule = new SDFCombProcessingModule();
+      SDFActorProcessingModule actorModule = new SDFActorProcessingModule();
       SDFActorSrc _sDFActorSrc = new SDFActorSrc();
       actorModule.add(_sDFActorSrc);
       SDFActorInc _sDFActorInc = new SDFActorInc();
       actorModule.add(_sDFActorInc);
       gen.add(actorModule);
       SubsystemUniprocessorModule subsystem = new SubsystemUniprocessorModule();
-      SubsystemTemplateSrc _subsystemTemplateSrc = new SubsystemTemplateSrc();
-      subsystem.add(_subsystemTemplateSrc);
-      SubsystemTemplateInc _subsystemTemplateInc = new SubsystemTemplateInc();
-      subsystem.add(_subsystemTemplateInc);
+      SubsystemSingleSrc _subsystemSingleSrc = new SubsystemSingleSrc();
+      subsystem.add(_subsystemSingleSrc);
+      SubsystemSingleInc _subsystemSingleInc = new SubsystemSingleInc();
+      subsystem.add(_subsystemSingleInc);
       gen.add(subsystem);
       InitProcessingModule initModule = new InitProcessingModule();
       DataTypeInc _dataTypeInc = new DataTypeInc();

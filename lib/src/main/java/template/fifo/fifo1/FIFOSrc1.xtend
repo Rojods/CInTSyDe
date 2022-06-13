@@ -2,7 +2,6 @@ package template.fifo.fifo1
 
 import template.templateInterface.InitTemplate
 
-
 import generator.Generator
 import forsyde.io.java.core.VertexTrait
 import java.util.stream.Collectors
@@ -13,23 +12,23 @@ import utils.Query
 import forsyde.io.java.typed.viewers.moc.sdf.SDFChannel
 import forsyde.io.java.core.Vertex
 
-
 class FIFOSrc1 implements InitTemplate {
 	Set<Vertex> typeVertexSet
+
 	new() {
 		val model = Generator.model
-		typeVertexSet=model.vertexSet().stream()
-			.filter([v|SDFChannel.conforms(v)])
-			.map([v|Query.findSDFChannelDataType(model,v)])
-			.map([s|Query.findVertexByName(model,s)])
-			.collect(Collectors.toSet())
-		if(typeVertexSet.contains(null)){
+		typeVertexSet = model.vertexSet().stream().filter([v|SDFChannel.conforms(v)]).map([ v |
+			Query.findSDFChannelDataType(model, v)
+		]).map([s|Query.findVertexByName(model, s)]).collect(Collectors.toSet())
+		if (typeVertexSet.contains(null)) {
 			typeVertexSet.remove(null)
-		}	
+		}
 	}
+
 	override savePath() {
 		return "/circular_fifo_lib/circular_fifo_lib.c"
 	}
+
 	override create() {
 		'''
 			
@@ -55,11 +54,11 @@ class FIFOSrc1 implements InitTemplate {
 						«produce(typeVertex )»	
 					«ENDFOR»
 					
-			'''
+		'''
 	}
 
-	def produce(Vertex typeVertex ) {
-		
+	def produce(Vertex typeVertex) {
+
 		'''
 			
 			«val type = typeVertex.getIdentifier()»
@@ -93,13 +92,13 @@ class FIFOSrc1 implements InitTemplate {
 					
 					
 					for(int i=0; i<number; ++i){
-				        channel->buffer[channel->rear] = src[i];
-				     	channel->rear= (channel->rear+1)%channel->size;
-				     	++(channel->count);	
-				    }
+					       channel->buffer[channel->rear] = src[i];
+					    	channel->rear= (channel->rear+1)%channel->size;
+					    	++(channel->count);	
+					   }
 					
 				}
-«««				void PRINT_«type»(circular_fifo_«type» * fifo){
+			«««				void PRINT_«type»(circular_fifo_«type» * fifo){
 «««					printf("buffer addr 0x%p, front: %d , rear %d, count %d\n",fifo->buffer,fifo->front,fifo->rear,fifo->count);
 «««				}				
 «««						int read_non_blocking_«type»(circular_fifo_«type» *channel, «type» *data){
@@ -333,16 +332,15 @@ class FIFOSrc1 implements InitTemplate {
 		'''
 	}
 
-
-	def isOneDimension(Vertex v){
-		var inner =Query.getInnerType(Generator.model,v)
-		var innerVertex = Query.findVertexByName(Generator.model,inner)
-		if(innerVertex.hasTrait(VertexTrait.TYPING_DATATYPES_ARRAY)){
+	def isOneDimension(Vertex v) {
+		var inner = Query.getInnerType(Generator.model, v)
+		var innerVertex = Query.findVertexByName(Generator.model, inner)
+		if (innerVertex.hasTrait(VertexTrait.TYPING_DATATYPES_ARRAY)) {
 			return false
-		}else{
+		} else {
 			return true
 		}
-		
+
 	}
 
 }

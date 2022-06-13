@@ -1,17 +1,16 @@
 package template.fifo.fifo2
 
-
 import template.templateInterface.InitTemplate
 
-
-class FIFOSrc2  implements InitTemplate {
+class FIFOSrc2 implements InitTemplate {
 
 	new() {
-
 	}
+
 	override savePath() {
 		return "/circular_fifo_lib/circular_fifo_lib.c"
 	}
+
 	override create() {
 		'''
 			/*
@@ -63,15 +62,12 @@ class FIFOSrc2  implements InitTemplate {
 					++(channel->count);
 				}				
 			}
-«««			void PRINT(circular_fifo * fifo){
+			«««			void PRINT(circular_fifo * fifo){
 «««				printf("buffer addr 0x%p, front: %d , rear %d, count %d\n",fifo->buffer,fifo->front,fifo->rear,fifo->count);
 «««			}				
 			
 						
 		'''
 	}
-
-	
-
 
 }

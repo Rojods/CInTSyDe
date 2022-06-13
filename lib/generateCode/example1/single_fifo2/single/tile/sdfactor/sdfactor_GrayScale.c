@@ -21,19 +21,19 @@ extern circular_fifo fifo_GrayScaleToGetPx;
 	Declare Extern Global Variables
 ========================================
 */			
-extern ArrayXOfArrayXOfDoubleType system_img_source_global;
-extern UInt16 dimX_global;
-extern UInt16 dimY_global;
+	extern ArrayXOfArrayXOfDoubleType system_img_source_global;
+	extern UInt16 dimX_global;
+	extern UInt16 dimY_global;
 	
-/*
-========================================
-		Actor Function
-========================================
-*/	
-
-void actor_GrayScale(){
+	/*
+	========================================
+			Actor Function
+	========================================
+	*/	
 	
-	/*  initialize memory*/
+	void actor_GrayScale(){
+		
+		/*  initialize memory*/
 
 	UInt16 offsetX; 
 	Array2OfUInt16 dimsOut; 
@@ -76,4 +76,4 @@ void actor_GrayScale(){
 	write_fifo(&fifo_GrayScaleToAbs,dimsOut,2);
 		
 	
-}
+	}

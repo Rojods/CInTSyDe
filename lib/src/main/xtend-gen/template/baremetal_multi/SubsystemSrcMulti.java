@@ -25,7 +25,7 @@ import utils.Name;
 import utils.Query;
 
 @SuppressWarnings("all")
-public class SubsystemTemplateSrcMulti implements SubsystemTemplate {
+public class SubsystemSrcMulti implements SubsystemTemplate {
   private Vertex tile;
   
   private Vertex order;

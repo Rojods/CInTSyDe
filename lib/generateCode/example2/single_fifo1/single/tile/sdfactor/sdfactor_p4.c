@@ -20,15 +20,15 @@ extern circular_fifo_UInt32 fifo_s4;
 ========================================
 */			
 	
-/*
-========================================
-		Actor Function
-========================================
-*/	
-
-void actor_p4(){
+	/*
+	========================================
+			Actor Function
+	========================================
+	*/	
 	
-	/*  initialize memory*/
+	void actor_p4(){
+		
+		/*  initialize memory*/
 
 	UInt32 s4; 
 	UInt32 s2; 
@@ -49,4 +49,4 @@ void actor_p4(){
 	write_fifo_UInt32(&fifo_s4,&s4,1);
 	 
 	
-}
+	}

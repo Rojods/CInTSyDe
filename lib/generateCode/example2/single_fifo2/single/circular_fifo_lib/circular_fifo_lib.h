@@ -11,17 +11,16 @@
 	*/
 	typedef struct{
 		void* buffer;
-		size_t front;
-		size_t rear;
-		size_t capacity; // the max number of token
-		size_t token_size; // size of one token
-		size_t count;
+		int front;
+		int rear;
+		int capacity; // capacity= the max number of token + 1
+		int token_size; // size of one token
+		int count;
 		
 	}circular_fifo;
 	
-	void init_fifo(circular_fifo* fifo_ptr, void* buf, size_t token_number, size_t token_size);
-	void read_fifo(circular_fifo* channel, void* dst, size_t number);
-	void write_fifo(circular_fifo* channel,void* src, size_t number);	
-	void PRINT(circular_fifo * fifo);			
-			
+	void init_fifo(circular_fifo* fifo_ptr, void* buf, int token_number, int token_size);
+	void read_fifo(circular_fifo* channel, void* dst, int number);
+	void write_fifo(circular_fifo* channel,void* src, int number);	
+					
 	#endif

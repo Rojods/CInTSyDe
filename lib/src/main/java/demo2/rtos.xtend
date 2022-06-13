@@ -10,9 +10,9 @@ import forsyde.io.java.drivers.ForSyDeModelHandler
 import template.datatype.DataTypeInc
 import template.datatype.DataTypeSrc
 import processingModule.InitProcessingModule
-import processingModule.SDFCombProcessingModule
 import processingModule.SDFChannelProcessingModule
 import processingModule.SubsystemUniprocessorModule
+import processingModule.SDFActorProcessingModule
 
 /**
  * rtos
@@ -28,19 +28,17 @@ class rtos {
 		var model = loader.loadModel(path)				
 		
 		var Generator gen = new Generator(model, root)
-//		Generator.PC=0;
-//		Generator.NUCLEO=1;
 
 
 		Generator.platform=3  //3 is rtos
-		//Generator.fifoType=1
+		//Generator.fifoType=1  fifotype does not matter in RTOS
 		
 		
 		
 		var initModule = new InitProcessingModule
-		var actorModule = new SDFCombProcessingModule
+		var actorModule = new SDFActorProcessingModule
 		var sdfchannelModule = new SDFChannelProcessingModule
-		//var subsystem = new SubsystemUniprocessorModule
+
 
 		/* init module */
 		initModule.add(new ConfigRTOSInc)

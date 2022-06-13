@@ -15,7 +15,7 @@ import utils.Query;
  * without distinguish if the sdfchannel is a state variable
  */
 @SuppressWarnings("all")
-public class SDFChannelTemplateSrc implements ChannelTemplate {
+public class SDFChannelSrc implements ChannelTemplate {
   private Vertex sdfchannel;
   
   @Override

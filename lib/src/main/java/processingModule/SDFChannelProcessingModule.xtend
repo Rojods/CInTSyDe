@@ -25,7 +25,7 @@ class SDFChannelProcessingModule implements ModuleInterface {
 
 	def void process(Vertex v) {
 		templates.stream().forEach( [ t |
-			save(Generator.model,v,t)
+			save(Generator.model, v, t)
 		])
 	}
 
@@ -37,13 +37,13 @@ class SDFChannelProcessingModule implements ModuleInterface {
 		if (Generator.platform == 1) {
 
 			Save.save(t.create(v), Generator.root + "/tile/" + t.savePath());
-		} 
+		}
 		if (Generator.platform == 3) {
 
 			Save.save(t.create(v), Generator.root + t.savePath());
-		} 		
-		
-		if(Generator.platform==2) {
+		}
+
+		if (Generator.platform == 2) {
 			if (Query.isOnOneCoreChannel(model, v)) {
 
 				var Vertex consumer = VertexAcessor.getNamedPort(model, v, "consumer", VertexTrait.MOC_SDF_SDFACTOR).
@@ -51,7 +51,7 @@ class SDFChannelProcessingModule implements ModuleInterface {
 				if (consumer !== null) {
 					var Vertex tile = Query.findTile(model, consumer)
 					Save.save(t.create(v), Generator.root + "/" + tile.getIdentifier() + t.savePath());
-					//println(Generator.root + "/" + tile.getIdentifier() + t.savePath())
+				// println(Generator.root + "/" + tile.getIdentifier() + t.savePath())
 				} else {
 					var Vertex producer = VertexAcessor.getNamedPort(model, v, "producer",
 						VertexTrait.MOC_SDF_SDFACTOR).orElse(null)
@@ -66,9 +66,9 @@ class SDFChannelProcessingModule implements ModuleInterface {
 					orElse(null)
 				if (consumer !== null) {
 					var Vertex tile = Query.findTile(Generator.model, consumer)
-					//println(consumer)
-					//println(tile)
-					Save.save(t.create(v), Generator.root+"/" + tile.getIdentifier() + t.savePath());
+					// println(consumer)
+					// println(tile)
+					Save.save(t.create(v), Generator.root + "/" + tile.getIdentifier() + t.savePath());
 				}
 
 				var Vertex producer = VertexAcessor.getNamedPort(model, v, "producer", VertexTrait.MOC_SDF_SDFACTOR).

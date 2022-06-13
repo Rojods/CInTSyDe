@@ -6,12 +6,8 @@
 
 void subsystem_tile1(){
 	while(1){
-	xil_printf("fire actor GrayScale\n");
 	actor_GrayScale();
-	xil_printf("actor GrayScale ends\n");
-	xil_printf("fire actor getPx\n");
 	actor_getPx();
-	xil_printf("actor getPx ends\n");
 	}
 }	
 

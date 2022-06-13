@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import template.templateInterface.ActorTemplate;
 import utils.Query;
 
@@ -94,37 +93,44 @@ public class SDFActorSrc implements ActorTemplate {
       _builder.newLine();
       {
         for(final Vertex d : datablock) {
+          _builder.append("\t");
           _builder.append("extern ");
           String _findType = this.findType(model, d);
-          _builder.append(_findType);
+          _builder.append(_findType, "\t");
           _builder.append(" ");
           String _identifier = d.getIdentifier();
-          _builder.append(_identifier);
+          _builder.append(_identifier, "\t");
           _builder.append(";");
           _builder.newLineIfNotEmpty();
         }
       }
       _builder.append("\t");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("/*");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("========================================");
       _builder.newLine();
-      _builder.append("\t\t");
+      _builder.append("\t\t\t");
       _builder.append("Actor Function");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("========================================");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("*/\t");
       _builder.newLine();
+      _builder.append("\t");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("void actor_");
-      _builder.append(name);
+      _builder.append(name, "\t");
       _builder.append("(){");
       _builder.newLineIfNotEmpty();
-      _builder.append("\t");
+      _builder.append("\t\t");
       _builder.newLine();
-      _builder.append("\t");
+      _builder.append("\t\t");
       _builder.append("/*  initialize memory*/");
       _builder.newLine();
       _builder.newLine();
@@ -167,6 +173,7 @@ public class SDFActorSrc implements ActorTemplate {
       _builder.newLineIfNotEmpty();
       _builder.append("\t");
       _builder.newLine();
+      _builder.append("\t");
       _builder.append("}");
       _builder.newLine();
       _xblockexpression = _builder.toString();
@@ -279,7 +286,6 @@ public class SDFActorSrc implements ActorTemplate {
     String ret = "";
     for (final String impl : impls) {
       {
-        InputOutput.<String>println(("-->" + impl));
         Vertex actorimpl = model.queryVertex(impl).get();
         Set<String> ports = new HashSet<String>();
         List<String> _findImplInputPorts = Query.findImplInputPorts(actorimpl);
@@ -292,7 +298,6 @@ public class SDFActorSrc implements ActorTemplate {
         if (_tripleNotEquals_1) {
           ports.addAll(Query.findImplOutputPorts(actorimpl));
         }
-        InputOutput.<String>println(("-->" + ports));
         boolean _isEmpty = ports.isEmpty();
         if (_isEmpty) {
           String _ret = ret;
@@ -347,98 +352,87 @@ public class SDFActorSrc implements ActorTemplate {
     String ret = "";
     for (final Vertex impl : impls) {
       {
-        InputOutput.<Vertex>println(impl);
         List<String> inputPorts = TypedOperation.safeCast(impl).get().getInputPorts();
         if ((inputPorts != null)) {
           for (final String port : inputPorts) {
-            {
-              InputOutput.<String>println(("port-->" + port));
-              if (((!variableNameRecord.contains(port)) && (Query.isSystemChannel(model, impl, port) == null))) {
-                InputOutput.<String>println(actor.getIdentifier());
-                String _identifier = impl.getIdentifier();
-                String _plus = (_identifier + " ");
-                String _plus_1 = (_plus + port);
-                InputOutput.<String>println(_plus_1);
-                String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port);
-                String sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName);
-                InputOutput.<String>println(actorPortName);
-                InputOutput.<String>println(sdfchannelName);
-                String datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get());
-                Integer consumption = SDFActor.safeCast(actor).get().getConsumption().get(actorPortName);
-                if ((consumption == null)) {
-                  String _ret = ret;
-                  StringConcatenation _builder = new StringConcatenation();
-                  _builder.append("Consumption in ");
-                  String _identifier_1 = actor.getIdentifier();
-                  _builder.append(_identifier_1);
-                  _builder.append(" Not Specified!");
-                  _builder.newLineIfNotEmpty();
-                  ret = (_ret + _builder);
-                } else {
-                  if (((consumption).intValue() == 1)) {
-                    String _ret_1 = ret;
-                    StringConcatenation _builder_1 = new StringConcatenation();
-                    {
-                      if ((Generator.fifoType == 1)) {
-                        _builder_1.append("read_fifo_");
-                        _builder_1.append(datatype);
-                        _builder_1.append("(&fifo_");
-                        _builder_1.append(sdfchannelName);
-                        _builder_1.append(", &");
-                        _builder_1.append(port);
-                        _builder_1.append(",");
-                        _builder_1.append(consumption);
-                        _builder_1.append(");");
-                        _builder_1.newLineIfNotEmpty();
-                      }
+            if (((!variableNameRecord.contains(port)) && (Query.isSystemChannel(model, impl, port) == null))) {
+              String actorPortName = Query.findActorPortConnectedToImplInputPort(model, actor, impl, port);
+              String sdfchannelName = Query.findInputSDFChannelConnectedToActorPort(model, actor, actorPortName);
+              String datatype = Query.findSDFChannelDataType(model, model.queryVertex(sdfchannelName).get());
+              Integer consumption = SDFActor.safeCast(actor).get().getConsumption().get(actorPortName);
+              if ((consumption == null)) {
+                String _ret = ret;
+                StringConcatenation _builder = new StringConcatenation();
+                _builder.append("Consumption in ");
+                String _identifier = actor.getIdentifier();
+                _builder.append(_identifier);
+                _builder.append(" Not Specified!");
+                _builder.newLineIfNotEmpty();
+                ret = (_ret + _builder);
+              } else {
+                if (((consumption).intValue() == 1)) {
+                  String _ret_1 = ret;
+                  StringConcatenation _builder_1 = new StringConcatenation();
+                  {
+                    if ((Generator.fifoType == 1)) {
+                      _builder_1.append("read_fifo_");
+                      _builder_1.append(datatype);
+                      _builder_1.append("(&fifo_");
+                      _builder_1.append(sdfchannelName);
+                      _builder_1.append(", &");
+                      _builder_1.append(port);
+                      _builder_1.append(",");
+                      _builder_1.append(consumption);
+                      _builder_1.append(");");
+                      _builder_1.newLineIfNotEmpty();
                     }
-                    {
-                      if ((Generator.fifoType == 2)) {
-                        _builder_1.append("read_fifo(&fifo_");
-                        _builder_1.append(sdfchannelName);
-                        _builder_1.append(",(void*)&");
-                        _builder_1.append(port);
-                        _builder_1.append(",");
-                        _builder_1.append(consumption);
-                        _builder_1.append(");");
-                        _builder_1.newLineIfNotEmpty();
-                      }
-                    }
-                    ret = (_ret_1 + _builder_1);
-                  } else {
-                    String _ret_2 = ret;
-                    StringConcatenation _builder_2 = new StringConcatenation();
-                    {
-                      if ((Generator.fifoType == 1)) {
-                        _builder_2.append("read_fifo_");
-                        _builder_2.append(datatype);
-                        _builder_2.append("(&fifo_");
-                        _builder_2.append(sdfchannelName);
-                        _builder_2.append(", ");
-                        _builder_2.append(port);
-                        _builder_2.append(",");
-                        _builder_2.append(consumption);
-                        _builder_2.append(");");
-                        _builder_2.newLineIfNotEmpty();
-                      }
-                    }
-                    {
-                      if ((Generator.fifoType == 2)) {
-                        _builder_2.append("read_fifo(&fifo_");
-                        _builder_2.append(sdfchannelName);
-                        _builder_2.append(",(void*)");
-                        _builder_2.append(port);
-                        _builder_2.append(",");
-                        _builder_2.append(consumption);
-                        _builder_2.append(");");
-                        _builder_2.newLineIfNotEmpty();
-                      }
-                    }
-                    ret = (_ret_2 + _builder_2);
                   }
+                  {
+                    if ((Generator.fifoType == 2)) {
+                      _builder_1.append("read_fifo(&fifo_");
+                      _builder_1.append(sdfchannelName);
+                      _builder_1.append(",(void*)&");
+                      _builder_1.append(port);
+                      _builder_1.append(",");
+                      _builder_1.append(consumption);
+                      _builder_1.append(");");
+                      _builder_1.newLineIfNotEmpty();
+                    }
+                  }
+                  ret = (_ret_1 + _builder_1);
+                } else {
+                  String _ret_2 = ret;
+                  StringConcatenation _builder_2 = new StringConcatenation();
+                  {
+                    if ((Generator.fifoType == 1)) {
+                      _builder_2.append("read_fifo_");
+                      _builder_2.append(datatype);
+                      _builder_2.append("(&fifo_");
+                      _builder_2.append(sdfchannelName);
+                      _builder_2.append(", ");
+                      _builder_2.append(port);
+                      _builder_2.append(",");
+                      _builder_2.append(consumption);
+                      _builder_2.append(");");
+                      _builder_2.newLineIfNotEmpty();
+                    }
+                  }
+                  {
+                    if ((Generator.fifoType == 2)) {
+                      _builder_2.append("read_fifo(&fifo_");
+                      _builder_2.append(sdfchannelName);
+                      _builder_2.append(",(void*)");
+                      _builder_2.append(port);
+                      _builder_2.append(",");
+                      _builder_2.append(consumption);
+                      _builder_2.append(");");
+                      _builder_2.newLineIfNotEmpty();
+                    }
+                  }
+                  ret = (_ret_2 + _builder_2);
                 }
-                variableNameRecord.add(port);
               }
+              variableNameRecord.add(port);
             }
           }
         }

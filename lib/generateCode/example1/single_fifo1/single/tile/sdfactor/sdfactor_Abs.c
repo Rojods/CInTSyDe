@@ -22,18 +22,18 @@ extern circular_fifo_DoubleType fifo_absxsig;
 	Declare Extern Global Variables
 ========================================
 */			
-extern ArrayXOfArrayXOfDoubleType system_img_sink_global;
-extern Array1000OfArrayOfDouble outputImage;
+	extern ArrayXOfArrayXOfDoubleType system_img_sink_global;
+	extern Array1000OfArrayOfDouble outputImage;
 	
-/*
-========================================
-		Actor Function
-========================================
-*/	
-
-void actor_Abs(){
+	/*
+	========================================
+			Actor Function
+	========================================
+	*/	
 	
-	/*  initialize memory*/
+	void actor_Abs(){
+		
+		/*  initialize memory*/
 
 	UInt16 offsetX; 
 	UInt16 offsetY; 
@@ -69,4 +69,4 @@ void actor_Abs(){
 	write_fifo_UInt16(&fifo_AbsY,&offsetY,1);
 	 
 	
-}
+	}

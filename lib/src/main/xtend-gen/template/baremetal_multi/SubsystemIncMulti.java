@@ -5,7 +5,7 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.SubsystemTemplate;
 
 @SuppressWarnings("all")
-public class SubsystemTemplateIncMulti implements SubsystemTemplate {
+public class SubsystemIncMulti implements SubsystemTemplate {
   private Vertex tile;
   
   @Override

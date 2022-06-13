@@ -5,7 +5,7 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.SubsystemTemplate;
 
 @SuppressWarnings("all")
-public class SubsystemTemplateInc implements SubsystemTemplate {
+public class SubsystemSingleInc implements SubsystemTemplate {
   @Override
   public String create(final Vertex tile) {
     StringConcatenation _builder = new StringConcatenation();
