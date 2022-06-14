@@ -28,15 +28,15 @@ test {
     useJUnitPlatform()
 }
 
-tasks.withType(JavaCompile) {
-    doFirst {
-        println "AnnotationProcessorPath for $name is ${options.getAnnotationProcessorPath().getFiles()}"
-    }
-}
+// tasks.withType(JavaCompile) {
+//     doFirst {
+//         println "AnnotationProcessorPath for $name is ${options.getAnnotationProcessorPath().getFiles()}"
+//     }
+// }
 
 
-tasks.withType(GroovyCompile) {
-    doFirst {
-        println "AnnotationProcessorPath for $name is ${options.getAnnotationProcessorPath().getFiles()}"
-    }
-}
+// tasks.withType(GroovyCompile) {
+//     doFirst {
+//         println "AnnotationProcessorPath for $name is ${options.getAnnotationProcessorPath().getFiles()}"
+//     }
+// }

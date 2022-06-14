@@ -1,36 +1,42 @@
 package cintsyde.inline.generic.c;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.ListUtils;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+
 import cintsyde.engine.Generate;
 import cintsyde.interfaces.Component;
 import cintsyde.interfaces.StringComponent;
 import forsyde.io.java.core.EdgeInfo;
 import forsyde.io.java.core.ForSyDeSystemGraph;
-import forsyde.io.java.typed.viewers.typing.datatypes.*;
+import forsyde.io.java.typed.viewers.typing.datatypes.Array;
+import forsyde.io.java.typed.viewers.typing.datatypes.DataType;
 import forsyde.io.java.typed.viewers.typing.datatypes.Double;
 import forsyde.io.java.typed.viewers.typing.datatypes.Float;
 import forsyde.io.java.typed.viewers.typing.datatypes.Integer;
-import groovy.lang.Closure;
-import groovy.lang.Reference;
-import lombok.Builder;
+import forsyde.io.java.typed.viewers.typing.datatypes.Record;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.collections4.ListUtils;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Generate
 public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
 
-    @Getter @Setter private ForSyDeSystemGraph baseModel;
-    @Getter @Setter private DataType dataType;
-    @Getter @Setter private List<TypeDef> childrenTypeDefs = new ArrayList<TypeDef>();
+    @Getter
+    @Setter
+    private ForSyDeSystemGraph baseModel;
+    @Getter
+    @Setter
+    private DataType dataType;
+    @Getter
+    @Setter
+    private List<TypeDef> childrenTypeDefs = new ArrayList<TypeDef>();
 
     public TypeDef(ForSyDeSystemGraph baseModel, DataType dataType) {
         this.baseModel = baseModel;
@@ -58,14 +64,14 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
             int childNum = 0;
             r.getInnerTypesPort(baseModel).forEach(i -> {
                 baseModel.getAllEdges(r.getViewedVertex(), i.getViewedVertex()).stream()
-                    .map(EdgeInfo::getSourcePort)
-                    .forEach(srcPortOpt -> {
-                        srcPortOpt.ifPresentOrElse(srcPort -> {
-                            template.append("  ${child.identifier} ${srcPort};\n");
-                        }, () -> {
-                            template.append("  ${child.identifier} child${childNum};\n");
+                        .map(EdgeInfo::getSourcePort)
+                        .forEach(srcPortOpt -> {
+                            srcPortOpt.ifPresentOrElse(srcPort -> {
+                                template.append("  ${child.identifier} ${srcPort};\n");
+                            }, () -> {
+                                template.append("  ${child.identifier} child${childNum};\n");
+                            });
                         });
-                    });
             });
             template.append("\n} ").append(getDataType().getIdentifier()).append(";\n#endif");
             return template.toString();
@@ -80,7 +86,8 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
                     template.append("* ");
                 template.append(a.getIdentifier()).append(";");
             }, () -> {
-                template.append("typedef void* ").append(getDataType().getIdentifier()).append("; // ERROR: missing child value! default to void");
+                template.append("typedef void* ").append(getDataType().getIdentifier())
+                        .append("; // ERROR: missing child value! default to void");
             });
             return template.toString();
         } else if (dataType instanceof Integer) {
@@ -90,7 +97,8 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
                 return "typedef int " + getDataType().getIdentifier() + ";";
             else if (((Integer) dataType).getNumberOfBits() <= 64)
                 return "typedef long " + getDataType().getIdentifier() + ";";
-            else return "typedef long long " + getDataType().getIdentifier() + ";";
+            else
+                return "typedef long long " + getDataType().getIdentifier() + ";";
         } else if (dataType instanceof Float) {
             return "typedef float " + getDataType().getIdentifier();
         } else if (dataType instanceof Double) {
@@ -101,7 +109,7 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
 
     }
 
-    public String generateWithAllChildren() throws IOException {
+    public String generateWithAllChildren() throws IOException, URISyntaxException {
         StringBuilder t = new StringBuilder();
         for (TypeDef child : childrenTypeDefs) {
             t.append(child.generateWithAllChildren());
@@ -110,14 +118,19 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
     }
 
     public boolean equals(Object o) {
-        if (DefaultGroovyMethods.is(this, o)) return true;
-        if (!getClass().equals(o.getClass())) return false;
+        if (DefaultGroovyMethods.is(this, o))
+            return true;
+        if (!getClass().equals(o.getClass()))
+            return false;
 
         TypeDef typeDef = (TypeDef) o;
 
-        if (!baseModel.equals(typeDef.getBaseModel())) return false;
-        if (!DefaultGroovyMethods.equals(childrenTypeDefs, typeDef.getChildrenTypeDefs())) return false;
-        if (!dataType.equals(typeDef.getDataType())) return false;
+        if (!baseModel.equals(typeDef.getBaseModel()))
+            return false;
+        if (!DefaultGroovyMethods.equals(childrenTypeDefs, typeDef.getChildrenTypeDefs()))
+            return false;
+        if (!dataType.equals(typeDef.getDataType()))
+            return false;
 
         return true;
     }
@@ -129,20 +142,25 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
         return result;
     }
 
-    public static List<TypeDef> generate(final ForSyDeSystemGraph baseModel, List<Component<ForSyDeSystemGraph>> components) {
-        final List<TypeDef> generatedComponents = components.stream().filter(c -> c instanceof TypeDef).map(c -> (TypeDef) c)
+    public static List<TypeDef> generate(final ForSyDeSystemGraph baseModel,
+            List<Component<ForSyDeSystemGraph>> components) {
+        final List<TypeDef> generatedComponents = components.stream().filter(c -> c instanceof TypeDef)
+                .map(c -> (TypeDef) c)
                 .collect(Collectors.toList());
-        final List<DataType> generatedTypes = generatedComponents.stream().map(TypeDef::getDataType).collect(Collectors.toList());
+        final List<DataType> generatedTypes = generatedComponents.stream().map(TypeDef::getDataType)
+                .collect(Collectors.toList());
         final List<DataType> newTypes = baseModel.vertexSet().stream().flatMap(
-                v -> DataType.safeCast(v).stream()
-        ).filter(d -> !generatedTypes.contains(d)).collect(Collectors.toList());
-        final List<TypeDef> newComponents = newTypes.stream().map(t -> new TypeDef(baseModel, t)).collect(Collectors.toList());
+                v -> DataType.safeCast(v).stream()).filter(d -> !generatedTypes.contains(d))
+                .collect(Collectors.toList());
+        final List<TypeDef> newComponents = newTypes.stream().map(t -> new TypeDef(baseModel, t))
+                .collect(Collectors.toList());
         final List<TypeDef> allComponents = ListUtils.union(generatedComponents, generatedComponents);
         // connect data types that depend on each other
         for (TypeDef src : allComponents) {
             for (TypeDef dst : allComponents) {
                 // check if the array inner type is the same as the dst
-                Array.safeCast(src.getDataType()).filter(a -> a.getInnerTypePort(baseModel).equals(Optional.of(dst.dataType)))
+                Array.safeCast(src.getDataType())
+                        .filter(a -> a.getInnerTypePort(baseModel).equals(Optional.of(dst.dataType)))
                         .filter(a -> !src.getChildrenTypeDefs().contains(dst))
                         .ifPresent(a -> src.getChildrenTypeDefs().add(dst));
                 // same for records
@@ -154,8 +172,10 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
         }
 
         // return null to denote that all has been generated
-        if (newComponents.size() == 0) return null;
-        else return ((List<TypeDef>) (newComponents));
+        if (newComponents.size() == 0)
+            return null;
+        else
+            return ((List<TypeDef>) (newComponents));
     }
 
     @Override

@@ -23,14 +23,21 @@ import java.util.Map;
 @Builder
 public class SDFChannelsDefs implements FileComponent<ForSyDeSystemGraph> {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private ForSyDeSystemGraph baseModel;
-    @Getter @Setter private Path targetPath;
-    @Getter @Setter private FIFOBuffersFile fifoBuffersFile;
-    @Getter @Setter private List<SDFChannel> sdfChannels;
+    @Getter
+    @Setter
+    private Path targetPath;
+    @Getter
+    @Setter
+    private FIFOBuffersFile fifoBuffersFile;
+    @Getter
+    @Setter
+    private List<SDFChannel> sdfChannels;
 
     @Override
-    public List<StringComponent<ForSyDeSystemGraph>> getStringComponents() {
+    public List<? extends StringComponent<ForSyDeSystemGraph>> getStringComponents() {
         return List.of();
     }
 
@@ -47,16 +54,8 @@ public class SDFChannelsDefs implements FileComponent<ForSyDeSystemGraph> {
     }
 
     @Override
-    public String getSuffixTemplateString() {
-        try {
-            return Files.readString(Path.of(getClass().getResource("SDFChannels.headerOnly.h").toURI()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+    public String getSuffixTemplateString() throws IOException, URISyntaxException {
         return "";
     }
-
 
 }
