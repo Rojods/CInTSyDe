@@ -2,6 +2,7 @@ package cintsyde.engine;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -69,7 +70,9 @@ public class GeneratorOfGenerators extends AbstractProcessor {
                     componentGeneratorsClassBuilder.addMethod(getComponentGeneratorsMethod.build());
 
                     try (PrintWriter out = new PrintWriter(generatorsFile.openWriter())) {
-                        out.print(componentGeneratorsClassBuilder.build().toString());
+                        final JavaFile fJavaFile = JavaFile.builder("cintsyde.engine",
+                                componentGeneratorsClassBuilder.build()).build();
+                        fJavaFile.writeTo(out);
                     }
 
                     // System.out.println(annotatedClasses);
