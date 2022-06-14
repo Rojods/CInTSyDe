@@ -1,13 +1,10 @@
 package template.rtos;
 
-import fileAnnotation.FileType;
-import fileAnnotation.FileTypeAnno;
 import forsyde.io.java.core.Vertex;
 import generator.Generator;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.InitTemplate;
 
-@FileTypeAnno(type = FileType.C_INCLUDE)
 @SuppressWarnings("all")
 public class ConfigRTOSInc implements InitTemplate {
   @Override
@@ -17,13 +14,6 @@ public class ConfigRTOSInc implements InitTemplate {
     _builder.newLine();
     _builder.append("#define CONFIG_H_");
     _builder.newLine();
-    _builder.append("#define TESTING");
-    _builder.newLine();
-    _builder.append("#if defined(TESTING)");
-    _builder.newLine();
-    _builder.append("#include \"main.h\"");
-    _builder.newLine();
-    _builder.append("#endif");
     _builder.newLine();
     _builder.newLine();
     _builder.append("/*");
@@ -68,6 +58,6 @@ public class ConfigRTOSInc implements InitTemplate {
   
   @Override
   public String savePath() {
-    throw new UnsupportedOperationException("TODO: auto-generated method stub");
+    return "/configRTOS.h";
   }
 }

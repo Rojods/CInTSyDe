@@ -17,7 +17,7 @@ class SDFChannelInc implements ChannelTemplate{
 		#ifndef  «vertex.getIdentifier().toUpperCase()»_h_ 
 		#define «vertex.getIdentifier().toUpperCase()»_h_ 
 		
-		#define «vertex.getIdentifier().toUpperCase()»_BLOCKING 0
+		//#define «vertex.getIdentifier().toUpperCase()»_BLOCKING 0
 		
 		#endif
 		'''

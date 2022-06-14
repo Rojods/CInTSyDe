@@ -11,7 +11,7 @@ import java.util.Set
 import java.util.HashSet
 import generator.Generator
 import forsyde.io.java.core.VertexAcessor.VertexPortDirection
-
+@Deprecated
 class Schedule {
 	public var Vertex tile
 	public var Vertex order = null
@@ -107,11 +107,11 @@ class Schedule {
 		).orElse(null)
 	}
 
-	def print() {
-		println("tile: " + tile.getIdentifier())
-		if(order === null) println("order null") else println("order : " + order.getIdentifier())
-		for (Vertex v : slots) {
-			if(v === null) println("null") else println(v.getIdentifier())
-		}
-	}	
+//	def print() {
+//		println("tile: " + tile.getIdentifier())
+//		if(order === null) println("order null") else println("order : " + order.getIdentifier())
+//		for (Vertex v : slots) {
+//			if(v === null) println("null") else println(v.getIdentifier())
+//		}
+//	}	
 }

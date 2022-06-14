@@ -1,10 +1,10 @@
 package template.templateInterface;
 
-import generator.Schedule;
+import forsyde.io.java.core.Vertex;
 
 @SuppressWarnings("all")
 public interface SubsystemTemplate {
-  String create(final Schedule s);
+  String create(final Vertex tile);
   
   String savePath();
 }

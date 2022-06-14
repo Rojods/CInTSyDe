@@ -10,29 +10,25 @@ import generator.Generator
 
 class SubsystemUniprocessorModule implements ModuleInterface {
 	Set<SubsystemTemplate> templates
-	new (){
+
+	new() {
 		templates = new HashSet
-	}	
+	}
+
 	override create() {
 		process()
 	}
-	def process(){
-		templates.stream().forEach( [t| 
-			
-//			 var anno = t.getClass(). getAnnotation(FileTypeAnno)
-//			 
-//			 if(anno.type()==FileType.C_INCLUDE){
-			 	Save.save(t.create(null),Generator.root+t.savePath());
-//			 }
-//			 
-//			 if(anno.type()==FileType.C_SOURCE){
-//			 	Save.save(t.create(null),Generator.root+t.savePath())
-//			 }
-			 
-		] )		
+
+	def process() {
+		templates.stream().forEach( [ t |
+
+			Save.save(t.create(null), Generator.root + t.savePath());
+
+		])
 	}
-	def add(SubsystemTemplate t){
+
+	def add(SubsystemTemplate t) {
 		templates.add(t)
 	}
-	
+
 }
