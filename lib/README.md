@@ -10,3 +10,5 @@ To use this code generator:
 
 For more details, please refer to the master thesis report.
 
+
+An easy way to use this code generator is that just changing the path of forsyde-io file in the demo1 and demo2 packages
