@@ -13,10 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ForSyDeSystemCSDFModule implements StringComponent<ForSyDeSystemGraph>,
@@ -29,22 +26,36 @@ public class ForSyDeSystemCSDFModule implements StringComponent<ForSyDeSystemGra
     Path targetPath;
 
     @Getter
-    List<ForSyDeSystemCSDFModule> childModules = new ArrayList<>();
+    Set<ForSyDeSystemCSDFModule> childModules = new HashSet<>();
 
     @Getter
     SDFActor topActor;
+    @Getter
+    Set<SDFActor> childLeafSDFActors = new HashSet<>();
 
     public ForSyDeSystemCSDFModule(ForSyDeSystemGraph baseModel, SDFActor topActor) {
         this.baseModel = baseModel;
         this.topActor = topActor;
 
         // TODO: recurse on the children of the top actor
-        childModules = baseModel.vertexSet().stream()
+        Set<SDFActor> sdfActors = baseModel.vertexSet().stream()
                 .flatMap(v -> baseModel.outgoingEdgesOf(v).stream())
                 .map(baseModel::getEdgeTarget)
                 .flatMap(v -> SDFActor.safeCast(v).stream())
+                .collect(Collectors.toSet());
+        Set<SDFActor> composites = sdfActors.stream().filter(a ->
+                baseModel.outgoingEdgesOf(a.getViewedVertex()).stream()
+                        .map(baseModel::getEdgeTarget)
+                        .flatMap(childA -> SDFActor.safeCast(childA).stream())
+                        .findAny()
+                        .isPresent()
+        ).collect(Collectors.toSet());
+
+        childModules = composites.stream()
                 .map(sdfActor -> new ForSyDeSystemCSDFModule(baseModel, sdfActor))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
+
+        childLeafSDFActors = sdfActors.stream().filter(composites::contains).collect(Collectors.toSet());
 
         // make the context for the main file
         // populate the main file

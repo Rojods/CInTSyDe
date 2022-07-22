@@ -12,7 +12,7 @@ int sc_main(int argc, char** argv) {
 
     // generating SDF loose 'leaf' processes via their constructors
     {{#sdfActors}}
-    {{constructorCall}} *{{childActorName}} = new SDF::{{constructorCall}}({{childActorName}}, {{childInlinedFunctionName}}, {{orderedRates}});
+    {{constructorCall}} *{{actorName}} = new SDF::{{constructorCall}}({{actorName}}, {{childInlinedFunctionName}}, {{orderedRates}});
     {{sdfActors}}
 
     // now the same is done for composite actors
