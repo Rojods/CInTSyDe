@@ -1,4 +1,4 @@
-#Wed Jun 15 00:11:20 CEST 2022
+#Wed Jun 15 13:57:16 CEST 2022
 generateGeneratedAnnotation=false
 includeDateInGenerated=false
 outlet.DEFAULT_OUTPUT.userOutputPerSourceFolder=true
@@ -13,4 +13,4 @@ useJavaCompilerCompliance=false
 //outlet.DEFAULT_OUTPUT.sourceFolder.src/test/resources.directory=build/xtend/test
 outlet.DEFAULT_OUTPUT.hideLocalSyntheticVariables=true
 ValidatorConfiguration.is_project_specific=true
-targetJavaVersion=JAVA11
+targetJavaVersion=JAVA17

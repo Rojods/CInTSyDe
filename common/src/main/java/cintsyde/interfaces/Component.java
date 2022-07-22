@@ -11,6 +11,9 @@ import com.github.mustachejava.MustacheFactory;
  */
 public interface Component<BaseT> {
 
+    default String getComponentIdentifier() {
+        return getClass().getName();
+    }
     BaseT getBaseModel();
 
     void setBaseModel(BaseT baseModel);
@@ -19,7 +22,9 @@ public interface Component<BaseT> {
 
     void setContextByMap(Map<String, Object> context);
 
-    boolean componentIsEqual(Component<BaseT> other);
+    default boolean subsumes(Component<BaseT> other) {
+        return false;
+    }
 
     static MustacheFactory mustacheFactory = new DefaultMustacheFactory();
 }

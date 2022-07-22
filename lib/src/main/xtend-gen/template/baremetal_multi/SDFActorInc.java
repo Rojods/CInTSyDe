@@ -1,53 +1,27 @@
 package template.baremetal_multi;
 
-import forsyde.io.java.core.Vertex;
-import forsyde.io.java.typed.viewers.impl.Executable;
-import forsyde.io.java.typed.viewers.moc.sdf.SDFActorViewer;
-import generator.Generator;
 import java.util.Set;
-import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.ActorTemplate;
 
 @SuppressWarnings("all")
 public class SDFActorInc implements ActorTemplate {
-  private Set<Executable> a;
+  private /* Set<Executable> */Object a;
   
-  private Vertex actor;
+  private /* Vertex */Object actor;
   
-  @Override
-  public String create(final Vertex actor) {
-    String _xblockexpression = null;
-    {
-      this.actor = actor;
-      this.a = new SDFActorViewer(actor).getCombFunctionsPort(Generator.model);
-      StringConcatenation _builder = new StringConcatenation();
-      String name = actor.getIdentifier();
-      _builder.newLineIfNotEmpty();
-      String _upperCase = name.toUpperCase();
-      String tmp = (_upperCase + "_H_");
-      _builder.newLineIfNotEmpty();
-      _builder.append("#ifndef  ");
-      _builder.append(tmp);
-      _builder.newLineIfNotEmpty();
-      _builder.append("#define ");
-      _builder.append(tmp);
-      _builder.append("\t\t\t");
-      _builder.newLineIfNotEmpty();
-      _builder.append("void actor_");
-      _builder.append(name);
-      _builder.append("();");
-      _builder.newLineIfNotEmpty();
-      _builder.append("#endif");
-      _builder.newLine();
-      _xblockexpression = _builder.toString();
-    }
-    return _xblockexpression;
+  public String create(final /* Vertex */Object actor) {
+    throw new Error("Unresolved compilation problems:"
+      + "\nno viable alternative at input \'Â\'"
+      + "\nmismatched input \'»\\r\\n\\t\\t\\tÂ«\' expecting \'}\'"
+      + "\nSDFActorViewer cannot be resolved."
+      + "\nThe method or field Â is undefined"
+      + "\nThe field SDFActorInc.actor refers to the missing type Vertex"
+      + "\nThe field SDFActorInc.a refers to the missing type Executable"
+      + "\nThe field Generator.model refers to the missing type ForSyDeSystemGraph"
+      + "\nThis expression is not allowed in this context, since it doesn\'t cause any side effects."
+      + "\ngetCombFunctionsPort cannot be resolved"
+      + "\ngetIdentifier cannot be resolved");
   }
   
-  @Override
-  public String savePath() {
-    String _identifier = this.actor.getIdentifier();
-    String _plus = ("/sdfactor/sdfactor_" + _identifier);
-    return (_plus + ".h");
-  }
+  private Object tmp /* Skipped initializer because of errors */;
 }

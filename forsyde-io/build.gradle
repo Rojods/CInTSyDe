@@ -14,7 +14,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation project(":common")
-    implementation group: 'io.github.forsyde', name: 'forsyde-io-java-core', version: '0.5.9'
+    implementation group: 'io.github.forsyde', name: 'forsyde-io-java-core', version: '0.5.10'
     implementation 'org.codehaus.groovy:groovy-all:3.0.10'
 
     annotationProcessor project(":generator")

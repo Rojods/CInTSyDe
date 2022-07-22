@@ -3,9 +3,12 @@ package cintsyde.inline.generic.c;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
@@ -36,7 +39,7 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
     private DataType dataType;
     @Getter
     @Setter
-    private List<TypeDef> childrenTypeDefs = new ArrayList<TypeDef>();
+    private Set<TypeDef> childrenTypeDefs = new HashSet<>();
 
     public TypeDef(ForSyDeSystemGraph baseModel, DataType dataType) {
         this.baseModel = baseModel;
@@ -142,8 +145,8 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
         return result;
     }
 
-    public static List<TypeDef> generate(final ForSyDeSystemGraph baseModel,
-            List<Component<ForSyDeSystemGraph>> components) {
+    public static Set<TypeDef> generate(final ForSyDeSystemGraph baseModel,
+            Set<? extends Component<ForSyDeSystemGraph>> components) {
         final List<TypeDef> generatedComponents = components.stream().filter(c -> c instanceof TypeDef)
                 .map(c -> (TypeDef) c)
                 .collect(Collectors.toList());
@@ -175,11 +178,20 @@ public class TypeDef implements StringComponent<ForSyDeSystemGraph> {
         if (newComponents.size() == 0)
             return null;
         else
-            return ((List<TypeDef>) (newComponents));
+            return new HashSet<>(newComponents);
     }
 
     @Override
     public boolean componentIsEqual(Component<ForSyDeSystemGraph> other) {
         return (other instanceof TypeDef) && ((TypeDef) other).dataType.equals(getDataType());
+    }
+
+    @Override
+    public boolean subsumes(Component<ForSyDeSystemGraph> other) {
+        if (other instanceof TypeDef) {
+            final TypeDef typeDef = (TypeDef) other;
+            return dataType.equals(typeDef.getDataType()) && childrenTypeDefs.containsAll(typeDef.getChildrenTypeDefs());
+        }
+        return StringComponent.super.subsumes(other);
     }
 }

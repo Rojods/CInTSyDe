@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+}
+
+
+
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    implementation group: 'io.github.forsyde', name: 'forsyde-io-java-core', version: '0.5.10'
+    implementation project(":common")
+    implementation project(":forsyde-io")
+}
+
+test {
+    useJUnitPlatform()
+}

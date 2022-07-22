@@ -2,6 +2,7 @@ package cintsyde.inline.moc.sdf;
 
 import cintsyde.engine.Generate;
 import cintsyde.inline.generic.c.FIFOBuffersFile;
+import cintsyde.interfaces.Component;
 import cintsyde.interfaces.FileComponent;
 import cintsyde.interfaces.StringComponent;
 import forsyde.io.java.core.ForSyDeSystemGraph;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Generate
 @Builder
@@ -56,6 +59,28 @@ public class SDFChannelsDefs implements FileComponent<ForSyDeSystemGraph> {
     @Override
     public String getSuffixTemplateString() throws IOException, URISyntaxException {
         return "";
+    }
+
+    @Override
+    public boolean subsumes(Component<ForSyDeSystemGraph> other) {
+        if (other instanceof SDFChannelsDefs) {
+            final SDFChannelsDefs sdfChannelsDefs = (SDFChannelsDefs) other;
+            if (fifoBuffersFile.subsumes(sdfChannelsDefs.getFifoBuffersFile()) &&
+                sdfChannels.containsAll(sdfChannelsDefs.getSdfChannels())) {
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public static Set<SDFChannelsDefs> generate(ForSyDeSystemGraph baseModel, Set<? extends Component<ForSyDeSystemGraph>> components) {
+        final Set<SDFChannelsDefs> generatedComponents = components.stream().filter(c -> c instanceof SDFChannelsDefs)
+                .map(c -> (SDFChannelsDefs) c).collect(Collectors.toSet());
+        final Set<FIFOBuffersFile> generatedFifoBuffersFiles = components.stream().filter(c -> c instanceof FIFOBuffersFile)
+                .map(c -> (FIFOBuffersFile) c).collect(Collectors.toSet());
+        final Set<SDFChannel> sdfChannels = baseModel.vertexSet().stream().flatMap(v -> SDFChannel.safeCast(v).stream())
+                .collect(Collectors.toSet());
+        return Set.of();
     }
 
 }

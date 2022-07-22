@@ -8,8 +8,9 @@
  */
 
 rootProject.name = 'CInTSyDe'
-include('lib')
+// include('lib') -- I can t compile this for now
 include('common')
 include 'forsyde-io'
 include 'generator'
+include 'cli'
 

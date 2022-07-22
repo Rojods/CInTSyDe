@@ -1,62 +1,28 @@
 package template.baremetal_multi;
 
-import forsyde.io.java.core.Vertex;
-import generator.Generator;
-import org.eclipse.xtend2.lib.StringConcatenation;
 import template.templateInterface.ChannelTemplate;
-import utils.Query;
 
 /**
  * without distinguish if the sdfchannel is a state variable
  */
 @SuppressWarnings("all")
 public class SDFChannelInc implements ChannelTemplate {
-  private Vertex sdfchannel;
+  private /* Vertex */Object sdfchannel;
   
-  @Override
-  public String create(final Vertex vertex) {
-    String _xblockexpression = null;
-    {
-      this.sdfchannel = vertex;
-      StringConcatenation _builder = new StringConcatenation();
-      _builder.append("#ifndef  ");
-      String _upperCase = vertex.getIdentifier().toUpperCase();
-      _builder.append(_upperCase);
-      _builder.append("_H_ ");
-      _builder.newLineIfNotEmpty();
-      _builder.append("#define ");
-      String _upperCase_1 = vertex.getIdentifier().toUpperCase();
-      _builder.append(_upperCase_1);
-      _builder.append("_H_ ");
-      _builder.newLineIfNotEmpty();
-      _builder.newLine();
-      {
-        boolean _isOnOneCoreChannel = Query.isOnOneCoreChannel(Generator.model, vertex);
-        if (_isOnOneCoreChannel) {
-          _builder.append("//#define ");
-          String _upperCase_2 = vertex.getIdentifier().toUpperCase();
-          _builder.append(_upperCase_2);
-          _builder.append("_BLOCKING 0");
-          _builder.newLineIfNotEmpty();
-        } else {
-          _builder.append("#define ");
-          String _upperCase_3 = vertex.getIdentifier().toUpperCase();
-          _builder.append(_upperCase_3);
-          _builder.append("_ADDR  0x80020000");
-          _builder.newLineIfNotEmpty();
-        }
-      }
-      _builder.append("#endif");
-      _builder.newLine();
-      _xblockexpression = _builder.toString();
-    }
-    return _xblockexpression;
+  public String create(final /* Vertex */Object vertex) {
+    throw new Error("Unresolved compilation problems:"
+      + "\nno viable alternative at input \'Â\'"
+      + "\nmismatched input \'»_H_ \\r\\n\\t\\t#define Â«\' expecting \'}\'"
+      + "\nThe method or field Â is undefined"
+      + "\nThe field SDFChannelInc.sdfchannel refers to the missing type Vertex"
+      + "\nThis expression is not allowed in this context, since it doesn\'t cause any side effects."
+      + "\ngetIdentifier cannot be resolved"
+      + "\ntoUpperCase cannot be resolved");
   }
   
-  @Override
-  public String savePath() {
-    String _identifier = this.sdfchannel.getIdentifier();
-    String _plus = ("/sdfchannel/sdfchannel_" + _identifier);
-    return (_plus + ".h");
-  }
+  private Object toUpperCase;
+  
+  private Object toUpperCase;
+  
+  private Object toUpperCase;
 }

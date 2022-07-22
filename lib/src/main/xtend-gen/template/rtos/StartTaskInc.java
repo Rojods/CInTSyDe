@@ -5,7 +5,6 @@ import template.templateInterface.InitTemplate;
 
 @SuppressWarnings("all")
 public class StartTaskInc implements InitTemplate {
-  @Override
   public String create() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("#ifndef  SUBSYSTEM_H_");
@@ -19,7 +18,6 @@ public class StartTaskInc implements InitTemplate {
     return _builder.toString();
   }
   
-  @Override
   public String savePath() {
     return "/start_task.h";
   }
