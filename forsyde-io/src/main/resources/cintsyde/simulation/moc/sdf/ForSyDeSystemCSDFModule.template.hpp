@@ -1,7 +1,7 @@
 #ifndef SDF_MODULE_{{actorName}}_H_
 #define SDF_MODULE_{{actorName}}_H_
 
-#include "forsyde.hpp"
+#include "sdf_process.hpp"
 #include "{{dataTypes.targetPath}}"
 
 {{#childModules}}
@@ -16,31 +16,28 @@
 /*******************************************************************************
  * Module generated for {{actorClassName}}
  */
-SC_MODULE({{actorClassName}})
+class {{actorClassName}} : sdf_process
 {
+public:
     // first the input ports are instantiated
     {{#inPorts}}
     ForSyDe::SDF::in_port<{{portTypeName}}> {{portName}};
-    {{inPorts}}
+    {{/inPorts}}
     // and then the global output Ports
     {{#outPorts}}
     ForSyDe::SDF::out_port<{{portTypeName}}> {{portName}};
-    {{outPorts}}
+    {{/outPorts}}
 
+    {{actorClassName}}(): {{actorClassName}}("{{actorName}}") {}
 
-    // Instantiating signals
-    {{#signalsContained}}
-    ForSyDe::SDF::signal<{{signalTypeName}}> {{signalName}};
-    {{signalsContained}}
-
-    SC_CTOR({{actorClassName}}) {
+    {{actorClassName}}(sc_module_name alternatName): sdf_process(alternatName) {
         {{#containedLeafActor}}
         {{constructorCall}} *{{childActorName}} = new SDF::{{constructorCall}}({{childActorName}}, {{childInlinedFunctionName}}, {{orderedRates}});
 
         {{#boundPort}}
         {{childActorName}}->{{portName}}({{boundPortName}});
         {{boundPortName}}
-        {{containedLeafActor}}
+        {{/containedLeafActor}}
 
         {{#childModules}}
         auto {{actorName}} = new {{actorClassName}}({{actorName}});
@@ -49,8 +46,32 @@ SC_MODULE({{actorClassName}})
         {{#boundPort}}
         {{childActorName}}->{{portName}}({{boundPortName}});
         {{boundPortName}}
-        {{childModules}}
+        {{/childModules}}
+    }
 
+private:
+
+    // Instantiating signals
+    {{#signalsContained}}
+    ForSyDe::SDF::signal<{{signalTypeName}}> {{signalName}};
+    {{/signalsContained}}
+
+    void init() {
+        {{#inPorts}}
+        {{portName}}.resize({{portRate}});
+        {{/inPorts}}
+        {{#outPorts}}
+        {{portName}}.resize({{portRate}});
+        {{/outPorts}}
+    }
+
+    void prop() {
+    }
+
+    void exec() {
+    }
+
+    void clean() {
     }
 
 }
